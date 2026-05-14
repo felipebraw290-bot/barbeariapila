@@ -1,12 +1,6 @@
-
 const SUPABASE_URL = 'https://esmgvjdfmghvmbbmiwwr.supabase.co';
-
 const SUPABASE_KEY = 'sb_publishable_33LFn0rafHYSWp_6aKe73g_-QZLQxX9';
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* ══════════════════════════════════════════
    BARBERKING — app.js
@@ -18,14 +12,33 @@ const supabaseClient = supabase.createClient(
 // ════════════════════════════════════════════════════
 //  DATABASE — LocalStorage
 // ════════════════════════════════════════════════════
-const DB_KEY = 'barberking_pila_v2';
+const DB_KEY    = 'barberking_pila_v2';
+const THEME_KEY = 'barberking_theme';
 
 // ════════════════════════════════════════════════════
-//  THEME — dark only (dark mode removido)
+//  THEME MANAGEMENT
 // ════════════════════════════════════════════════════
-function initTheme() {}
-function toggleTheme() {}
-function applyTheme() {}
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+  applyTheme(savedTheme);
+}
+function toggleTheme() {
+  const html = document.documentElement;
+  const newTheme = html.classList.contains('light-mode') ? 'dark' : 'light';
+  applyTheme(newTheme);
+  localStorage.setItem(THEME_KEY, newTheme);
+}
+function applyTheme(theme) {
+  const html = document.documentElement;
+  const btn  = document.querySelector('[onclick="toggleTheme()"] i');
+  if (theme === 'light') {
+    html.classList.add('light-mode');
+    if (btn) btn.className = 'fas fa-sun';
+  } else {
+    html.classList.remove('light-mode');
+    if (btn) btn.className = 'fas fa-moon';
+  }
+}
 
 function getDB() {
   try {
@@ -40,19 +53,18 @@ function defaultDB() {
     profile: null,
     blockedDates: [],
     blockedIntervals: [],
-    activeSlots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
+    activeSlots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+                  '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
   };
 }
 
-function saveDB(db) {
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
-}
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 
 function addAppointment(appt) {
   const db = getDB();
-  appt.id = Date.now().toString() + Math.random().toString(36).slice(2,6);
+  appt.id        = Date.now().toString() + Math.random().toString(36).slice(2,6);
   appt.createdAt = new Date().toISOString();
-  appt.status = 'confirmed';
+  appt.status    = 'confirmed';
   appt.doneByAdmin = false;
   db.appointments.unshift(appt);
   saveDB(db);
@@ -60,51 +72,36 @@ function addAppointment(appt) {
 }
 
 function cancelAppointment(id) {
-  const db = getDB();
+  const db   = getDB();
   const appt = db.appointments.find(a => a.id === id);
   if (appt) { appt.status = 'cancelled'; saveDB(db); }
 }
 
 function markDone(id) {
-  const db = getDB();
+  const db   = getDB();
   const appt = db.appointments.find(a => a.id === id);
   if (appt) { appt.status = 'past'; appt.doneByAdmin = true; saveDB(db); }
 }
 
-function getProfile() {
-  const db = getDB();
-  return db.profile || { name: 'Visitante', phone: '', email: '' };
-}
-
-function saveProfile(profile) {
-  const db = getDB();
-  db.profile = profile;
-  saveDB(db);
-}
+function getProfile()          { const db = getDB(); return db.profile || { name:'Visitante', phone:'', email:'' }; }
+function saveProfile(profile)  { const db = getDB(); db.profile = profile; saveDB(db); }
 
 function saveRegisterProfile() {
-  const name = document.getElementById('register-name')?.value.trim();
+  const name  = document.getElementById('register-name')?.value.trim();
   const phone = document.getElementById('register-phone')?.value.trim();
-  if (!name || name.length < 3) {
-    return showToast('Digite seu nome completo para continuar.', 'error');
-  }
-  if (!phone || phone.replace(/\D/g, '').length < 10) {
-    return showToast('Informe um WhatsApp válido.', 'error');
-  }
-  saveProfile({ name, phone, email: '' });
+  if (!name || name.length < 3)                      return showToast('Digite seu nome completo para continuar.','error');
+  if (!phone || phone.replace(/\D/g,'').length < 10) return showToast('Informe um WhatsApp válido.','error');
+  saveProfile({ name, phone, email:'' });
   showPage('home');
   renderHome();
   renderProfile();
-  showToast('Seja bem-vindo, ' + name + '!', 'success');
+  showToast('Seja bem-vindo, ' + name + '!','success');
 }
 
 // ════════════════════════════════════════════════════
-//  CONSTANTS — Single Barber: Pila
+//  CONSTANTS
 // ════════════════════════════════════════════════════
-const BARBER = {
-  id: 1, name: 'Pila', fullName: 'Pila',
-  role: 'Mestre Barbeiro', rating: '5.0', emoji: 'P',
-};
+const BARBER = { id:1, name:'Pila', fullName:'Pila', role:'Mestre Barbeiro', rating:'5.0', emoji:'P' };
 
 const ALL_SLOTS = [
   '08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
@@ -126,14 +123,20 @@ const ADMIN_PASSWORD = 'pila123';
 //  APP STATE
 // ════════════════════════════════════════════════════
 const state = {
-  selectedService: null,
-  selectedDate: null,
-  selectedSlot: null,
-  currentStep: 1,
-  cancelId: null,
-  apptFilter: 'all',
-  adminApptFilter: 'all',
-  isAdmin: false,
+  selectedService:  null,
+  selectedDate:     null,
+  selectedSlot:     null,
+  currentStep:      1,
+  cancelId:         null,
+  apptFilter:       'all',
+  adminApptFilter:  'all',
+  isAdmin:          false,
+
+  // ── NOVO: navegação por semana ──
+  weekOffset: 0,           // 0 = semana atual, 1 = próxima, etc.
+
+  // ── NOVO: cache dos agendamentos vindos do Supabase ──
+  supabaseAppts: [],
 };
 
 // ════════════════════════════════════════════════════
@@ -143,7 +146,7 @@ const state = {
   const container = document.getElementById('particles');
   const colors = ['#c9a84c','#f0c060','#a07830','rgba(255,255,255,.5)'];
   for (let i = 0; i < 22; i++) {
-    const p = document.createElement('div');
+    const p    = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 3.5 + 1;
     p.style.cssText = [
@@ -167,7 +170,7 @@ const NAV_MAP = {
 };
 
 function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p  => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
 
   const page = document.getElementById('page-' + name) || document.getElementById(name);
@@ -179,18 +182,15 @@ function showPage(name) {
   const nav = document.querySelector('nav');
   if (nav) nav.style.display = name === 'register' ? 'none' : 'flex';
 
-  if (name === 'home') renderHome();
+  if (name === 'home')         renderHome();
   if (name === 'appointments') renderAppointments();
-  if (name === 'profile') renderProfile();
-  if (name === 'admin') renderAdmin();
+  if (name === 'profile')      renderProfile();
+  if (name === 'admin')        renderAdmin();
 
   window.scrollTo(0, 0);
 }
 
-function goToBook() {
-  showPage('book');
-  resetBooking();
-}
+function goToBook() { showPage('book'); resetBooking(); }
 
 // ════════════════════════════════════════════════════
 //  HOME PAGE
@@ -204,15 +204,11 @@ function renderHome() {
   const bc = document.getElementById('home-barber-card');
   if (bc) bc.innerHTML = `
     <div class="barber-hero-card" onclick="goToBook()">
-      <div class="barber-big-avatar">
-        P<div class="online-dot"></div>
-      </div>
+      <div class="barber-big-avatar">P<div class="online-dot"></div></div>
       <div class="barber-hero-info">
         <div class="barber-hero-name">${BARBER.fullName}</div>
         <div class="barber-hero-role">${BARBER.role}</div>
-        <div class="barber-hero-stars">
-          <span>★★★★★</span> ${BARBER.rating} · <span style="color:var(--green);">Disponível agora</span>
-        </div>
+        <div class="barber-hero-stars"><span>★★★★★</span> ${BARBER.rating} · <span style="color:var(--green);">Disponível agora</span></div>
       </div>
       <button class="barber-book-btn">Agendar</button>
     </div>`;
@@ -226,9 +222,9 @@ function renderHome() {
       <div class="s-price">${s.priceStr}</div>
     </div>`).join('');
 
-  const db = getDB();
+  const db       = getDB();
   const upcoming = db.appointments.filter(a => a.status === 'confirmed');
-  const cont = document.getElementById('home-next-appt');
+  const cont     = document.getElementById('home-next-appt');
   if (!cont) return;
   if (!upcoming.length) {
     cont.innerHTML = `
@@ -260,15 +256,25 @@ function renderHome() {
 // ════════════════════════════════════════════════════
 function resetBooking() {
   state.selectedService = null;
-  state.selectedDate = null;
-  state.selectedSlot = null;
+  state.selectedDate    = null;
+  state.selectedSlot    = null;
+  state.weekOffset      = 0;
   goStep(1);
+}
+
+// ── CORRIGIDO: botão voltar ──
+function goBack() {
+  if (state.currentStep > 1) {
+    goStep(state.currentStep - 1);
+  } else {
+    showPage('home');
+  }
 }
 
 function goStep(n) {
   for (let i = 1; i <= 3; i++) {
-    const el = document.getElementById('step-' + i);
-    if (el) el.style.display = i === n ? 'block' : 'none';
+    const el  = document.getElementById('step-' + i);
+    if (el)  el.style.display = i === n ? 'block' : 'none';
     const dot = document.getElementById('dot-' + i);
     if (dot) dot.classList.toggle('active', i <= n);
   }
@@ -279,6 +285,7 @@ function goStep(n) {
   window.scrollTo(0, 0);
 }
 
+/* SERVICES */
 function renderServicesGrid() {
   const grid = document.getElementById('services-grid');
   if (!grid) return;
@@ -289,6 +296,12 @@ function renderServicesGrid() {
       <div class="service-duration"><i class="fas fa-clock" style="font-size:9px;margin-right:3px;"></i>${s.duration}</div>
       <div class="service-price">${s.priceStr}</div>
     </div>`).join('');
+
+  // Restaurar seleção anterior ao voltar
+  if (state.selectedService) {
+    document.getElementById('scard-' + state.selectedService.id)?.classList.add('selected');
+    document.getElementById('btn-step1').disabled = false;
+  }
 }
 
 function selectService(id) {
@@ -300,52 +313,112 @@ function selectService(id) {
   vibrate();
 }
 
-// ════════════════════════════════════════════════════
-//  DATA — corrigido: addEventListener garante toque em mobile
-// ════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════
+   DATE & SLOTS — CORRIGIDO: navegação de semana em semana
+   (sempre de Domingo a Sábado)
+══════════════════════════════════════════════════════ */
+function getWeekStart(offset) {
+  const today  = new Date();
+  // Zera hora
+  today.setHours(0,0,0,0);
+  // Domingo da semana corrente
+  const day    = today.getDay(); // 0=Dom
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - day + offset * 7);
+  return sunday;
+}
+
 function renderDateSlots() {
-  const db = getDB();
+  const db     = getDB();
   const scroll = document.getElementById('date-scroll');
   if (!scroll) return;
+
   const days   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const today  = new Date();
+  const today  = new Date(); today.setHours(0,0,0,0);
+
+  const weekStart = getWeekStart(state.weekOffset);
+
   let html = '';
   let firstAvailable = null;
 
+  // Verificar qual o primeiro dia disponível na semana
   for (let i = 0; i < 7; i++) {
-    const d = new Date(today); d.setDate(today.getDate() + i);
+    const d       = new Date(weekStart); d.setDate(weekStart.getDate() + i);
     const dateStr = fmtDate(d);
+    const isPast  = d < today;
     const isBlocked = db.blockedDates.includes(dateStr);
-    if (!isBlocked && !firstAvailable) firstAvailable = dateStr;
+    if (!isPast && !isBlocked && !firstAvailable) firstAvailable = dateStr;
   }
 
+  // Manter data selecionada ou usar primeira disponível
   const selectedDate = (!state.selectedDate || db.blockedDates.includes(state.selectedDate))
     ? (firstAvailable || fmtDate(today))
     : state.selectedDate;
   state.selectedDate = selectedDate;
 
+  // Renderizar os 7 dias da semana (Dom → Sáb)
   for (let i = 0; i < 7; i++) {
-    const d = new Date(today); d.setDate(today.getDate() + i);
+    const d       = new Date(weekStart); d.setDate(weekStart.getDate() + i);
     const dateStr = fmtDate(d);
-    const isBlocked = db.blockedDates.includes(dateStr);
-    html += `<div class="date-item ${dateStr===selectedDate?'selected':''} ${isBlocked?'blocked':''}"
-      data-date="${dateStr}" id="date-${i}" ${isBlocked ? 'title="Data bloqueada"' : ''}>
-      <div class="date-day">${i===0?'Hoje':days[d.getDay()]}</div>
+    const isPast  = d < today;
+    const isToday = d.toDateString() === today.toDateString();
+    const isBlocked  = db.blockedDates.includes(dateStr) || isPast;
+    const isSelected = dateStr === selectedDate;
+
+    html += `<div class="date-item ${isSelected?'selected':''} ${isBlocked?'blocked':''}"
+      data-date="${dateStr}" ${isBlocked?'title="Indisponível"':''}>
+      <div class="date-day">${isToday ? 'Hoje' : days[d.getDay()]}</div>
       <div class="date-num">${d.getDate()}</div>
       <div class="date-month">${months[d.getMonth()]}</div>
     </div>`;
   }
+
+  // Montar cabeçalho de navegação de semana
+  const weekLabel = `${fmtDate(weekStart)} — ${fmtDate(new Date(weekStart.getTime() + 6*86400000))}`;
+  const canGoPrev = state.weekOffset > 0;
+
+  const wrapper = scroll.parentElement;
+  let nav = wrapper.querySelector('.week-nav');
+  if (!nav) {
+    nav = document.createElement('div');
+    nav.className = 'week-nav';
+    nav.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:0 20px 10px;';
+    wrapper.insertBefore(nav, scroll);
+  }
+  nav.innerHTML = `
+    <button onclick="changeWeek(-1)" ${!canGoPrev?'disabled':''} style="
+      background:${canGoPrev?'var(--dark3)':'var(--dark4)'};border:1px solid rgba(255,255,255,.1);
+      color:${canGoPrev?'var(--gold)':'var(--gray)'};border-radius:10px;padding:7px 13px;
+      cursor:${canGoPrev?'pointer':'not-allowed'};font-size:13px;font-family:Inter,sans-serif;">
+      ← Anterior
+    </button>
+    <span style="font-size:12px;color:var(--gray);font-weight:600;">${weekLabel}</span>
+    <button onclick="changeWeek(1)" style="
+      background:var(--dark3);border:1px solid rgba(255,255,255,.1);
+      color:var(--gold);border-radius:10px;padding:7px 13px;
+      cursor:pointer;font-size:13px;font-family:Inter,sans-serif;">
+      Próxima →
+    </button>`;
+
   scroll.innerHTML = html;
 
-  // Fix mobile: vincula click via JS (não inline) para garantir seleção por toque
+  // Bind clicks nos dias disponíveis
   scroll.querySelectorAll('.date-item:not(.blocked)').forEach(el => {
-    el.addEventListener('click', function() {
-      selectDate(this, this.dataset.date);
-    });
+    el.addEventListener('click', function() { selectDate(this, this.dataset.date); });
   });
 
   renderSlots();
+}
+
+function changeWeek(dir) {
+  const next = state.weekOffset + dir;
+  if (next < 0) return; // não volta antes da semana atual
+  state.weekOffset   = next;
+  state.selectedDate = null;
+  state.selectedSlot = null;
+  document.getElementById('btn-step2').disabled = true;
+  renderDateSlots();
 }
 
 function selectDate(el, dateStr) {
@@ -358,20 +431,29 @@ function selectDate(el, dateStr) {
 }
 
 function renderSlots() {
-  const db = getDB();
+  const db          = getDB();
   const activeSlots = db.activeSlots || ALL_SLOTS;
-  const busySlots = db.appointments
+  const busySlots   = db.appointments
     .filter(a => a.status === 'confirmed' && a.date === state.selectedDate)
     .map(a => a.time);
 
-  const isSlotInInterval = (slot, intervals) => {
-    return intervals.some(iv => slot >= iv.start && slot < iv.end);
-  };
+  // Também marcar como ocupado os horários do Supabase (agendamentos de outros dispositivos)
+  const sbBusy = state.supabaseAppts
+    .filter(a => {
+      const d = new Date(a.appointment_date);
+      return fmtDate(d) === state.selectedDate && a.status !== 'cancelled';
+    })
+    .map(a => a.appointment_time ? a.appointment_time.slice(0,5) : '');
+
+  const allBusy = [...new Set([...busySlots, ...sbBusy])];
+
+  const isSlotInInterval = (slot, intervals) =>
+    intervals.some(iv => slot >= iv.start && slot < iv.end);
 
   const grid = document.getElementById('slots-grid');
   if (!grid) return;
   grid.innerHTML = activeSlots.map(s => {
-    const isBusy    = busySlots.includes(s);
+    const isBusy    = allBusy.includes(s);
     const isBlocked = isSlotInInterval(s, db.blockedIntervals || []);
     const status    = isBlocked ? 'blocked' : isBusy ? 'busy' : 'available';
     const label     = isBlocked ? 'Bloqueado' : isBusy ? 'Ocupado' : 'Livre';
@@ -390,6 +472,7 @@ function selectSlot(el, time) {
   vibrate();
 }
 
+/* SUMMARY */
 function renderSummary() {
   const s = state.selectedService;
   document.getElementById('booking-summary').innerHTML = `
@@ -419,11 +502,7 @@ function openConfirmModal() {
   const name  = document.getElementById('input-name').value.trim();
   const phone = document.getElementById('input-phone').value.trim();
   const email = document.getElementById('input-email').value.trim();
-
-  if (!email || !email.includes('@')) {
-    return showToast('❌ Por favor, informe um e-mail válido.', 'error');
-  }
-
+  if (!email || !email.includes('@')) return showToast('❌ Por favor, informe um e-mail válido.','error');
   document.getElementById('modal-content').innerHTML = `
     <div class="confirm-row"><span class="confirm-label">Cliente</span><span class="confirm-value">${name}</span></div>
     <div class="confirm-row"><span class="confirm-label">Contato</span><span class="confirm-value">${phone}</span></div>
@@ -454,23 +533,13 @@ async function confirmBooking() {
     duration: s.duration, clientName: name, clientPhone: phone, clientEmail: email,
   });
 
-  const ok = await salvarAgendamento({
-    name:    name,
-    phone:   phone,
-    service: s.name,
-    date:    state.selectedDate,
-    time:    state.selectedSlot,
-  });
-
+  const ok = await salvarAgendamento({ name, phone, service: s.name, date: state.selectedDate, time: state.selectedSlot });
   if (!ok) return;
 
   closeModal();
-  showToast('✅ Agendamento confirmado! Até logo.', 'success');
+  showToast('✅ Agendamento confirmado! Até logo.','success');
   vibrate(200);
-  setTimeout(() => {
-    showPage('appointments');
-    resetBooking();
-  }, 1400);
+  setTimeout(() => { showPage('appointments'); resetBooking(); }, 1400);
 }
 
 // ════════════════════════════════════════════════════
@@ -480,20 +549,65 @@ async function salvarAgendamento(data) {
   const { error } = await supabaseClient
     .from('appointments')
     .insert([{
-      client_name:       data.name,
-      phone:             data.phone,
-      service:           data.service,
-      appointment_date:  data.date.split('/').reverse().join('-'),
-      appointment_time:  data.time,
+      client_name:      data.name,
+      phone:            data.phone,
+      service:          data.service,
+      appointment_date: data.date.split('/').reverse().join('-'),
+      appointment_time: data.time,
     }]);
-
   if (error) {
     console.error('Erro Supabase:', error);
-    showToast('❌ Erro ao salvar no banco: ' + (error.message || 'tente novamente'), 'error');
+    showToast('❌ Erro ao salvar no banco: ' + (error.message || 'tente novamente'),'error');
     return false;
   }
-
   return true;
+}
+
+// ════════════════════════════════════════════════════
+//  SUPABASE — buscar agendamentos para o admin
+//  CORRIGIDO: admin busca do banco, não só do localStorage
+// ════════════════════════════════════════════════════
+async function fetchSupabaseAppointments() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('appointments')
+      .select('*')
+      .order('appointment_date', { ascending: false });
+    if (error) { console.error('Supabase fetch error:', error); return []; }
+    return data || [];
+  } catch(e) { console.error(e); return []; }
+}
+
+// Converte um registro do Supabase para o formato interno
+function supabaseToLocal(row) {
+  // appointment_date vem como 'YYYY-MM-DD'
+  const parts = (row.appointment_date || '').split('-');
+  const dateStr = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : '';
+  const timeStr = row.appointment_time ? row.appointment_time.slice(0,5) : '';
+
+  // Tentar encontrar o serviço pelo nome
+  const svc = SERVICES.find(s => s.name === row.service) ||
+              { id:0, name: row.service || '—', icon:'💈', duration:'—', price: row.price || 0, priceStr: row.price ? `R$ ${Number(row.price).toFixed(2)}` : '—' };
+
+  return {
+    id:           'sb_' + row.id,
+    _supabaseId:  row.id,
+    barberId:     BARBER.id,
+    barber:       BARBER.name,
+    serviceId:    svc.id,
+    service:      svc.name,
+    date:         dateStr,
+    time:         timeStr,
+    price:        svc.price,
+    priceStr:     svc.priceStr,
+    duration:     svc.duration,
+    clientName:   row.client_name  || '—',
+    clientPhone:  row.phone        || '—',
+    clientEmail:  row.email        || '',
+    status:       row.status       || 'confirmed',
+    createdAt:    row.created_at   || '',
+    doneByAdmin:  false,
+  };
 }
 
 // ════════════════════════════════════════════════════
@@ -508,8 +622,8 @@ function filterAppts(filter) {
 }
 
 function renderAppointments() {
-  const db = getDB();
-  let appts = [...db.appointments];
+  const db   = getDB();
+  let appts  = [...db.appointments];
   if (state.apptFilter === 'upcoming')   appts = appts.filter(a => a.status === 'confirmed');
   else if (state.apptFilter === 'past')  appts = appts.filter(a => a.status === 'past');
   else if (state.apptFilter === 'cancelled') appts = appts.filter(a => a.status === 'cancelled');
@@ -522,19 +636,16 @@ function renderAppointments() {
       <div class="empty-text">Nenhum agendamento aqui</div>
       <div class="empty-sub">Que tal agendar com o Pila?</div>
       <button class="btn-outline" onclick="goToBook()" style="margin-top:20px;">Agendar Agora</button>
-    </div>`;
-    return;
+    </div>`; return;
   }
-
   list.innerHTML = appts.map(a => {
     const sc  = a.status === 'confirmed' ? 'confirmed' : a.status === 'cancelled' ? 'cancelled' : 'past';
-    const bc  = `badge-${sc}`;
     const lbl = a.status === 'confirmed' ? 'Confirmado' : a.status === 'cancelled' ? 'Cancelado' : 'Realizado';
     return `
     <div class="appt-card ${sc}" id="appt-${a.id}">
       <div class="appt-top">
         <div class="appt-service">${a.service}</div>
-        <span class="appt-badge ${bc}">${lbl}</span>
+        <span class="appt-badge badge-${sc}">${lbl}</span>
       </div>
       <div class="appt-info">
         <div class="appt-detail"><i class="fas fa-scissors"></i>${a.barber}</div>
@@ -557,18 +668,15 @@ function renderAppointments() {
 
 function openCancelModal(id) {
   state.cancelId = id;
-  const db = getDB();
-  const a = db.appointments.find(ap => ap.id === id);
+  const db   = getDB();
+  const a    = db.appointments.find(ap => ap.id === id);
   if (!a) return;
-
   const apptTime   = new Date(`${a.date.split('/').reverse().join('-')}T${a.time}:00`);
-  const hoursUntil = (apptTime - new Date()) / (1000 * 60 * 60);
+  const hoursUntil = (apptTime - new Date()) / (1000*60*60);
   const isTooLate  = hoursUntil < 2 && hoursUntil > 0;
-
   const warningText = isTooLate
     ? `<div style="background:rgba(224,80,80,.15);border:1px solid var(--red);border-radius:12px;padding:12px;margin-bottom:16px;color:var(--red);font-size:13px;text-align:center;"><strong>⚠️ Aviso!</strong><br>Faltam menos de 2 horas. Cancelamento pode ter taxa.</div>`
     : '';
-
   document.getElementById('cancel-content').innerHTML = warningText + `
     <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${a.service}</span></div>
     <div class="confirm-row"><span class="confirm-label">Data &amp; Hora</span><span class="confirm-value">${a.date} às ${a.time}</span></div>`;
@@ -582,25 +690,22 @@ function doCancel() {
   closeCancelModal();
   renderAppointments();
   renderHome();
-  showToast('❌ Agendamento cancelado.', 'error');
+  showToast('❌ Agendamento cancelado.','error');
 }
 
 function rescheduleAppt(id) {
-  const db  = getDB();
-  const a   = db.appointments.find(ap => ap.id === id);
+  const db      = getDB();
+  const a       = db.appointments.find(ap => ap.id === id);
   if (!a) return;
-
   const service = SERVICES.find(s => s.id === a.serviceId);
   if (service) state.selectedService = service;
-
   document.getElementById('input-name').value  = a.clientName;
   document.getElementById('input-phone').value = a.clientPhone;
   document.getElementById('input-email').value = a.clientEmail || '';
-
   cancelAppointment(id);
   showPage('book');
   goStep(2);
-  showToast('🔄 Escolha uma nova data e horário.', 'info');
+  showToast('🔄 Escolha uma nova data e horário.','info');
 }
 
 // ════════════════════════════════════════════════════
@@ -612,8 +717,8 @@ function renderProfile() {
   const appts   = db.appointments;
   const total   = appts.filter(a => a.status !== 'cancelled').length;
   const spent   = appts.filter(a => a.status !== 'cancelled').reduce((s,a) => s + a.price, 0);
+  const initials= profile.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
 
-  const initials = profile.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('profile-avatar').textContent = initials || '?';
   document.getElementById('profile-name').textContent   = profile.name;
   document.getElementById('stat-total').textContent     = total;
@@ -631,29 +736,57 @@ function saveProfileForm() {
   const name  = document.getElementById('profile-name-input')?.value.trim();
   const phone = document.getElementById('profile-phone-input')?.value.trim();
   const email = document.getElementById('profile-email-input')?.value.trim();
-
-  if (!name || name.length < 3)                         return showToast('Informe seu nome completo para salvar.', 'error');
-  if (/[0-9]/.test(name))                               return showToast('O nome não pode conter números.', 'error');
-  if (!phone || phone.replace(/\D/g,'').length < 10)    return showToast('Digite um WhatsApp válido (mínimo 10 dígitos).', 'error');
-
+  if (!name || name.length < 3)                      return showToast('Informe seu nome completo para salvar.','error');
+  if (/[0-9]/.test(name))                            return showToast('O nome não pode conter números.','error');
+  if (!phone || phone.replace(/\D/g,'').length < 10) return showToast('Digite um WhatsApp válido (mínimo 10 dígitos).','error');
   saveProfile({ name, phone, email });
   renderProfile();
   renderHome();
   scrollToProfileForm();
-  showToast('✅ Dados salvos com sucesso.', 'success');
+  showToast('✅ Dados salvos com sucesso.','success');
 }
 
 function scrollToProfileForm() {
   const card = document.getElementById('profile-edit-card');
   if (card) {
     card.style.display = card.style.display === 'none' ? 'block' : 'none';
-    if (card.style.display === 'block') {
+    if (card.style.display === 'block')
       setTimeout(() => document.getElementById('profile-name-input')?.focus(), 100);
-    }
   }
 }
 
-// clearData e exportBackup REMOVIDOS conforme solicitado
+function clearData() {
+  if (!confirm('Tem certeza? Todos os dados locais serão apagados.')) return;
+  localStorage.removeItem(DB_KEY);
+  renderProfile();
+  renderHome();
+  showToast('🗑️ Dados limpos!','error');
+}
+
+function exportBackup() {
+  const db      = getDB();
+  const profile = getProfile();
+  const backup  = {
+    exportedAt:  new Date().toISOString(),
+    profile,
+    appointments: db.appointments,
+    statistics: {
+      totalAppointments: db.appointments.length,
+      totalSpent: db.appointments.filter(a => a.status !== 'cancelled').reduce((s,a) => s+a.price, 0),
+      cancelledCount: db.appointments.filter(a => a.status === 'cancelled').length,
+    }
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href  = url;
+  link.download = `barberking-backup-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  showToast('📥 Backup salvo com sucesso!','success');
+}
 
 // ════════════════════════════════════════════════════
 //  ADMIN LOGIN
@@ -663,7 +796,6 @@ function showAdminLogin() {
   document.getElementById('admin-login-modal').classList.add('open');
   setTimeout(() => document.getElementById('admin-pass').focus(), 400);
 }
-
 function closeAdminModal() { document.getElementById('admin-login-modal').classList.remove('open'); }
 
 function checkAdmin() {
@@ -672,9 +804,9 @@ function checkAdmin() {
     state.isAdmin = true;
     closeAdminModal();
     showPage('admin');
-    showToast('🔓 Bem-vindo, Pila!', 'success');
+    showToast('🔓 Bem-vindo, Pila!','success');
   } else {
-    showToast('❌ Senha incorreta!', 'error');
+    showToast('❌ Senha incorreta!','error');
     document.getElementById('admin-pass').value = '';
     document.getElementById('admin-pass').focus();
     vibrate(300);
@@ -682,16 +814,30 @@ function checkAdmin() {
 }
 
 // ════════════════════════════════════════════════════
-//  ADMIN PANEL
+//  ADMIN PANEL — CORRIGIDO: usa dados do Supabase
 // ════════════════════════════════════════════════════
-function renderAdmin() {
-  renderAdminStats();
-  renderAdminNeeds();
-  renderTodayList();
-  renderRevenueChart();
+async function renderAdmin() {
+  // Mostrar loading nos stats enquanto busca
+  const statsEl = document.getElementById('admin-stats');
+  if (statsEl) statsEl.innerHTML = `
+    <div class="admin-stat" style="grid-column:span 2;text-align:center;padding:20px;">
+      <div style="color:var(--gray);font-size:13px;"><i class="fas fa-spin fa-spinner" style="margin-right:8px;"></i>Carregando dados do banco...</div>
+    </div>`;
+
+  // Buscar do Supabase
+  const sbData = await fetchSupabaseAppointments();
+  state.supabaseAppts = sbData;
+
+  // Converter para formato local para exibição
+  const sbAppts = sbData.map(supabaseToLocal);
+
+  renderAdminStats(sbAppts);
+  renderAdminNeeds(sbAppts);
+  renderTodayList(sbAppts);
+  renderRevenueChart(sbAppts);
   renderBlockedDates();
   renderScheduleGrid();
-  renderAdminAppts();
+  renderAdminAppts(sbAppts);
 
   const todayEl = document.getElementById('admin-today-date');
   if (todayEl) {
@@ -701,13 +847,14 @@ function renderAdmin() {
   }
 }
 
-function renderAdminStats() {
-  const db           = getDB();
-  const today        = fmtDate(new Date());
-  const todayAppts   = db.appointments.filter(a => a.date === today && a.status !== 'cancelled');
-  const weekRevenue  = calcWeekRevenue().reduce((s,v) => s+v, 0);
-  const totalRevenue = db.appointments.filter(a => a.status !== 'cancelled').reduce((s,a) => s+a.price, 0);
-  const cancelled    = db.appointments.filter(a => a.status === 'cancelled').length;
+/* STATS — CORRIGIDO: recebe lista do Supabase */
+function renderAdminStats(sbAppts) {
+  const today      = fmtDate(new Date());
+  const confirmed  = sbAppts.filter(a => a.status !== 'cancelled');
+  const todayAppts = confirmed.filter(a => a.date === today);
+  const weekRevenue= calcWeekRevenue(sbAppts).reduce((s,v) => s+v, 0);
+  const totalRev   = confirmed.reduce((s,a) => s + a.price, 0);
+  const cancelled  = sbAppts.filter(a => a.status === 'cancelled').length;
 
   document.getElementById('admin-stats').innerHTML = `
     <div class="admin-stat">
@@ -722,7 +869,7 @@ function renderAdminStats() {
     </div>
     <div class="admin-stat blue">
       <div class="admin-stat-icon">📊</div>
-      <div class="admin-stat-val">R$${totalRevenue.toFixed(0)}</div>
+      <div class="admin-stat-val">R$${totalRev.toFixed(0)}</div>
       <div class="admin-stat-label">Total Geral</div>
     </div>
     <div class="admin-stat red">
@@ -732,13 +879,13 @@ function renderAdminStats() {
     </div>`;
 }
 
-function renderTodayList() {
-  const db    = getDB();
+/* TODAY LIST — CORRIGIDO: usa dados do Supabase */
+function renderTodayList(sbAppts) {
   const today = fmtDate(new Date());
   const list  = document.getElementById('today-list');
   if (!list) return;
 
-  const todayAppts = db.appointments
+  const todayAppts = sbAppts
     .filter(a => a.date === today)
     .sort((a,b) => a.time.localeCompare(b.time));
 
@@ -746,8 +893,7 @@ function renderTodayList() {
     list.innerHTML = `<div class="empty-state" style="padding:30px 20px;">
       <div class="empty-icon" style="font-size:48px;">😴</div>
       <div class="empty-text">Nenhum agendamento hoje</div>
-    </div>`;
-    return;
+    </div>`; return;
   }
 
   list.innerHTML = todayAppts.map(a => {
@@ -758,7 +904,7 @@ function renderTodayList() {
       <div class="today-time">${a.time}</div>
       <div class="today-info">
         <div class="today-client">${a.clientName} <span style="font-size:11px;color:var(--gray);">${a.clientPhone}</span></div>
-        <div class="today-service">${a.service} · ${a.duration}</div>
+        <div class="today-service">${a.service}</div>
         <div class="today-price">${a.priceStr}</div>
       </div>
       ${!isCancelled ? `
@@ -775,25 +921,32 @@ function renderTodayList() {
 }
 
 function adminMarkDone(id) {
-  markDone(id);
+  // Se for id local
+  if (!id.startsWith('sb_')) {
+    markDone(id);
+  }
+  // Recarregar admin
   renderAdmin();
-  showToast('✅ Atendimento concluído!', 'success');
+  showToast('✅ Atendimento concluído!','success');
 }
 
 function adminCancelAppt(id) {
   if (!confirm('Cancelar este agendamento?')) return;
-  cancelAppointment(id);
+  if (!id.startsWith('sb_')) {
+    cancelAppointment(id);
+  }
   renderAdmin();
-  showToast('❌ Agendamento cancelado.', 'error');
+  showToast('❌ Agendamento cancelado.','error');
 }
 
-function calcWeekRevenue() {
-  const db      = getDB();
+/* REVENUE CHART — CORRIGIDO: usa dados do Supabase */
+function calcWeekRevenue(sbAppts) {
+  const appts   = sbAppts || state.supabaseAppts.map(supabaseToLocal);
   const revenue = [];
   for (let i = 6; i >= 0; i--) {
     const d   = new Date(); d.setDate(d.getDate() - i);
     const ds  = fmtDate(d);
-    const day = db.appointments
+    const day = appts
       .filter(a => a.date === ds && a.status !== 'cancelled')
       .reduce((s,a) => s + a.price, 0);
     revenue.push(day);
@@ -801,21 +954,19 @@ function calcWeekRevenue() {
   return revenue;
 }
 
-function renderAdminNeeds() {
+function renderAdminNeeds(sbAppts) {
   const db          = getDB();
   const today       = fmtDate(new Date());
-  const confirmed   = db.appointments.filter(a => a.status === 'confirmed').length;
-  const todayAppts  = db.appointments.filter(a => a.date === today && a.status === 'confirmed').length;
+  const confirmed   = sbAppts.filter(a => a.status === 'confirmed').length;
+  const todayAppts  = sbAppts.filter(a => a.date === today && a.status === 'confirmed').length;
   const activeCount = (db.activeSlots || ALL_SLOTS).length;
   const blockedCount= db.blockedDates.length;
-
   const needs = [
-    { title:'Agendamentos confirmados', detail:`${confirmed} agend. no total`,   status: confirmed    ? 'ok':'warn', note: confirmed    ? 'Agenda ativa'               : 'Sem confirmações. Incentive clientes.' },
+    { title:'Agendamentos confirmados', detail:`${confirmed} agend. no total`,       status: confirmed    ?'ok':'warn', note: confirmed    ?'Agenda ativa'                :'Sem confirmações. Incentive clientes.' },
     { title:'Horários ativos',          detail:`${activeCount}/${ALL_SLOTS.length}`, status: activeCount>=12?'ok':'warn', note: activeCount===ALL_SLOTS.length?'Todos os horários liberados':'Revise slots disponíveis' },
-    { title:'Bloqueio de datas',        detail:`${blockedCount} data(s)`,        status: blockedCount ? 'ok':'warn', note: blockedCount ? 'Proteção configurada'       : 'Adicione bloqueios na agenda' },
-    { title:'Atendimentos hoje',        detail:`${todayAppts} confirmação(ões)`, status: todayAppts   ? 'ok':'warn', note: todayAppts   ? 'Hoje tem horário marcado'   : 'Sem agendamentos para hoje' },
+    { title:'Bloqueio de datas',        detail:`${blockedCount} data(s)`,            status: blockedCount ?'ok':'warn', note: blockedCount ?'Proteção configurada'        :'Adicione bloqueios na agenda' },
+    { title:'Atendimentos hoje',        detail:`${todayAppts} confirmação(ões)`,     status: todayAppts   ?'ok':'warn', note: todayAppts   ?'Hoje tem horário marcado'    :'Sem agendamentos para hoje' },
   ];
-
   const container = document.getElementById('admin-needs');
   if (!container) return;
   container.innerHTML = needs.map(item => `
@@ -826,11 +977,11 @@ function renderAdminNeeds() {
     </div>`).join('');
 }
 
-function renderRevenueChart() {
+function renderRevenueChart(sbAppts) {
   const canvas = document.getElementById('revenue-chart');
   if (!canvas) return;
   const ctx     = canvas.getContext('2d');
-  const revenue = calcWeekRevenue();
+  const revenue = calcWeekRevenue(sbAppts);
   const total   = revenue.reduce((s,v) => s+v, 0);
 
   const totalEl = document.getElementById('chart-total-val');
@@ -844,9 +995,9 @@ function renderRevenueChart() {
     daysEl.innerHTML = labels.map(d => `<div class="chart-day-label">${d}</div>`).join('');
   }
 
-  const dpr = window.devicePixelRatio || 1;
-  const W   = canvas.parentElement.clientWidth - 40;
-  const H   = 160;
+  const dpr  = window.devicePixelRatio || 1;
+  const W    = canvas.parentElement.clientWidth - 40;
+  const H    = 160;
   canvas.width  = W * dpr; canvas.height = H * dpr;
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.scale(dpr, dpr);
@@ -856,8 +1007,7 @@ function renderRevenueChart() {
   const chartW = W - pad.left - pad.right;
   const chartH = H - pad.top  - pad.bottom;
   const barW   = chartW / revenue.length;
-
-  ctx.clearRect(0, 0, W, H);
+  ctx.clearRect(0,0,W,H);
 
   ctx.strokeStyle = 'rgba(255,255,255,.05)';
   ctx.lineWidth   = 1;
@@ -866,30 +1016,29 @@ function renderRevenueChart() {
     ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
   });
 
-  revenue.forEach((val, i) => {
+  revenue.forEach((val,i) => {
     const x    = pad.left + i * barW + barW * .15;
     const bW   = barW * .7;
-    const bH   = (val / max) * chartH;
+    const bH   = (val/max) * chartH;
     const y    = pad.top + chartH - bH;
     const isToday = i === 6;
-
-    const grad = ctx.createLinearGradient(0, y, 0, y+bH);
-    grad.addColorStop(0, isToday ? '#f0c060' : '#c9a84c');
-    grad.addColorStop(1, isToday ? '#a07830' : 'rgba(201,168,76,.2)');
+    const grad = ctx.createLinearGradient(0,y,0,y+bH);
+    grad.addColorStop(0, isToday?'#f0c060':'#c9a84c');
+    grad.addColorStop(1, isToday?'#a07830':'rgba(201,168,76,.2)');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.roundRect(x, y, bW, bH, [6,6,2,2]);
+    ctx.roundRect(x,y,bW,bH,[6,6,2,2]);
     ctx.fill();
-
     if (val > 0) {
-      ctx.fillStyle  = isToday ? '#f0c060' : 'rgba(255,255,255,.7)';
-      ctx.font       = `bold ${Math.min(10,bW*.4)}px Inter`;
-      ctx.textAlign  = 'center';
-      ctx.fillText('R$'+val.toFixed(0), x+bW/2, Math.max(y-4, pad.top+8));
+      ctx.fillStyle = isToday?'#f0c060':'rgba(255,255,255,.7)';
+      ctx.font      = `bold ${Math.min(10,bW*.4)}px Inter`;
+      ctx.textAlign = 'center';
+      ctx.fillText('R$'+val.toFixed(0), x+bW/2, Math.max(y-4,pad.top+8));
     }
   });
 }
 
+/* BLOCKED DATES */
 function renderBlockedDates() {
   const db   = getDB();
   const cont = document.getElementById('blocked-dates');
@@ -907,16 +1056,16 @@ function renderBlockedDates() {
 
 function blockDate() {
   const input = document.getElementById('block-date-input');
-  if (!input.value) return showToast('⚠️ Escolha uma data!', 'error');
+  if (!input.value) return showToast('⚠️ Escolha uma data!','error');
   const d  = new Date(input.value + 'T12:00:00');
   const ds = fmtDate(d);
   const db = getDB();
-  if (db.blockedDates.includes(ds)) return showToast('⚠️ Data já bloqueada!', 'error');
+  if (db.blockedDates.includes(ds)) return showToast('⚠️ Data já bloqueada!','error');
   db.blockedDates.push(ds);
   saveDB(db);
   renderBlockedDates();
   input.value = '';
-  showToast(`🚫 ${ds} bloqueado!`, 'success');
+  showToast(`🚫 ${ds} bloqueado!`,'success');
 }
 
 function unblockDate(d) {
@@ -924,16 +1073,17 @@ function unblockDate(d) {
   db.blockedDates = db.blockedDates.filter(bd => bd !== d);
   saveDB(db);
   renderBlockedDates();
-  showToast(`✅ ${d} desbloqueado!`, 'success');
+  showToast(`✅ ${d} desbloqueado!`,'success');
 }
 
+/* SCHEDULE GRID */
 function renderScheduleGrid() {
   const db     = getDB();
   const active = new Set(db.activeSlots || ALL_SLOTS);
   const grid   = document.getElementById('schedule-grid');
   if (!grid) return;
   grid.innerHTML = ALL_SLOTS.map(s => `
-    <div class="sched-slot ${active.has(s) ? 'active-slot' : 'inactive-slot'}"
+    <div class="sched-slot ${active.has(s)?'active-slot':'inactive-slot'}"
          id="ss-${s.replace(':','')}" onclick="toggleSlot('${s}')">
       ${s}
     </div>`).join('');
@@ -949,23 +1099,22 @@ function toggleSlot(slot) {
   vibrate(30);
 }
 
-function saveSchedule() {
-  showToast('✅ Horários salvos!', 'success');
-}
+function saveSchedule() { showToast('✅ Horários salvos!','success'); }
 
+/* ADMIN APPTS LIST — CORRIGIDO: usa dados do Supabase */
 function adminFilterAppts(filter) {
   state.adminApptFilter = filter;
   ['all','today','confirmed','cancelled'].forEach(f => {
     document.getElementById('adm-filter-'+f)?.classList.toggle('active', f === filter);
   });
-  renderAdminAppts();
+  renderAdminAppts(state.supabaseAppts.map(supabaseToLocal));
 }
 
-function renderAdminAppts() {
-  const db    = getDB();
-  const today = fmtDate(new Date());
-  let appts   = [...db.appointments];
-  if (state.adminApptFilter === 'today')      appts = appts.filter(a => a.date === today);
+function renderAdminAppts(sbAppts) {
+  const appts0 = sbAppts || state.supabaseAppts.map(supabaseToLocal);
+  const today  = fmtDate(new Date());
+  let appts    = [...appts0];
+  if (state.adminApptFilter === 'today')          appts = appts.filter(a => a.date === today);
   else if (state.adminApptFilter === 'confirmed') appts = appts.filter(a => a.status === 'confirmed');
   else if (state.adminApptFilter === 'cancelled') appts = appts.filter(a => a.status === 'cancelled');
 
@@ -979,13 +1128,12 @@ function renderAdminAppts() {
   }
   list.innerHTML = appts.map(a => {
     const sc  = a.status === 'confirmed' ? 'confirmed' : a.status === 'cancelled' ? 'cancelled' : 'past';
-    const bc  = `badge-${sc}`;
     const lbl = a.status === 'confirmed' ? 'Confirmado' : a.status === 'cancelled' ? 'Cancelado' : 'Realizado';
     return `
     <div class="appt-card ${sc}">
       <div class="appt-top">
         <div class="appt-service">${a.service}</div>
-        <span class="appt-badge ${bc}">${lbl}</span>
+        <span class="appt-badge badge-${sc}">${lbl}</span>
       </div>
       <div class="appt-info">
         <div class="appt-detail"><i class="fas fa-user"></i>${a.clientName}</div>
@@ -1045,6 +1193,7 @@ function rippleEffect(el) {
   setTimeout(() => ripple.remove(), 700);
 }
 
+// Close modals on overlay click
 document.querySelectorAll('.modal-overlay').forEach(ov => {
   ov.addEventListener('click', e => {
     if (e.target === ov) { closeModal(); closeCancelModal(); closeAdminModal(); }
@@ -1052,13 +1201,15 @@ document.querySelectorAll('.modal-overlay').forEach(ov => {
 });
 
 window.addEventListener('resize', () => {
-  if (document.getElementById('page-admin').classList.contains('active')) renderRevenueChart();
+  if (document.getElementById('page-admin').classList.contains('active'))
+    renderRevenueChart(state.supabaseAppts.map(supabaseToLocal));
 });
 
 // ════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════
 function init() {
+  initTheme();
   const db = getDB();
   if (!db.profile || !db.profile.phone || db.profile.name === 'Visitante') {
     showPage('register');
@@ -1066,6 +1217,9 @@ function init() {
     showPage('home');
   }
   renderProfile();
+
+  // Pré-carregar agendamentos do Supabase para bloquear slots já ocupados
+  fetchSupabaseAppointments().then(data => { state.supabaseAppts = data; });
 }
 
 init();

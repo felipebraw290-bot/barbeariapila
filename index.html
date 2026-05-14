@@ -1061,6 +1061,9 @@ const state = {
   bookingByPlan:   false,
   activePlanInfo:  null, // plan object selecionado
   supabaseAppts:   [],
+  adminTab:        'overview',
+  adminAgendaDate: null,
+  adminAgendaMonthOffset: 0,
 };
 
 // ══════════════════════════════════════════
@@ -1777,20 +1780,30 @@ function checkAdmin(){
 async function renderAdmin(){
   const sbData=await fetchSupabaseAppointments(); state.supabaseAppts=sbData;
   const sbAppts=sbData.map(supabaseToLocal);
-  renderAdminTabContent(sbAppts);
+  selectAdminTab(state.adminTab, sbAppts);
   const todayEl=document.getElementById('admin-today-date');
   if(todayEl){ const d=new Date(); const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']; todayEl.textContent=`${days[d.getDay()]}, ${fmtDate(d)}`; }
 }
-function renderAdminTabContent(sbAppts){
+
+function selectAdminTab(tab, sbAppts){
+  state.adminTab=tab;
+  ['overview','agenda','config'].forEach(t=>{
+    document.getElementById('adm-tab-'+t)?.classList.toggle('active',t===tab);
+  });
+  const appts = sbAppts || state.supabaseAppts.map(supabaseToLocal);
+  const cont=document.getElementById('admin-tab-content'); if(!cont) return;
+  if(tab==='overview') renderAdminOverview(appts, cont);
+  else if(tab==='agenda') renderAdminAgendaTab(appts, cont);
+  else if(tab==='config') renderAdminConfig(cont);
+}
+
+function renderAdminOverview(sbAppts, cont){
   const today=fmtDate(new Date());
   const confirmed=sbAppts.filter(a=>a.status!=='cancelled');
   const todayAppts=confirmed.filter(a=>a.date===today);
   const weekRev=calcWeekRevenue(sbAppts).reduce((s,v)=>s+v,0);
   const totalRev=confirmed.reduce((s,a)=>s+a.price,0);
-  const db=getDB();
-  const cont=document.getElementById('admin-tab-content'); if(!cont) return;
   cont.innerHTML=`
-    <!-- STATS GRID -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px 20px;">
       <div style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));border-radius:16px;padding:18px 14px;border:1px solid rgba(201,168,76,.35);text-align:center;position:relative;overflow:hidden;">
         <div style="position:absolute;top:8px;right:10px;font-size:20px;opacity:.3;">📅</div>
@@ -1813,63 +1826,150 @@ function renderAdminTabContent(sbAppts){
         <div style="font-size:11px;color:var(--gray);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Cancelados</div>
       </div>
     </div>
-
-    <!-- SECTION: AGENDA HOJE -->
     <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
       <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:2px;"></div>
       <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Agenda de Hoje</span>
       <span style="background:rgba(201,168,76,.15);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(201,168,76,.25);margin-left:auto;">${todayAppts.length} agend.</span>
     </div>
     <div class="today-list" id="today-list"></div>
+    <div style="height:32px;"></div>`;
+  renderTodayList(sbAppts);
+}
 
-    <div style="height:8px;"></div>
-    <div style="height:1px;background:rgba(255,255,255,.06);margin:16px 20px;"></div>
+function renderAdminAgendaTab(sbAppts, cont){
+  const db=getDB();
+  const now=new Date(); now.setHours(0,0,0,0);
+  const base=new Date(now.getFullYear(), now.getMonth()+state.adminAgendaMonthOffset, 1);
+  const year=base.getFullYear(); const month=base.getMonth();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const firstDow=new Date(year,month,1).getDay();
 
-    <!-- SECTION: TODOS AGENDAMENTOS -->
-    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
-      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--blue),rgba(76,130,200,.5));border-radius:2px;"></div>
-      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Todos os Agendamentos</span>
+  // Occupation map
+  const busyMap={};
+  sbAppts.filter(a=>a.status!=='cancelled').forEach(a=>{ busyMap[a.date]=(busyMap[a.date]||0)+1; });
+
+  let calRows=''; let cell=0;
+  for(let d=0;d<firstDow;d++){calRows+=`<div class="cal-day empty"></div>`;cell++;}
+  for(let d=1;d<=daysInMonth;d++){
+    const dt=new Date(year,month,d); const dateStr=fmtDate(dt);
+    const isPast=dt<now; const isToday=dt.toDateString()===now.toDateString();
+    const isBlocked=db.blockedDates.includes(dateStr);
+    const isBusy=busyMap[dateStr]>0;
+    const isSel=dateStr===state.adminAgendaDate;
+    let cls='cal-day';
+    if(isPast) cls+=' past';
+    else if(isBlocked) cls+=' blocked';
+    if(isToday) cls+=' today';
+    if(isSel) cls+=' selected';
+    if(isBusy&&!isSel) cls+=' has-appt';
+    const click=(!isBlocked)?`onclick="adminAgendaSelectDate('${dateStr}')"`:'';
+    calRows+=`<div class="${cls}" ${click}>${d}</div>`;
+    cell++;
+  }
+  while(cell%7!==0){calRows+=`<div class="cal-day empty"></div>`;cell++;}
+
+  const canPrev=state.adminAgendaMonthOffset>0;
+  cont.innerHTML=`
+    <div style="padding:16px 20px 8px;">
+      <div class="month-cal-wrap">
+        <div class="month-nav" style="justify-content:space-between;">
+          <button onclick="adminAgendaChangeMonth(-1)" ${!canPrev?'disabled':''} style="background:${canPrev?'var(--dark3)':'var(--dark4)'};border:1px solid rgba(255,255,255,.1);color:${canPrev?'var(--gold)':'var(--gray)'};border-radius:10px;padding:7px 14px;cursor:${canPrev?'pointer':'not-allowed'};font-size:13px;font-family:Inter,sans-serif;">← Anterior</button>
+          <span class="month-label">${MONTHS_PT[month]} ${year}</span>
+          <button onclick="adminAgendaChangeMonth(1)" style="background:var(--dark3);border:1px solid rgba(255,255,255,.1);color:var(--gold);border-radius:10px;padding:7px 14px;cursor:pointer;font-size:13px;font-family:Inter,sans-serif;">Próximo →</button>
+        </div>
+        <div class="cal-grid">
+          ${DAYS_PT.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+          ${calRows}
+        </div>
+      </div>
     </div>
-    <div style="padding:0 20px;display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;">
-      <button id="adm-filter-all"       class="filter-btn active" onclick="adminFilterAppts('all')">Todos</button>
-      <button id="adm-filter-today"     class="filter-btn"        onclick="adminFilterAppts('today')">Hoje</button>
-      <button id="adm-filter-confirmed" class="filter-btn"        onclick="adminFilterAppts('confirmed')">Confirmados</button>
-      <button id="adm-filter-cancelled" class="filter-btn"        onclick="adminFilterAppts('cancelled')">Cancelados</button>
-    </div>
-    <div class="appt-list" id="admin-appt-list-inner"></div>
+    <div id="admin-agenda-appts" style="padding:0 20px 32px;"></div>`;
 
-    <div style="height:1px;background:rgba(255,255,255,.06);margin:20px 20px 16px;"></div>
+  renderAdminAgendaAppts(sbAppts);
+}
 
-    <!-- SECTION: BLOQUEAR DATAS -->
-    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
-      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--red),rgba(224,80,80,.5));border-radius:2px;"></div>
-      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Bloquear Datas</span>
+function adminAgendaSelectDate(dateStr){
+  state.adminAgendaDate=dateStr;
+  selectAdminTab('agenda');
+}
+
+function adminAgendaChangeMonth(dir){
+  const next=state.adminAgendaMonthOffset+dir;
+  if(next<0) return;
+  state.adminAgendaMonthOffset=next;
+  if(state.adminAgendaDate){
+    const parts=state.adminAgendaDate.split('/');
+    const selD=new Date(+parts[2],+parts[1]-1,+parts[0]);
+    const base=new Date(new Date().getFullYear(), new Date().getMonth()+next, 1);
+    if(selD.getFullYear()!==base.getFullYear()||selD.getMonth()!==base.getMonth()) state.adminAgendaDate=null;
+  }
+  selectAdminTab('agenda');
+}
+
+function renderAdminAgendaAppts(sbAppts){
+  const cont=document.getElementById('admin-agenda-appts'); if(!cont) return;
+  if(!state.adminAgendaDate){
+    cont.innerHTML=`<div style="text-align:center;padding:30px 0;color:var(--gray);font-size:13px;">👆 Selecione um dia no calendário para ver os agendamentos</div>`;
+    return;
+  }
+  const appts=sbAppts.filter(a=>a.date===state.adminAgendaDate).sort((a,b)=>a.time.localeCompare(b.time));
+  if(!appts.length){
+    cont.innerHTML=`
+      <div style="margin-bottom:12px;font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--gray);">📋 ${state.adminAgendaDate}</div>
+      <div class="empty-state" style="padding:24px 0;"><div class="empty-icon" style="font-size:42px;">😴</div><div class="empty-text">Nenhum agendamento neste dia</div></div>`;
+    return;
+  }
+  cont.innerHTML=`
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:20px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:2px;"></div>
+      <span style="font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;">${state.adminAgendaDate}</span>
+      <span style="background:rgba(201,168,76,.15);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(201,168,76,.25);margin-left:auto;">${appts.length} corte${appts.length===1?'':'s'}</span>
     </div>
-    <div style="padding:0 20px;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+    ${appts.map(a=>{
+      const isDone=a.status==='past'; const isCancelled=a.status==='cancelled';
+      return`<div class="today-slot ${isDone?'done':''} ${isCancelled?'cancelled-slot':''}}">
+        <div class="today-time">${a.time}</div>
+        <div class="today-info">
+          <div class="today-client">${a.clientName} <span style="font-size:11px;color:var(--gray);">${a.clientPhone}</span></div>
+          <div class="today-service">${a.service}</div>
+          <div class="today-price">${a.priceStr}</div>
+        </div>
+        ${!isCancelled?`<div class="today-actions">
+          <button class="today-btn today-btn-done ${isDone?'active':''}" title="${isDone?'Feito':'Concluir'}" onclick="adminMarkDone('${a.id}')"><i class="fas fa-check"></i></button>
+          ${!isDone?`<button class="today-btn today-btn-cancel" title="Cancelar" onclick="adminCancelAppt('${a.id}')"><i class="fas fa-times"></i></button>`:''}
+        </div>`:`<span class="appt-badge badge-cancelled">Cancelado</span>`}
+      </div>`;
+    }).join('')}
+    </div>`;
+}
+
+function renderAdminConfig(cont){
+  cont.innerHTML=`
+    <div style="padding:16px 20px 8px;">
+      <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--red),rgba(224,80,80,.5));border-radius:2px;"></div>
+        <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Bloquear Datas</span>
+      </div>
       <div class="block-form">
         <input id="block-date-input" type="date" style="color-scheme:dark;" />
         <button onclick="blockDate()"><i class="fas fa-ban"></i> Bloquear</button>
       </div>
       <div class="blocked-dates" id="blocked-dates"></div>
     </div>
-
-    <div style="height:1px;background:rgba(255,255,255,.06);margin:20px 20px 16px;"></div>
-
-    <!-- SECTION: HORÁRIOS ATIVOS -->
-    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
-      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--green),rgba(76,175,80,.5));border-radius:2px;"></div>
-      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Horários Ativos</span>
-    </div>
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:16px 20px;"></div>
     <div style="padding:0 20px 36px;">
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--green),rgba(76,175,80,.5));border-radius:2px;"></div>
+        <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Horários Ativos</span>
+      </div>
       <div style="font-size:12px;color:var(--gray);margin-bottom:10px;">Toque para ativar/desativar um horário</div>
       <div class="schedule-grid" id="schedule-grid"></div>
     </div>`;
-
-  renderTodayList(sbAppts);
-  renderAdminApptsList(sbAppts);
   renderBlockedDates();
   renderScheduleGrid();
 }
+
 
 function renderTodayList(sbAppts){
   const today=fmtDate(new Date()); const list=document.getElementById('today-list'); if(!list) return;

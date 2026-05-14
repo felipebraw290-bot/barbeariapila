@@ -252,17 +252,10 @@ nav button:active{transform:scale(.88);}
 /* ══ MONTHLY CALENDAR ══ */
 .month-cal-wrap{padding:0 20px;}
 .month-nav{
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;justify-content:center;
   margin-bottom:14px;
 }
-.month-nav-btn{
-  background:var(--dark3);border:1px solid rgba(255,255,255,.1);
-  color:var(--gold);border-radius:10px;padding:8px 14px;
-  cursor:pointer;font-size:13px;font-family:Inter,sans-serif;transition:all .25s;
-}
-.month-nav-btn:disabled{color:var(--gray);cursor:not-allowed;opacity:.5;}
-.month-nav-btn:not(:disabled):active{background:var(--dark4);}
-.month-label{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--white);}
+.month-label{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--white);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);padding:8px 24px;border-radius:30px;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
 .cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--gray);padding:4px 0;letter-spacing:.5px;}
 .cal-day{
@@ -447,16 +440,41 @@ nav button:active{transform:scale(.88);}
 .plan-status-card .ps-info{font-size:12px;color:var(--gray);}
 
 /* ADMIN */
-.admin-header{background:linear-gradient(160deg,rgba(20,12,6,.9),rgba(15,10,4,.98));padding:52px 20px 24px;position:relative;overflow:hidden;}
-.admin-header::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);}
-.admin-title{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;letter-spacing:.4px;}
-.admin-sub{color:var(--gray);font-size:13px;margin-top:6px;}
-.admin-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.25);color:var(--gold);font-size:11px;font-weight:700;padding:6px 14px;border-radius:22px;margin-top:14px;}
-.today-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
-.today-slot{background:var(--dark3);border-radius:14px;padding:14px 16px;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:14px;transition:all .3s;}
-.today-slot.done{opacity:.55;}
-.today-slot.cancelled-slot{opacity:.4;}
-.today-time{min-width:52px;font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:var(--gold);text-align:center;}
+.admin-header{
+  background:linear-gradient(160deg,#150c02 0%,#0d0d0d 100%);
+  padding:52px 20px 28px;position:relative;overflow:hidden;
+}
+.admin-header::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 70%);
+}
+.admin-header::after{
+  content:'';position:absolute;bottom:-30px;left:-30px;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);
+}
+.admin-title{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;letter-spacing:.5px;position:relative;}
+.admin-sub{color:var(--gray);font-size:13px;margin-top:5px;position:relative;}
+.admin-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.08));
+  border:1px solid rgba(201,168,76,.4);color:var(--gold);
+  font-size:11px;font-weight:700;padding:7px 16px;border-radius:22px;margin-top:14px;
+  box-shadow:0 4px 14px rgba(201,168,76,.15);position:relative;
+}
+.today-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+.today-slot{
+  background:var(--dark3);border-radius:14px;padding:14px 16px;
+  border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--gold);
+  display:flex;align-items:center;gap:14px;transition:all .3s;
+  box-shadow:0 2px 12px rgba(0,0,0,.3);
+}
+.today-slot.done{opacity:.5;border-left-color:var(--green);}
+.today-slot.cancelled-slot{opacity:.35;border-left-color:var(--red);}
+.today-time{
+  min-width:54px;font-family:'Oswald',sans-serif;font-size:19px;font-weight:700;
+  color:var(--gold);text-align:center;
+  background:rgba(201,168,76,.1);border-radius:10px;padding:6px 4px;
+}
 .today-info{flex:1;}
 .today-client{font-size:14px;font-weight:600;}
 .today-service{font-size:12px;color:var(--gray);margin-top:2px;}
@@ -485,10 +503,16 @@ nav button:active{transform:scale(.88);}
 .block-form button{background:var(--red);color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;white-space:nowrap;}
 .block-form button:active{transform:scale(.95);}
 .schedule-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.sched-slot{background:var(--dark3);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:all .3s;font-size:12px;}
-.sched-slot.active-slot{border-color:rgba(76,175,80,.4);background:rgba(76,175,80,.08);color:var(--green);}
-.sched-slot.inactive-slot{opacity:.4;}
-.sched-slot:active{transform:scale(.94);}
+.sched-slot{
+  background:var(--dark3);border-radius:10px;padding:10px 6px;text-align:center;
+  border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .25s;font-size:12px;font-weight:600;
+}
+.sched-slot.active-slot{
+  border-color:rgba(76,175,80,.5);background:rgba(76,175,80,.12);color:var(--green);
+  box-shadow:0 0 10px rgba(76,175,80,.15);
+}
+.sched-slot.inactive-slot{opacity:.35;background:rgba(224,80,80,.05);border-color:rgba(224,80,80,.15);}
+.sched-slot:active{transform:scale(.92);}
 
 /* TOAST */
 .toast{
@@ -1398,13 +1422,10 @@ function renderDateSlots(){
   // trailing empties
   while(cell%7!==0){calRows+=`<div class="cal-day empty"></div>`;cell++;}
 
-  const canPrev = state.monthOffset > 0;
   wrap.innerHTML=`
     <div class="month-cal-wrap">
       <div class="month-nav">
-        <button class="month-nav-btn" ${!canPrev?'disabled':''} onclick="changeMonth(-1)">← Anterior</button>
         <span class="month-label">${MONTHS_PT[month]} ${year}</span>
-        <button class="month-nav-btn" onclick="changeMonth(1)">Próximo →</button>
       </div>
       <div class="cal-grid">
         ${DAYS_PT.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
@@ -1416,13 +1437,7 @@ function renderDateSlots(){
   if(!state.selectedDate) document.getElementById('btn-step2').disabled=true;
 }
 
-function changeMonth(dir){
-  const next=state.monthOffset+dir;
-  if(next<0) return;
-  state.monthOffset=next; state.selectedDate=null; state.selectedSlot=null;
-  document.getElementById('btn-step2').disabled=true;
-  renderDateSlots();
-}
+function changeMonth(dir){ /* bloqueado — mês fixo */ }
 
 function calSelectDate(dateStr){
   state.selectedDate=dateStr; state.selectedSlot=null;
@@ -1766,37 +1781,61 @@ function renderAdminTabContent(sbAppts){
   const db=getDB();
   const cont=document.getElementById('admin-tab-content'); if(!cont) return;
   cont.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px;">
-      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(255,255,255,.07);text-align:center;">
-        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--gold);">${todayAppts.length}</div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Hoje</div>
+    <!-- STATS GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px 20px;">
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));border-radius:16px;padding:18px 14px;border:1px solid rgba(201,168,76,.35);text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:8px;right:10px;font-size:20px;opacity:.3;">📅</div>
+        <div style="font-size:32px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--gold);line-height:1;">${todayAppts.length}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Hoje</div>
       </div>
-      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(76,175,80,.2);text-align:center;">
-        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--green);">R$${weekRev.toFixed(0)}</div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Esta semana</div>
+      <div style="background:linear-gradient(135deg,rgba(76,175,80,.15),rgba(76,175,80,.05));border-radius:16px;padding:18px 14px;border:1px solid rgba(76,175,80,.35);text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:8px;right:10px;font-size:20px;opacity:.3;">💰</div>
+        <div style="font-size:22px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--green);line-height:1;">R$${weekRev.toFixed(0)}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Esta semana</div>
       </div>
-      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(76,130,200,.2);text-align:center;">
-        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--blue);">R$${totalRev.toFixed(0)}</div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Total geral</div>
+      <div style="background:linear-gradient(135deg,rgba(76,130,200,.15),rgba(76,130,200,.05));border-radius:16px;padding:18px 14px;border:1px solid rgba(76,130,200,.35);text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:8px;right:10px;font-size:20px;opacity:.3;">📊</div>
+        <div style="font-size:22px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--blue);line-height:1;">R$${totalRev.toFixed(0)}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Total geral</div>
       </div>
-      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(224,80,80,.2);text-align:center;">
-        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--red);">${sbAppts.filter(a=>a.status==='cancelled').length}</div>
-        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Cancelados</div>
+      <div style="background:linear-gradient(135deg,rgba(224,80,80,.15),rgba(224,80,80,.05));border-radius:16px;padding:18px 14px;border:1px solid rgba(224,80,80,.35);text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:8px;right:10px;font-size:20px;opacity:.3;">❌</div>
+        <div style="font-size:32px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--red);line-height:1;">${sbAppts.filter(a=>a.status==='cancelled').length}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Cancelados</div>
       </div>
     </div>
-    <div style="padding:0 20px;margin-bottom:6px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Agenda de Hoje</div>
+
+    <!-- SECTION: AGENDA HOJE -->
+    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:2px;"></div>
+      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Agenda de Hoje</span>
+      <span style="background:rgba(201,168,76,.15);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(201,168,76,.25);margin-left:auto;">${todayAppts.length} agend.</span>
+    </div>
     <div class="today-list" id="today-list"></div>
-    <div style="height:20px;"></div>
-    <div style="padding:0 20px;margin-bottom:6px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Todos os Agendamentos</div>
-    <div style="padding:0 20px;display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;">
+
+    <div style="height:8px;"></div>
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:16px 20px;"></div>
+
+    <!-- SECTION: TODOS AGENDAMENTOS -->
+    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--blue),rgba(76,130,200,.5));border-radius:2px;"></div>
+      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Todos os Agendamentos</span>
+    </div>
+    <div style="padding:0 20px;display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;">
       <button id="adm-filter-all"       class="filter-btn active" onclick="adminFilterAppts('all')">Todos</button>
       <button id="adm-filter-today"     class="filter-btn"        onclick="adminFilterAppts('today')">Hoje</button>
       <button id="adm-filter-confirmed" class="filter-btn"        onclick="adminFilterAppts('confirmed')">Confirmados</button>
       <button id="adm-filter-cancelled" class="filter-btn"        onclick="adminFilterAppts('cancelled')">Cancelados</button>
     </div>
     <div class="appt-list" id="admin-appt-list-inner"></div>
-    <div style="height:20px;"></div>
-    <div style="padding:0 20px;margin-bottom:10px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Bloquear Datas</div>
+
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:20px 20px 16px;"></div>
+
+    <!-- SECTION: BLOQUEAR DATAS -->
+    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--red),rgba(224,80,80,.5));border-radius:2px;"></div>
+      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Bloquear Datas</span>
+    </div>
     <div style="padding:0 20px;">
       <div class="block-form">
         <input id="block-date-input" type="date" style="color-scheme:dark;" />
@@ -1804,9 +1843,16 @@ function renderAdminTabContent(sbAppts){
       </div>
       <div class="blocked-dates" id="blocked-dates"></div>
     </div>
-    <div style="height:20px;"></div>
-    <div style="padding:0 20px;margin-bottom:10px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Horários Ativos</div>
-    <div style="padding:0 20px 30px;">
+
+    <div style="height:1px;background:rgba(255,255,255,.06);margin:20px 20px 16px;"></div>
+
+    <!-- SECTION: HORÁRIOS ATIVOS -->
+    <div style="margin:0 20px 12px;display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--green),rgba(76,175,80,.5));border-radius:2px;"></div>
+      <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Horários Ativos</span>
+    </div>
+    <div style="padding:0 20px 36px;">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:10px;">Toque para ativar/desativar um horário</div>
       <div class="schedule-grid" id="schedule-grid"></div>
     </div>`;
 

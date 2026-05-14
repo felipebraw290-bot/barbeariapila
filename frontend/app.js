@@ -3,7 +3,7 @@ const SUPABASE_KEY = 'sb_publishable_33LFn0rafHYSWp_6aKe73g_-QZLQxX9';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* ══════════════════════════════════════════
-   BARBERKING — app.js
+   BARBERKING — app.js  (com Sistema de Planos)
    Barbeiro: Pila | Premium Studio
 ══════════════════════════════════════════ */
 
@@ -40,6 +40,9 @@ function applyTheme(theme) {
   }
 }
 
+// ════════════════════════════════════════════════════
+//  DB
+// ════════════════════════════════════════════════════
 function getDB() {
   try {
     const raw = localStorage.getItem(DB_KEY);
@@ -53,8 +56,10 @@ function defaultDB() {
     profile: null,
     blockedDates: [],
     blockedIntervals: [],
-    activeSlots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
-                  '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
+    activeSlots: [
+      '08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+      '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'
+    ],
   };
 }
 
@@ -83,8 +88,8 @@ function markDone(id) {
   if (appt) { appt.status = 'past'; appt.doneByAdmin = true; saveDB(db); }
 }
 
-function getProfile()          { const db = getDB(); return db.profile || { name:'Visitante', phone:'', email:'' }; }
-function saveProfile(profile)  { const db = getDB(); db.profile = profile; saveDB(db); }
+function getProfile()         { const db = getDB(); return db.profile || { name:'Visitante', phone:'', email:'' }; }
+function saveProfile(profile) { const db = getDB(); db.profile = profile; saveDB(db); }
 
 function saveRegisterProfile() {
   const name  = document.getElementById('register-name')?.value.trim();
@@ -117,26 +122,71 @@ const SERVICES = [
   { id:6, name:'Hidratação',      icon:'💧', duration:'30 min', price:40,    priceStr:'R$ 40,00' },
 ];
 
+// ════════════════════════════════════════════════════
+//  ★  PLANOS MENSAIS
+// ════════════════════════════════════════════════════
+const PLANS = [
+  {
+    id: 'basic',
+    name: 'Basic',
+    emoji: '✂️',
+    price: 119.90,
+    priceStr: 'R$ 119,90',
+    period: '/mês',
+    color: '#c9a84c',
+    colorBg: 'rgba(201,168,76,.12)',
+    colorBorder: 'rgba(201,168,76,.35)',
+    services: ['2 Cortes de Cabelo', '1 Barba'],
+    highlight: false,
+  },
+  {
+    id: 'plus',
+    name: 'Plus',
+    emoji: '💈',
+    price: 129.90,
+    priceStr: 'R$ 129,90',
+    period: '/mês',
+    color: '#4c82c8',
+    colorBg: 'rgba(76,130,200,.12)',
+    colorBorder: 'rgba(76,130,200,.35)',
+    services: ['3 Cortes de Cabelo', '2 Barbas', 'Hidratação'],
+    highlight: true,  // card em destaque
+  },
+  {
+    id: 'gold',
+    name: 'Gold',
+    emoji: '🔥',
+    price: 175.90,
+    priceStr: 'R$ 175,90',
+    period: '/mês',
+    color: '#f0c060',
+    colorBg: 'rgba(240,192,96,.12)',
+    colorBorder: 'rgba(240,192,96,.5)',
+    services: ['Cortes ilimitados', 'Barba ilimitada', 'Hidratação', 'Degradê incluso'],
+    highlight: false,
+  },
+];
+
 const ADMIN_PASSWORD = 'pila123';
 
 // ════════════════════════════════════════════════════
 //  APP STATE
 // ════════════════════════════════════════════════════
 const state = {
-  selectedService:  null,
-  selectedDate:     null,
-  selectedSlot:     null,
-  currentStep:      1,
-  cancelId:         null,
-  apptFilter:       'all',
-  adminApptFilter:  'all',
-  isAdmin:          false,
+  selectedService: null,
+  selectedDate:    null,
+  selectedSlot:    null,
+  currentStep:     1,
+  cancelId:        null,
+  apptFilter:      'all',
+  adminApptFilter: 'all',
+  isAdmin:         false,
+  weekOffset:      0,
+  supabaseAppts:   [],
 
-  // ── NOVO: navegação por semana ──
-  weekOffset: 0,           // 0 = semana atual, 1 = próxima, etc.
-
-  // ── NOVO: cache dos agendamentos vindos do Supabase ──
-  supabaseAppts: [],
+  // ── PLANOS ──
+  activePlan:      null,   // { id, name, clientName, clientPhone } preenchido ao ativar plano
+  adminTab:        'hoje', // 'hoje' | 'receita' | 'bloqueios' | 'horarios' | 'planos'
 };
 
 // ════════════════════════════════════════════════════
@@ -144,9 +194,10 @@ const state = {
 // ════════════════════════════════════════════════════
 (function createParticles() {
   const container = document.getElementById('particles');
+  if (!container) return;
   const colors = ['#c9a84c','#f0c060','#a07830','rgba(255,255,255,.5)'];
   for (let i = 0; i < 22; i++) {
-    const p    = document.createElement('div');
+    const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 3.5 + 1;
     p.style.cssText = [
@@ -166,7 +217,7 @@ const state = {
 const NAV_MAP = {
   home:'nav-home', book:'nav-book',
   appointments:'nav-appointments', profile:'nav-profile',
-  notifications:null, admin:null,
+  notifications:null, admin:null, plans:null,
 };
 
 function showPage(name) {
@@ -180,17 +231,21 @@ function showPage(name) {
   if (navBtn) document.getElementById(navBtn)?.classList.add('active');
 
   const nav = document.querySelector('nav');
-  if (nav) nav.style.display = name === 'register' ? 'none' : 'flex';
+  if (nav) nav.style.display = (name === 'register' || name === 'plans') ? 'none' : 'flex';
 
   if (name === 'home')         renderHome();
   if (name === 'appointments') renderAppointments();
   if (name === 'profile')      renderProfile();
   if (name === 'admin')        renderAdmin();
+  if (name === 'plans')        renderPlansPage();
 
   window.scrollTo(0, 0);
 }
 
-function goToBook() { showPage('book'); resetBooking(); }
+function goToBook() {
+  showPage('book');
+  resetBooking();
+}
 
 // ════════════════════════════════════════════════════
 //  HOME PAGE
@@ -226,6 +281,7 @@ function renderHome() {
   const upcoming = db.appointments.filter(a => a.status === 'confirmed');
   const cont     = document.getElementById('home-next-appt');
   if (!cont) return;
+
   if (!upcoming.length) {
     cont.innerHTML = `
       <div style="background:var(--dark3);border-radius:16px;padding:22px;border:1px solid rgba(255,255,255,.06);text-align:center;">
@@ -235,10 +291,13 @@ function renderHome() {
       </div>`;
   } else {
     const a = upcoming[0];
+    const planBadge = a.planName
+      ? `<span style="margin-left:6px;background:rgba(201,168,76,.15);color:var(--gold);font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.8px;border:1px solid rgba(201,168,76,.3);">PLANO ${a.planName.toUpperCase()}</span>`
+      : '';
     cont.innerHTML = `
       <div class="mini-appt-card">
         <div class="appt-top">
-          <div class="appt-service">${a.service}</div>
+          <div class="appt-service">${a.service}${planBadge}</div>
           <span class="appt-badge badge-confirmed">Confirmado</span>
         </div>
         <div class="appt-info" style="margin-top:10px;">
@@ -252,6 +311,108 @@ function renderHome() {
 }
 
 // ════════════════════════════════════════════════════
+//  ★  PÁGINA DE PLANOS (cliente)
+// ════════════════════════════════════════════════════
+function renderPlansPage() {
+  const container = document.getElementById('plans-cards');
+  if (!container) return;
+
+  container.innerHTML = PLANS.map(plan => `
+    <div class="plan-card ${plan.highlight ? 'plan-highlight' : ''}"
+         style="border-color:${plan.colorBorder};background:linear-gradient(145deg,var(--dark3),${plan.colorBg});"
+         onclick="openPlanModal('${plan.id}')">
+      ${plan.highlight ? `<div class="plan-popular-badge">⭐ Mais Popular</div>` : ''}
+      <div class="plan-emoji">${plan.emoji}</div>
+      <div class="plan-name" style="color:${plan.color};">${plan.name}</div>
+      <div class="plan-price-wrap">
+        <span class="plan-price">${plan.priceStr}</span>
+        <span class="plan-period">${plan.period}</span>
+      </div>
+      <ul class="plan-features">
+        ${plan.services.map(s => `<li><i class="fas fa-check" style="color:${plan.color};margin-right:7px;font-size:11px;"></i>${s}</li>`).join('')}
+      </ul>
+      <button class="plan-select-btn" style="background:${plan.color};color:var(--dark);">
+        Usar este plano
+      </button>
+    </div>
+  `).join('');
+}
+
+// ── Abrir modal de identificação do cliente para o plano ──
+function openPlanModal(planId) {
+  const plan = PLANS.find(p => p.id === planId);
+  if (!plan) return;
+
+  const modal = document.getElementById('plan-modal');
+  if (!modal) return;
+
+  // Preencher título
+  document.getElementById('plan-modal-title').textContent  = `Plano ${plan.name}`;
+  document.getElementById('plan-modal-price').textContent  = plan.priceStr + plan.period;
+  document.getElementById('plan-modal-price').style.color  = plan.color;
+  document.getElementById('plan-modal-emoji').textContent  = plan.emoji;
+
+  // Guardar plano no dataset do modal para uso no confirmar
+  modal.dataset.planId = planId;
+
+  // Limpar campos
+  const nameInput  = document.getElementById('plan-client-name');
+  const phoneInput = document.getElementById('plan-client-phone');
+  if (nameInput)  nameInput.value  = '';
+  if (phoneInput) phoneInput.value = '';
+
+  // Preencher com perfil salvo se houver
+  const profile = getProfile();
+  if (profile.name !== 'Visitante') {
+    if (nameInput)  nameInput.value  = profile.name;
+    if (phoneInput) phoneInput.value = profile.phone || '';
+  }
+
+  modal.classList.add('open');
+}
+
+function closePlanModal() {
+  document.getElementById('plan-modal')?.classList.remove('open');
+}
+
+// ── Confirmar plano e ir para agendamento ──
+function confirmPlanAndBook() {
+  const modal   = document.getElementById('plan-modal');
+  const planId  = modal?.dataset.planId;
+  const plan    = PLANS.find(p => p.id === planId);
+  if (!plan) return;
+
+  const nameInput  = document.getElementById('plan-client-name');
+  const phoneInput = document.getElementById('plan-client-phone');
+  const name  = nameInput?.value.trim();
+  const phone = phoneInput?.value.trim();
+
+  if (!name  || name.length < 3)                       return showToast('Digite seu nome completo.','error');
+  if (!phone || phone.replace(/\D/g,'').length < 10)   return showToast('Informe um WhatsApp válido.','error');
+
+  // Ativar plano no estado
+  state.activePlan = { id: plan.id, name: plan.name, clientName: name, clientPhone: phone };
+
+  // Salvar perfil se for novo visitante
+  const profile = getProfile();
+  if (profile.name === 'Visitante') saveProfile({ name, phone, email:'' });
+
+  closePlanModal();
+  showToast(`✅ Plano ${plan.name} ativado! Escolha o serviço.`, 'success');
+
+  // Ir para agendamento
+  setTimeout(() => {
+    showPage('book');
+    resetBooking();
+  }, 600);
+}
+
+// ── Cancelar plano ativo (ao sair do fluxo) ──
+function clearActivePlan() {
+  state.activePlan = null;
+}
+
+// ════════════════════════════════════════════════════
 //  BOOK FLOW
 // ════════════════════════════════════════════════════
 function resetBooking() {
@@ -259,14 +420,15 @@ function resetBooking() {
   state.selectedDate    = null;
   state.selectedSlot    = null;
   state.weekOffset      = 0;
+  // NÃO limpar state.activePlan aqui — ele persiste até confirmar ou cancelar
   goStep(1);
 }
 
-// ── CORRIGIDO: botão voltar ──
 function goBack() {
   if (state.currentStep > 1) {
     goStep(state.currentStep - 1);
   } else {
+    clearActivePlan();   // se voltar para home, cancela plano ativo
     showPage('home');
   }
 }
@@ -285,22 +447,56 @@ function goStep(n) {
   window.scrollTo(0, 0);
 }
 
+/* ── Aviso de plano ativo no topo do book ── */
+function renderPlanBanner() {
+  let banner = document.getElementById('active-plan-banner');
+  const bookPage = document.getElementById('page-book');
+  if (!bookPage) return;
+
+  if (state.activePlan) {
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'active-plan-banner';
+      banner.className = 'active-plan-banner';
+      bookPage.insertBefore(banner, bookPage.firstChild);
+    }
+    banner.innerHTML = `
+      <i class="fas fa-crown" style="color:var(--gold);"></i>
+      <span>Agendando com <strong>Plano ${state.activePlan.name}</strong> · ${state.activePlan.clientName}</span>
+      <button onclick="clearActivePlan();renderPlanBanner();renderServicesGrid();" title="Cancelar plano">
+        <i class="fas fa-times"></i>
+      </button>`;
+    banner.style.display = 'flex';
+  } else {
+    if (banner) banner.style.display = 'none';
+  }
+}
+
 /* SERVICES */
 function renderServicesGrid() {
+  renderPlanBanner();
+
   const grid = document.getElementById('services-grid');
   if (!grid) return;
-  grid.innerHTML = SERVICES.map(s => `
+
+  const isPlan = !!state.activePlan;
+
+  grid.innerHTML = SERVICES.map(s => {
+    const displayPrice = isPlan ? '<span style="text-decoration:line-through;opacity:.4;font-size:12px;">' + s.priceStr + '</span> <span style="color:var(--green);font-size:15px;font-weight:800;">R$ 0,00</span>' : s.priceStr;
+    return `
     <div class="service-card ripple" onclick="selectService(${s.id})" id="scard-${s.id}">
       <div class="service-icon">${s.icon}</div>
       <div class="service-name">${s.name}</div>
       <div class="service-duration"><i class="fas fa-clock" style="font-size:9px;margin-right:3px;"></i>${s.duration}</div>
-      <div class="service-price">${s.priceStr}</div>
-    </div>`).join('');
+      <div class="service-price">${displayPrice}</div>
+    </div>`;
+  }).join('');
 
   // Restaurar seleção anterior ao voltar
   if (state.selectedService) {
     document.getElementById('scard-' + state.selectedService.id)?.classList.add('selected');
-    document.getElementById('btn-step1').disabled = false;
+    const btn1 = document.getElementById('btn-step1');
+    if (btn1) btn1.disabled = false;
   }
 }
 
@@ -309,27 +505,31 @@ function selectService(id) {
   state.selectedService = SERVICES.find(s => s.id === id);
   const card = document.getElementById('scard-'+id);
   if (card) { card.classList.add('selected'); rippleEffect(card); }
-  document.getElementById('btn-step1').disabled = false;
+  const btn1 = document.getElementById('btn-step1');
+  if (btn1) btn1.disabled = false;
   vibrate();
 }
 
-/* ══════════════════════════════════════════════════════
-   DATE & SLOTS — CORRIGIDO: navegação de semana em semana
-   (sempre de Domingo a Sábado)
-══════════════════════════════════════════════════════ */
+/* DATE & SLOTS */
 function getWeekStart(offset) {
-  const today  = new Date();
-  // Zera hora
+  const today = new Date();
   today.setHours(0,0,0,0);
-  // Domingo da semana corrente
-  const day    = today.getDay(); // 0=Dom
+  const day    = today.getDay();
   const sunday = new Date(today);
   sunday.setDate(today.getDate() - day + offset * 7);
   return sunday;
 }
 
+function isDateBlockedBySupa(dateStr) {
+  return state.supabaseAppts.some(r => {
+    if (r.client_name !== '__BLOCKED_DAY__') return false;
+    const p = (r.appointment_date||'').split('-');
+    return p.length===3 && `${p[2]}/${p[1]}/${p[0]}` === dateStr;
+  });
+}
+
 function renderDateSlots() {
-  const db     = getDB();
+  const db    = getDB();
   const scroll = document.getElementById('date-scroll');
   if (!scroll) return;
 
@@ -339,31 +539,28 @@ function renderDateSlots() {
 
   const weekStart = getWeekStart(state.weekOffset);
 
-  let html = '';
   let firstAvailable = null;
-
-  // Verificar qual o primeiro dia disponível na semana
   for (let i = 0; i < 7; i++) {
     const d       = new Date(weekStart); d.setDate(weekStart.getDate() + i);
     const dateStr = fmtDate(d);
     const isPast  = d < today;
-    const isBlocked = db.blockedDates.includes(dateStr);
+    const isBlocked = db.blockedDates.includes(dateStr) || isDateBlockedBySupa(dateStr);
     if (!isPast && !isBlocked && !firstAvailable) firstAvailable = dateStr;
   }
 
-  // Manter data selecionada ou usar primeira disponível
-  const selectedDate = (!state.selectedDate || db.blockedDates.includes(state.selectedDate))
+  const isSelBlocked = db.blockedDates.includes(state.selectedDate) || isDateBlockedBySupa(state.selectedDate);
+  const selectedDate = (!state.selectedDate || isSelBlocked)
     ? (firstAvailable || fmtDate(today))
     : state.selectedDate;
   state.selectedDate = selectedDate;
 
-  // Renderizar os 7 dias da semana (Dom → Sáb)
+  let html = '';
   for (let i = 0; i < 7; i++) {
     const d       = new Date(weekStart); d.setDate(weekStart.getDate() + i);
     const dateStr = fmtDate(d);
     const isPast  = d < today;
     const isToday = d.toDateString() === today.toDateString();
-    const isBlocked  = db.blockedDates.includes(dateStr) || isPast;
+    const isBlocked  = db.blockedDates.includes(dateStr) || isDateBlockedBySupa(dateStr) || isPast;
     const isSelected = dateStr === selectedDate;
 
     html += `<div class="date-item ${isSelected?'selected':''} ${isBlocked?'blocked':''}"
@@ -374,9 +571,8 @@ function renderDateSlots() {
     </div>`;
   }
 
-  // Montar cabeçalho de navegação de semana
-  const weekLabel = `${fmtDate(weekStart)} — ${fmtDate(new Date(weekStart.getTime() + 6*86400000))}`;
-  const canGoPrev = state.weekOffset > 0;
+  const weekLabel  = `${fmtDate(weekStart)} — ${fmtDate(new Date(weekStart.getTime() + 6*86400000))}`;
+  const canGoPrev  = state.weekOffset > 0;
 
   const wrapper = scroll.parentElement;
   let nav = wrapper.querySelector('.week-nav');
@@ -403,7 +599,6 @@ function renderDateSlots() {
 
   scroll.innerHTML = html;
 
-  // Bind clicks nos dias disponíveis
   scroll.querySelectorAll('.date-item:not(.blocked)').forEach(el => {
     el.addEventListener('click', function() { selectDate(this, this.dataset.date); });
   });
@@ -413,11 +608,12 @@ function renderDateSlots() {
 
 function changeWeek(dir) {
   const next = state.weekOffset + dir;
-  if (next < 0) return; // não volta antes da semana atual
+  if (next < 0) return;
   state.weekOffset   = next;
   state.selectedDate = null;
   state.selectedSlot = null;
-  document.getElementById('btn-step2').disabled = true;
+  const btn2 = document.getElementById('btn-step2');
+  if (btn2) btn2.disabled = true;
   renderDateSlots();
 }
 
@@ -426,20 +622,40 @@ function selectDate(el, dateStr) {
   el.classList.add('selected');
   state.selectedDate = dateStr;
   state.selectedSlot = null;
-  document.getElementById('btn-step2').disabled = true;
+  const btn2 = document.getElementById('btn-step2');
+  if (btn2) btn2.disabled = true;
   renderSlots();
 }
 
 function renderSlots() {
   const db          = getDB();
   const activeSlots = db.activeSlots || ALL_SLOTS;
-  const busySlots   = db.appointments
+
+  const isDayBlocked = db.blockedDates.includes(state.selectedDate) || isDateBlockedBySupa(state.selectedDate);
+  const grid = document.getElementById('slots-grid');
+  if (!grid) return;
+
+  if (isDayBlocked) {
+    grid.innerHTML = `<div style="grid-column:span 3;text-align:center;padding:30px 0;">
+      <div style="font-size:38px;margin-bottom:10px;">🚫</div>
+      <div style="color:var(--red);font-weight:700;font-size:15px;">Dia Bloqueado</div>
+      <div style="color:var(--gray);font-size:12px;margin-top:6px;">Este dia não está disponível para agendamentos.</div>
+    </div>`;
+    const btn2 = document.getElementById('btn-step2');
+    if (btn2) btn2.disabled = true;
+    return;
+  }
+
+  // Slots ocupados localmente
+  const busySlots = db.appointments
     .filter(a => a.status === 'confirmed' && a.date === state.selectedDate)
     .map(a => a.time);
 
-  // Também marcar como ocupado os horários do Supabase (agendamentos de outros dispositivos)
+  // Slots ocupados no Supabase — inclui agendamentos de PLANO também
+  // (ambos bloqueiam o horário igualmente)
   const sbBusy = state.supabaseAppts
     .filter(a => {
+      if (a.client_name === '__BLOCKED_DAY__') return false;
       const d = new Date(a.appointment_date);
       return fmtDate(d) === state.selectedDate && a.status !== 'cancelled';
     })
@@ -450,8 +666,6 @@ function renderSlots() {
   const isSlotInInterval = (slot, intervals) =>
     intervals.some(iv => slot >= iv.start && slot < iv.end);
 
-  const grid = document.getElementById('slots-grid');
-  if (!grid) return;
   grid.innerHTML = activeSlots.map(s => {
     const isBusy    = allBusy.includes(s);
     const isBlocked = isSlotInInterval(s, db.blockedIntervals || []);
@@ -468,20 +682,48 @@ function selectSlot(el, time) {
   document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
   el.classList.add('selected');
   state.selectedSlot = time;
-  document.getElementById('btn-step2').disabled = false;
+  const btn2 = document.getElementById('btn-step2');
+  if (btn2) btn2.disabled = false;
   vibrate();
 }
 
 /* SUMMARY */
 function renderSummary() {
   const s = state.selectedService;
+  const isPlan = !!state.activePlan;
+
+  // Preço exibido: R$0,00 se for plano, valor normal caso contrário
+  const priceDisplay = isPlan
+    ? `<span style="text-decoration:line-through;opacity:.4;font-size:13px;">${s?.priceStr}</span>
+       &nbsp;<span style="color:var(--green);font-size:18px;font-weight:800;">R$ 0,00</span>`
+    : `<span class="gold">${s?.priceStr}</span>`;
+
+  const planRow = isPlan
+    ? `<div class="confirm-row">
+         <span class="confirm-label">Plano Mensal</span>
+         <span class="confirm-value" style="color:var(--gold);">
+           <i class="fas fa-crown" style="margin-right:4px;font-size:11px;"></i>
+           Plano ${state.activePlan.name}
+         </span>
+       </div>` : '';
+
   document.getElementById('booking-summary').innerHTML = `
+    ${planRow}
     <div class="confirm-row"><span class="confirm-label">Barbeiro</span><span class="confirm-value">${BARBER.name} 💈</span></div>
     <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${s?.icon} ${s?.name}</span></div>
     <div class="confirm-row"><span class="confirm-label">Data</span><span class="confirm-value">${state.selectedDate}</span></div>
     <div class="confirm-row"><span class="confirm-label">Horário</span><span class="confirm-value">${state.selectedSlot}</span></div>
     <div class="confirm-row"><span class="confirm-label">Duração</span><span class="confirm-value">${s?.duration}</span></div>
-    <div class="confirm-row"><span class="confirm-label">Valor</span><span class="confirm-value gold">${s?.priceStr}</span></div>`;
+    <div class="confirm-row"><span class="confirm-label">Valor</span><span class="confirm-value">${priceDisplay}</span></div>`;
+
+  // Preencher campos com dados do plano se disponíveis
+  if (isPlan) {
+    const nameInput  = document.getElementById('input-name');
+    const phoneInput = document.getElementById('input-phone');
+    if (nameInput && !nameInput.value)  nameInput.value  = state.activePlan.clientName;
+    if (phoneInput && !phoneInput.value) phoneInput.value = state.activePlan.clientPhone;
+  }
+
   validateForm();
 }
 
@@ -503,14 +745,32 @@ function openConfirmModal() {
   const phone = document.getElementById('input-phone').value.trim();
   const email = document.getElementById('input-email').value.trim();
   if (!email || !email.includes('@')) return showToast('❌ Por favor, informe um e-mail válido.','error');
+
+  const isPlan = !!state.activePlan;
+  const planRow = isPlan
+    ? `<div class="confirm-row">
+         <span class="confirm-label">Plano</span>
+         <span class="confirm-value" style="color:var(--gold);">
+           <i class="fas fa-crown" style="margin-right:4px;font-size:11px;"></i>
+           Plano ${state.activePlan.name}
+         </span>
+       </div>` : '';
+
+  const totalDisplay = isPlan
+    ? `<span style="text-decoration:line-through;opacity:.4;font-size:15px;">${s.priceStr}</span>
+       &nbsp;<span style="color:var(--green);font-size:22px;font-weight:800;">R$ 0,00</span>`
+    : s.priceStr;
+
   document.getElementById('modal-content').innerHTML = `
+    ${planRow}
     <div class="confirm-row"><span class="confirm-label">Cliente</span><span class="confirm-value">${name}</span></div>
     <div class="confirm-row"><span class="confirm-label">Contato</span><span class="confirm-value">${phone}</span></div>
     <div class="confirm-row"><span class="confirm-label">E-mail</span><span class="confirm-value">${email}</span></div>
     <div class="confirm-row"><span class="confirm-label">Barbeiro</span><span class="confirm-value">${BARBER.name}</span></div>
     <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${s.icon} ${s.name}</span></div>
     <div class="confirm-row"><span class="confirm-label">Data &amp; Hora</span><span class="confirm-value">${state.selectedDate} às ${state.selectedSlot}</span></div>
-    <div class="confirm-row"><span class="confirm-label">Total</span><span class="confirm-value gold" style="font-size:20px;">${s.priceStr}</span></div>`;
+    <div class="confirm-row"><span class="confirm-label">Total</span><span class="confirm-value gold" style="font-size:20px;">${totalDisplay}</span></div>`;
+
   document.getElementById('confirm-modal').classList.add('open');
 }
 
@@ -521,20 +781,46 @@ async function confirmBooking() {
   const phone = document.getElementById('input-phone').value.trim();
   const email = document.getElementById('input-email').value.trim();
   const s     = state.selectedService;
+  const isPlan = !!state.activePlan;
+
+  // Preço final: R$0,00 se plano ativo
+  const finalPrice    = isPlan ? 0 : s.price;
+  const finalPriceStr = isPlan ? 'R$ 0,00' : s.priceStr;
+  const planName      = isPlan ? state.activePlan.name : null;
 
   const profile = getProfile();
   if (profile.name === 'Visitante') saveProfile({ name, phone, email });
 
-  addAppointment({
+  const localAppt = addAppointment({
     barberId: BARBER.id, barber: BARBER.name,
     serviceId: s.id, service: s.name,
     date: state.selectedDate, time: state.selectedSlot,
-    price: s.price, priceStr: s.priceStr,
-    duration: s.duration, clientName: name, clientPhone: phone, clientEmail: email,
+    price: finalPrice, priceStr: finalPriceStr,
+    duration: s.duration,
+    clientName: name, clientPhone: phone, clientEmail: email,
+    planName,  // <-- guarda qual plano foi usado (null se nenhum)
   });
 
-  const ok = await salvarAgendamento({ name, phone, service: s.name, date: state.selectedDate, time: state.selectedSlot });
-  if (!ok) return;
+  // Nome do serviço inclui o plano para ficar visível no admin
+  const serviceForSupa = isPlan
+    ? `${s.name} · Plano ${state.activePlan.name}`
+    : s.name;
+
+  const sbId = await salvarAgendamento({
+    name, phone, service: serviceForSupa,
+    date: state.selectedDate, time: state.selectedSlot,
+    planName,
+  });
+
+  if (sbId === null) return;
+
+  // Salvar referência do Supabase no localStorage
+  const dbRef   = getDB();
+  const apptRef = dbRef.appointments.find(a => a.id === localAppt.id);
+  if (apptRef) { apptRef._supabaseId = sbId; saveDB(dbRef); }
+
+  // Limpar plano ativo após confirmação
+  state.activePlan = null;
 
   closeModal();
   showToast('✅ Agendamento confirmado! Até logo.','success');
@@ -544,28 +830,32 @@ async function confirmBooking() {
 
 // ════════════════════════════════════════════════════
 //  SUPABASE — salvar agendamento
+//  (campo 'service' já carrega a info do plano se houver)
 // ════════════════════════════════════════════════════
 async function salvarAgendamento(data) {
-  const { error } = await supabaseClient
+  const { data: result, error } = await supabaseClient
     .from('appointments')
     .insert([{
       client_name:      data.name,
       phone:            data.phone,
-      service:          data.service,
+      service:          data.service,          // ex: "Corte de Cabelo · Plano Basic"
       appointment_date: data.date.split('/').reverse().join('-'),
       appointment_time: data.time,
-    }]);
+      status:           'confirmed',
+    }])
+    .select('id')
+    .single();
+
   if (error) {
     console.error('Erro Supabase:', error);
     showToast('❌ Erro ao salvar no banco: ' + (error.message || 'tente novamente'),'error');
-    return false;
+    return null;
   }
-  return true;
+  return result?.id || null;
 }
 
 // ════════════════════════════════════════════════════
-//  SUPABASE — buscar agendamentos para o admin
-//  CORRIGIDO: admin busca do banco, não só do localStorage
+//  SUPABASE — buscar agendamentos
 // ════════════════════════════════════════════════════
 async function fetchSupabaseAppointments() {
   try {
@@ -573,40 +863,67 @@ async function fetchSupabaseAppointments() {
       .from('appointments')
       .select('*')
       .order('appointment_date', { ascending: false });
+
     if (error) { console.error('Supabase fetch error:', error); return []; }
-    return data || [];
+    const rows = data || [];
+
+    // Sincronizar datas bloqueadas
+    const blockedRows = rows.filter(r => r.client_name === '__BLOCKED_DAY__');
+    if (blockedRows.length) {
+      const db = getDB();
+      let changed = false;
+      blockedRows.forEach(r => {
+        const p  = (r.appointment_date||'').split('-');
+        const ds = p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : '';
+        if (ds && !db.blockedDates.includes(ds)) { db.blockedDates.push(ds); changed = true; }
+      });
+      if (changed) saveDB(db);
+    }
+
+    return rows;
   } catch(e) { console.error(e); return []; }
 }
 
-// Converte um registro do Supabase para o formato interno
+// Converte registro Supabase → formato interno
+// Detecta plano automaticamente no campo 'service'
 function supabaseToLocal(row) {
-  // appointment_date vem como 'YYYY-MM-DD'
-  const parts = (row.appointment_date || '').split('-');
+  if (row.client_name === '__BLOCKED_DAY__') return null;
+
+  const parts   = (row.appointment_date || '').split('-');
   const dateStr = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : '';
   const timeStr = row.appointment_time ? row.appointment_time.slice(0,5) : '';
 
-  // Tentar encontrar o serviço pelo nome
-  const svc = SERVICES.find(s => s.name === row.service) ||
-              { id:0, name: row.service || '—', icon:'💈', duration:'—', price: row.price || 0, priceStr: row.price ? `R$ ${Number(row.price).toFixed(2)}` : '—' };
+  // Detectar plano no campo service: "Corte de Cabelo · Plano Basic"
+  let serviceName = row.service || '—';
+  let planName    = null;
+  const planMatch = serviceName.match(/·\s*Plano\s+(\w+)$/i);
+  if (planMatch) {
+    planName    = planMatch[1];
+    serviceName = serviceName.replace(/\s*·\s*Plano\s+\w+$/i, '').trim();
+  }
+
+  const svc = SERVICES.find(s => s.name === serviceName) ||
+              { id:0, name: serviceName, icon:'💈', duration:'—', price: 0, priceStr: planName ? 'R$ 0,00' : '—' };
 
   return {
-    id:           'sb_' + row.id,
-    _supabaseId:  row.id,
-    barberId:     BARBER.id,
-    barber:       BARBER.name,
-    serviceId:    svc.id,
-    service:      svc.name,
-    date:         dateStr,
-    time:         timeStr,
-    price:        svc.price,
-    priceStr:     svc.priceStr,
-    duration:     svc.duration,
-    clientName:   row.client_name  || '—',
-    clientPhone:  row.phone        || '—',
-    clientEmail:  row.email        || '',
-    status:       row.status       || 'confirmed',
-    createdAt:    row.created_at   || '',
-    doneByAdmin:  false,
+    id:          'sb_' + row.id,
+    _supabaseId: row.id,
+    barberId:    BARBER.id,
+    barber:      BARBER.name,
+    serviceId:   svc.id,
+    service:     svc.name,
+    date:        dateStr,
+    time:        timeStr,
+    price:       planName ? 0 : svc.price,
+    priceStr:    planName ? 'R$ 0,00' : svc.priceStr,
+    duration:    svc.duration,
+    clientName:  row.client_name  || '—',
+    clientPhone: row.phone        || '—',
+    clientEmail: row.email        || '',
+    status:      row.status       || 'confirmed',
+    createdAt:   row.created_at   || '',
+    doneByAdmin: false,
+    planName,   // ← nome do plano ou null
   };
 }
 
@@ -630,6 +947,7 @@ function renderAppointments() {
 
   const list = document.getElementById('appt-list');
   if (!list) return;
+
   if (!appts.length) {
     list.innerHTML = `<div class="empty-state">
       <div class="empty-icon">📅</div>
@@ -638,13 +956,16 @@ function renderAppointments() {
       <button class="btn-outline" onclick="goToBook()" style="margin-top:20px;">Agendar Agora</button>
     </div>`; return;
   }
+
   list.innerHTML = appts.map(a => {
     const sc  = a.status === 'confirmed' ? 'confirmed' : a.status === 'cancelled' ? 'cancelled' : 'past';
     const lbl = a.status === 'confirmed' ? 'Confirmado' : a.status === 'cancelled' ? 'Cancelado' : 'Realizado';
+    const planBadge = a.planName
+      ? `<span class="plan-badge-inline">PLANO ${a.planName.toUpperCase()}</span>` : '';
     return `
     <div class="appt-card ${sc}" id="appt-${a.id}">
       <div class="appt-top">
-        <div class="appt-service">${a.service}</div>
+        <div class="appt-service">${a.service} ${planBadge}</div>
         <span class="appt-badge badge-${sc}">${lbl}</span>
       </div>
       <div class="appt-info">
@@ -685,8 +1006,18 @@ function openCancelModal(id) {
 
 function closeCancelModal() { document.getElementById('cancel-modal').classList.remove('open'); }
 
-function doCancel() {
+async function doCancel() {
+  const db   = getDB();
+  const appt = db.appointments.find(a => a.id === state.cancelId);
   cancelAppointment(state.cancelId);
+
+  if (appt?._supabaseId) {
+    await supabaseClient
+      .from('appointments')
+      .update({ status: 'cancelled' })
+      .eq('id', appt._supabaseId);
+  }
+
   closeCancelModal();
   renderAppointments();
   renderHome();
@@ -730,6 +1061,31 @@ function renderProfile() {
   if (nameInput)  nameInput.value  = profile.name !== 'Visitante' ? profile.name : '';
   if (phoneInput) phoneInput.value = profile.phone || '';
   if (emailInput) emailInput.value = profile.email || '';
+
+  // Botão Chamar Pila no WhatsApp
+  const menuList = document.querySelector('.menu-list');
+  if (menuList && !document.getElementById('whatsapp-pila-btn')) {
+    const waItem = document.createElement('div');
+    waItem.className = 'menu-item';
+    waItem.id = 'whatsapp-pila-btn';
+    waItem.setAttribute('onclick', 'callPilaWhatsApp()');
+    waItem.innerHTML = `
+      <div class="menu-icon" style="background:rgba(37,211,102,.15);color:#25D366;">
+        <i class="fab fa-whatsapp"></i>
+      </div>
+      <div class="menu-text">
+        <strong>Chamar Pila</strong>
+        <span>Abrir conversa no WhatsApp</span>
+      </div>
+      <i class="fas fa-chevron-right menu-arrow"></i>`;
+    menuList.insertBefore(waItem, menuList.firstChild);
+  }
+}
+
+function callPilaWhatsApp() {
+  const phone = '5517992680298';
+  const msg   = encodeURIComponent('Olá Pila! Gostaria de verificar os horários disponíveis.');
+  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
 }
 
 function saveProfileForm() {
@@ -767,7 +1123,7 @@ function exportBackup() {
   const db      = getDB();
   const profile = getProfile();
   const backup  = {
-    exportedAt:  new Date().toISOString(),
+    exportedAt:   new Date().toISOString(),
     profile,
     appointments: db.appointments,
     statistics: {
@@ -814,30 +1170,33 @@ function checkAdmin() {
 }
 
 // ════════════════════════════════════════════════════
-//  ADMIN PANEL — CORRIGIDO: usa dados do Supabase
+//  ADMIN PANEL
 // ════════════════════════════════════════════════════
 async function renderAdmin() {
-  // Mostrar loading nos stats enquanto busca
-  const statsEl = document.getElementById('admin-stats');
-  if (statsEl) statsEl.innerHTML = `
-    <div class="admin-stat" style="grid-column:span 2;text-align:center;padding:20px;">
-      <div style="color:var(--gray);font-size:13px;"><i class="fas fa-spin fa-spinner" style="margin-right:8px;"></i>Carregando dados do banco...</div>
-    </div>`;
+  // Loading
+  ['admin-stats','admin-needs','admin-appt-list'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    el.style.display = 'none';
+    const prev = el.previousElementSibling;
+    if (prev && (prev.classList.contains('section-header') || prev.classList.contains('needs-grid')))
+      prev.style.display = 'none';
+  });
+  ['adm-filter-all','adm-filter-today','adm-filter-confirmed','adm-filter-cancelled'].forEach(fid => {
+    const fb = document.getElementById(fid);
+    if (fb) { const bar = fb.closest('.filter-bar'); if (bar) bar.style.display='none'; }
+  });
 
-  // Buscar do Supabase
+  // Buscar Supabase
   const sbData = await fetchSupabaseAppointments();
   state.supabaseAppts = sbData;
 
-  // Converter para formato local para exibição
-  const sbAppts = sbData.map(supabaseToLocal);
+  const sbAppts = sbData.map(supabaseToLocal).filter(Boolean);
 
-  renderAdminStats(sbAppts);
-  renderAdminNeeds(sbAppts);
-  renderTodayList(sbAppts);
-  renderRevenueChart(sbAppts);
-  renderBlockedDates();
-  renderScheduleGrid();
-  renderAdminAppts(sbAppts);
+  // Tabs do admin
+  renderAdminTabs();
+  switchAdminTab(state.adminTab, sbAppts);
 
   const todayEl = document.getElementById('admin-today-date');
   if (todayEl) {
@@ -847,63 +1206,135 @@ async function renderAdmin() {
   }
 }
 
-/* STATS — CORRIGIDO: recebe lista do Supabase */
-function renderAdminStats(sbAppts) {
-  const today      = fmtDate(new Date());
-  const confirmed  = sbAppts.filter(a => a.status !== 'cancelled');
-  const todayAppts = confirmed.filter(a => a.date === today);
-  const weekRevenue= calcWeekRevenue(sbAppts).reduce((s,v) => s+v, 0);
-  const totalRev   = confirmed.reduce((s,a) => s + a.price, 0);
-  const cancelled  = sbAppts.filter(a => a.status === 'cancelled').length;
+// ── Renderizar barra de tabs do admin ──
+function renderAdminTabs() {
+  const header = document.querySelector('.admin-header');
+  if (!header) return;
 
-  document.getElementById('admin-stats').innerHTML = `
-    <div class="admin-stat">
-      <div class="admin-stat-icon">📅</div>
-      <div class="admin-stat-val">${todayAppts.length}</div>
-      <div class="admin-stat-label">Agend. Hoje</div>
-    </div>
-    <div class="admin-stat green">
-      <div class="admin-stat-icon">💰</div>
-      <div class="admin-stat-val">R$${weekRevenue.toFixed(0)}</div>
-      <div class="admin-stat-label">Esta Semana</div>
-    </div>
-    <div class="admin-stat blue">
-      <div class="admin-stat-icon">📊</div>
-      <div class="admin-stat-val">R$${totalRev.toFixed(0)}</div>
-      <div class="admin-stat-label">Total Geral</div>
-    </div>
-    <div class="admin-stat red">
-      <div class="admin-stat-icon">❌</div>
-      <div class="admin-stat-val">${cancelled}</div>
-      <div class="admin-stat-label">Cancelados</div>
-    </div>`;
+  let tabBar = document.getElementById('admin-tab-bar');
+  if (!tabBar) {
+    tabBar = document.createElement('div');
+    tabBar.id = 'admin-tab-bar';
+    tabBar.className = 'admin-tab-bar';
+    header.after(tabBar);
+  }
+
+  const tabs = [
+    { id:'hoje',      icon:'fas fa-calendar-day',  label:'Hoje'      },
+    { id:'receita',   icon:'fas fa-chart-bar',      label:'Receita'   },
+    { id:'bloqueios', icon:'fas fa-ban',            label:'Bloqueios' },
+    { id:'horarios',  icon:'fas fa-clock',          label:'Horários'  },
+    { id:'planos',    icon:'fas fa-shield-halved',  label:'Planos'    },
+  ];
+
+  tabBar.innerHTML = tabs.map(t => `
+    <button class="admin-tab-btn ${state.adminTab===t.id?'active':''}"
+            onclick="switchAdminTab('${t.id}')">
+      <i class="${t.icon}"></i>
+      <span>${t.label}</span>
+    </button>
+  `).join('');
 }
 
-/* TODAY LIST — CORRIGIDO: usa dados do Supabase */
+// ── Trocar de aba no admin ──
+function switchAdminTab(tabId, sbAppts) {
+  state.adminTab = tabId;
+
+  // Atualizar botões
+  document.querySelectorAll('.admin-tab-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick')?.includes(`'${tabId}'`));
+  });
+
+  // Conteúdo dinâmico
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+  area.innerHTML = '';
+
+  const appts = sbAppts || state.supabaseAppts.map(supabaseToLocal).filter(Boolean);
+
+  switch (tabId) {
+    case 'hoje':      renderTodayList(appts);    break;
+    case 'receita':   renderRevenueChart(appts); break;
+    case 'bloqueios': renderBlockPanel();         break;
+    case 'horarios':  renderSchedulePanel();      break;
+    case 'planos':    renderPlansAdmin(appts);    break;
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  ADMIN — ABA HOJE
+// ════════════════════════════════════════════════════
 function renderTodayList(sbAppts) {
-  const today = fmtDate(new Date());
-  const list  = document.getElementById('today-list');
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+
+  area.innerHTML = `
+    <div style="padding:0 20px 14px;display:flex;align-items:center;gap:10px;">
+      <input type="date" id="today-date-picker" style="
+        flex:1;background:var(--dark3);border:1px solid rgba(255,255,255,.1);
+        border-radius:12px;padding:11px 14px;color:var(--white);font-size:14px;
+        font-family:Inter,sans-serif;outline:none;color-scheme:dark;" />
+      <button onclick="renderTodayListByPicker()" style="
+        background:var(--gold);color:var(--dark);border:none;border-radius:12px;
+        padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">
+        Ver Cortes
+      </button>
+    </div>
+    <div id="today-list" class="today-list"></div>`;
+
+  // Data padrão = hoje
+  const todayISO = new Date().toISOString().split('T')[0];
+  document.getElementById('today-date-picker').value = todayISO;
+
+  window._adminSbAppts = sbAppts;
+  _renderTodaySlots(sbAppts, todayISO);
+}
+
+function renderTodayListByPicker() {
+  const pickerVal = document.getElementById('today-date-picker')?.value;
+  const appts = window._adminSbAppts || state.supabaseAppts.map(supabaseToLocal).filter(Boolean);
+  _renderTodaySlots(appts, pickerVal);
+}
+
+function _renderTodaySlots(sbAppts, dateISO) {
+  const parts   = (dateISO || '').split('-');
+  const dateStr = parts.length===3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : fmtDate(new Date());
+
+  const list = document.getElementById('today-list');
   if (!list) return;
 
   const todayAppts = sbAppts
-    .filter(a => a.date === today)
+    .filter(a => a.date === dateStr)
     .sort((a,b) => a.time.localeCompare(b.time));
 
   if (!todayAppts.length) {
     list.innerHTML = `<div class="empty-state" style="padding:30px 20px;">
       <div class="empty-icon" style="font-size:48px;">😴</div>
-      <div class="empty-text">Nenhum agendamento hoje</div>
+      <div class="empty-text">Nenhum agendamento para esta data</div>
     </div>`; return;
   }
 
   list.innerHTML = todayAppts.map(a => {
     const isDone      = a.status === 'past';
     const isCancelled = a.status === 'cancelled';
+
+    // Badge de plano
+    const planBadge = a.planName
+      ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,.15);
+            color:var(--gold);font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;
+            border:1px solid rgba(201,168,76,.3);margin-left:6px;letter-spacing:.8px;">
+           <i class="fas fa-crown" style="font-size:8px;"></i>PLANO ${a.planName.toUpperCase()}
+         </span>` : '';
+
     return `
     <div class="today-slot ${isDone?'done':''} ${isCancelled?'cancelled-slot':''}" id="ts-${a.id}">
       <div class="today-time">${a.time}</div>
       <div class="today-info">
-        <div class="today-client">${a.clientName} <span style="font-size:11px;color:var(--gray);">${a.clientPhone}</span></div>
+        <div class="today-client">
+          ${a.clientName}
+          ${planBadge}
+          <span style="font-size:11px;color:var(--gray);margin-left:4px;">${a.clientPhone}</span>
+        </div>
         <div class="today-service">${a.service}</div>
         <div class="today-price">${a.priceStr}</div>
       </div>
@@ -921,32 +1352,36 @@ function renderTodayList(sbAppts) {
 }
 
 function adminMarkDone(id) {
-  // Se for id local
-  if (!id.startsWith('sb_')) {
-    markDone(id);
-  }
-  // Recarregar admin
+  if (!id.startsWith('sb_')) markDone(id);
   renderAdmin();
   showToast('✅ Atendimento concluído!','success');
 }
 
-function adminCancelAppt(id) {
+async function adminCancelAppt(id) {
   if (!confirm('Cancelar este agendamento?')) return;
   if (!id.startsWith('sb_')) {
+    const db   = getDB();
+    const appt = db.appointments.find(a => a.id === id);
     cancelAppointment(id);
+    if (appt?._supabaseId)
+      await supabaseClient.from('appointments').update({ status:'cancelled' }).eq('id', appt._supabaseId);
+  } else {
+    const sbId = id.replace('sb_', '');
+    await supabaseClient.from('appointments').update({ status:'cancelled' }).eq('id', sbId);
   }
   renderAdmin();
   showToast('❌ Agendamento cancelado.','error');
 }
 
-/* REVENUE CHART — CORRIGIDO: usa dados do Supabase */
+// ════════════════════════════════════════════════════
+//  ADMIN — ABA RECEITA
+// ════════════════════════════════════════════════════
 function calcWeekRevenue(sbAppts) {
-  const appts   = sbAppts || state.supabaseAppts.map(supabaseToLocal);
   const revenue = [];
   for (let i = 6; i >= 0; i--) {
     const d   = new Date(); d.setDate(d.getDate() - i);
     const ds  = fmtDate(d);
-    const day = appts
+    const day = sbAppts
       .filter(a => a.date === ds && a.status !== 'cancelled')
       .reduce((s,a) => s + a.price, 0);
     revenue.push(day);
@@ -954,97 +1389,111 @@ function calcWeekRevenue(sbAppts) {
   return revenue;
 }
 
-function renderAdminNeeds(sbAppts) {
-  const db          = getDB();
-  const today       = fmtDate(new Date());
-  const confirmed   = sbAppts.filter(a => a.status === 'confirmed').length;
-  const todayAppts  = sbAppts.filter(a => a.date === today && a.status === 'confirmed').length;
-  const activeCount = (db.activeSlots || ALL_SLOTS).length;
-  const blockedCount= db.blockedDates.length;
-  const needs = [
-    { title:'Agendamentos confirmados', detail:`${confirmed} agend. no total`,       status: confirmed    ?'ok':'warn', note: confirmed    ?'Agenda ativa'                :'Sem confirmações. Incentive clientes.' },
-    { title:'Horários ativos',          detail:`${activeCount}/${ALL_SLOTS.length}`, status: activeCount>=12?'ok':'warn', note: activeCount===ALL_SLOTS.length?'Todos os horários liberados':'Revise slots disponíveis' },
-    { title:'Bloqueio de datas',        detail:`${blockedCount} data(s)`,            status: blockedCount ?'ok':'warn', note: blockedCount ?'Proteção configurada'        :'Adicione bloqueios na agenda' },
-    { title:'Atendimentos hoje',        detail:`${todayAppts} confirmação(ões)`,     status: todayAppts   ?'ok':'warn', note: todayAppts   ?'Hoje tem horário marcado'    :'Sem agendamentos para hoje' },
-  ];
-  const container = document.getElementById('admin-needs');
-  if (!container) return;
-  container.innerHTML = needs.map(item => `
-    <div class="admin-need-card">
-      <div class="admin-need-title">${item.title}</div>
-      <div class="admin-need-detail">${item.detail}</div>
-      <div class="admin-need-status ${item.status}">${item.note}</div>
-    </div>`).join('');
-}
-
 function renderRevenueChart(sbAppts) {
-  const canvas = document.getElementById('revenue-chart');
-  if (!canvas) return;
-  const ctx     = canvas.getContext('2d');
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+
   const revenue = calcWeekRevenue(sbAppts);
   const total   = revenue.reduce((s,v) => s+v, 0);
 
-  const totalEl = document.getElementById('chart-total-val');
-  if (totalEl) totalEl.textContent = 'R$ ' + total.toFixed(0);
-
   const days   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const daysEl = document.getElementById('chart-days');
-  if (daysEl) {
-    const labels = [];
-    for (let i=6;i>=0;i--) { const d=new Date(); d.setDate(d.getDate()-i); labels.push(days[d.getDay()]); }
-    daysEl.innerHTML = labels.map(d => `<div class="chart-day-label">${d}</div>`).join('');
-  }
+  const labels = [];
+  for (let i=6;i>=0;i--) { const d=new Date(); d.setDate(d.getDate()-i); labels.push(days[d.getDay()]); }
 
-  const dpr  = window.devicePixelRatio || 1;
-  const W    = canvas.parentElement.clientWidth - 40;
-  const H    = 160;
-  canvas.width  = W * dpr; canvas.height = H * dpr;
-  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-  ctx.scale(dpr, dpr);
+  area.innerHTML = `
+    <div class="chart-container" style="margin:16px 20px;">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Receita dos últimos 7 dias</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px;">Agendamentos confirmados</div>
+        </div>
+        <div class="chart-total">
+          <div class="chart-total-val" id="chart-total-val">R$ ${total.toFixed(0)}</div>
+          <div class="chart-total-label">Esta semana</div>
+        </div>
+      </div>
+      <canvas id="revenue-chart" style="width:100%;height:160px;display:block;"></canvas>
+      <div class="chart-days" id="chart-days">
+        ${labels.map(d => `<div class="chart-day-label">${d}</div>`).join('')}
+      </div>
+    </div>`;
 
-  const max    = Math.max(...revenue, 100);
-  const pad    = { top:10, right:10, bottom:20, left:10 };
-  const chartW = W - pad.left - pad.right;
-  const chartH = H - pad.top  - pad.bottom;
-  const barW   = chartW / revenue.length;
-  ctx.clearRect(0,0,W,H);
+  // Desenhar canvas
+  setTimeout(() => {
+    const canvas = document.getElementById('revenue-chart');
+    if (!canvas) return;
+    const ctx  = canvas.getContext('2d');
+    const dpr  = window.devicePixelRatio || 1;
+    const W    = canvas.parentElement.clientWidth - 40;
+    const H    = 160;
+    canvas.width  = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
 
-  ctx.strokeStyle = 'rgba(255,255,255,.05)';
-  ctx.lineWidth   = 1;
-  [0,.25,.5,.75,1].forEach(pct => {
-    const y = pad.top + chartH * (1-pct);
-    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
-  });
+    const max    = Math.max(...revenue, 100);
+    const pad    = { top:10, right:10, bottom:20, left:10 };
+    const chartW = W - pad.left - pad.right;
+    const chartH = H - pad.top  - pad.bottom;
+    const barW   = chartW / revenue.length;
+    ctx.clearRect(0,0,W,H);
 
-  revenue.forEach((val,i) => {
-    const x    = pad.left + i * barW + barW * .15;
-    const bW   = barW * .7;
-    const bH   = (val/max) * chartH;
-    const y    = pad.top + chartH - bH;
-    const isToday = i === 6;
-    const grad = ctx.createLinearGradient(0,y,0,y+bH);
-    grad.addColorStop(0, isToday?'#f0c060':'#c9a84c');
-    grad.addColorStop(1, isToday?'#a07830':'rgba(201,168,76,.2)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.roundRect(x,y,bW,bH,[6,6,2,2]);
-    ctx.fill();
-    if (val > 0) {
-      ctx.fillStyle = isToday?'#f0c060':'rgba(255,255,255,.7)';
-      ctx.font      = `bold ${Math.min(10,bW*.4)}px Inter`;
-      ctx.textAlign = 'center';
-      ctx.fillText('R$'+val.toFixed(0), x+bW/2, Math.max(y-4,pad.top+8));
-    }
-  });
+    ctx.strokeStyle = 'rgba(255,255,255,.05)';
+    ctx.lineWidth   = 1;
+    [0,.25,.5,.75,1].forEach(pct => {
+      const y = pad.top + chartH * (1-pct);
+      ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(W-pad.right,y); ctx.stroke();
+    });
+
+    revenue.forEach((val,i) => {
+      const x    = pad.left + i * barW + barW * .15;
+      const bW   = barW * .7;
+      const bH   = (val/max) * chartH;
+      const y    = pad.top + chartH - bH;
+      const isToday = i === 6;
+      const grad = ctx.createLinearGradient(0,y,0,y+bH);
+      grad.addColorStop(0, isToday?'#f0c060':'#c9a84c');
+      grad.addColorStop(1, isToday?'#a07830':'rgba(201,168,76,.2)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(x,y,bW,bH,[6,6,2,2]);
+      ctx.fill();
+      if (val > 0) {
+        ctx.fillStyle = isToday?'#f0c060':'rgba(255,255,255,.7)';
+        ctx.font      = `bold ${Math.min(10,bW*.4)}px Inter`;
+        ctx.textAlign = 'center';
+        ctx.fillText('R$'+val.toFixed(0), x+bW/2, Math.max(y-4,pad.top+8));
+      }
+    });
+  }, 80);
 }
 
-/* BLOCKED DATES */
+// ════════════════════════════════════════════════════
+//  ADMIN — ABA BLOQUEIOS
+// ════════════════════════════════════════════════════
+function renderBlockPanel() {
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+
+  const db = getDB();
+
+  area.innerHTML = `
+    <div style="padding:0 20px;">
+      <div class="block-form" style="margin:0 0 16px;">
+        <input type="date" id="block-date-input" style="color-scheme:dark;" />
+        <button onclick="blockDate()">Bloquear</button>
+      </div>
+      <div id="blocked-dates" class="blocked-dates"></div>
+    </div>`;
+
+  renderBlockedDates();
+}
+
 function renderBlockedDates() {
   const db   = getDB();
   const cont = document.getElementById('blocked-dates');
   if (!cont) return;
   if (!db.blockedDates.length) {
-    cont.innerHTML = `<div style="font-size:13px;color:var(--gray);padding:0 0 4px;">Nenhuma data bloqueada.</div>`;
+    cont.innerHTML = `<div style="font-size:13px;color:var(--gray);padding:4px 0;">Nenhuma data bloqueada.</div>`;
     return;
   }
   cont.innerHTML = db.blockedDates.map(d => `
@@ -1054,29 +1503,66 @@ function renderBlockedDates() {
     </div>`).join('');
 }
 
-function blockDate() {
+async function blockDate() {
   const input = document.getElementById('block-date-input');
-  if (!input.value) return showToast('⚠️ Escolha uma data!','error');
-  const d  = new Date(input.value + 'T12:00:00');
+  if (!input?.value) return showToast('⚠️ Escolha uma data!','error');
+  const dateISO = input.value;
+  const d  = new Date(dateISO + 'T12:00:00');
   const ds = fmtDate(d);
   const db = getDB();
   if (db.blockedDates.includes(ds)) return showToast('⚠️ Data já bloqueada!','error');
   db.blockedDates.push(ds);
   saveDB(db);
+
+  await supabaseClient.from('appointments').insert([{
+    client_name:'__BLOCKED_DAY__', phone:'', service:'__block__',
+    appointment_date: dateISO, appointment_time: '00:00', status:'confirmed',
+  }]);
+
+  fetchSupabaseAppointments().then(data => { state.supabaseAppts = data; });
   renderBlockedDates();
   input.value = '';
   showToast(`🚫 ${ds} bloqueado!`,'success');
 }
 
-function unblockDate(d) {
+async function unblockDate(d) {
   const db = getDB();
   db.blockedDates = db.blockedDates.filter(bd => bd !== d);
   saveDB(db);
+
+  const dateISO = d.split('/').reverse().join('-');
+  await supabaseClient.from('appointments')
+    .delete()
+    .eq('client_name', '__BLOCKED_DAY__')
+    .eq('appointment_date', dateISO);
+
+  fetchSupabaseAppointments().then(data => { state.supabaseAppts = data; });
   renderBlockedDates();
   showToast(`✅ ${d} desbloqueado!`,'success');
 }
 
-/* SCHEDULE GRID */
+// ════════════════════════════════════════════════════
+//  ADMIN — ABA HORÁRIOS
+// ════════════════════════════════════════════════════
+function renderSchedulePanel() {
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+
+  area.innerHTML = `
+    <div style="padding:0 20px;">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Toque para ativar/desativar um horário. 
+        <span style="color:var(--green);">Verde = ativo</span>.
+      </p>
+      <div id="schedule-grid" class="schedule-grid"></div>
+      <button class="btn-primary" style="margin:20px 0 0;" onclick="saveSchedule()">
+        <i class="fas fa-save" style="margin-right:8px;"></i>Salvar Horários
+      </button>
+    </div>`;
+
+  renderScheduleGrid();
+}
+
 function renderScheduleGrid() {
   const db     = getDB();
   const active = new Set(db.activeSlots || ALL_SLOTS);
@@ -1101,58 +1587,78 @@ function toggleSlot(slot) {
 
 function saveSchedule() { showToast('✅ Horários salvos!','success'); }
 
-/* ADMIN APPTS LIST — CORRIGIDO: usa dados do Supabase */
-function adminFilterAppts(filter) {
-  state.adminApptFilter = filter;
-  ['all','today','confirmed','cancelled'].forEach(f => {
-    document.getElementById('adm-filter-'+f)?.classList.toggle('active', f === filter);
+// ════════════════════════════════════════════════════
+//  ★  ADMIN — ABA PLANOS
+//     Lista todos os agendamentos feitos via plano
+// ════════════════════════════════════════════════════
+function renderPlansAdmin(sbAppts) {
+  const area = document.getElementById('admin-tab-content');
+  if (!area) return;
+
+  // Filtrar apenas agendamentos com plano
+  const planAppts = sbAppts
+    .filter(a => !!a.planName && a.status !== 'cancelled')
+    .sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
+
+  // Contar por plano
+  const counts = { basic:0, plus:0, gold:0 };
+  planAppts.forEach(a => {
+    const k = a.planName?.toLowerCase();
+    if (counts[k] !== undefined) counts[k]++;
   });
-  renderAdminAppts(state.supabaseAppts.map(supabaseToLocal));
-}
 
-function renderAdminAppts(sbAppts) {
-  const appts0 = sbAppts || state.supabaseAppts.map(supabaseToLocal);
-  const today  = fmtDate(new Date());
-  let appts    = [...appts0];
-  if (state.adminApptFilter === 'today')          appts = appts.filter(a => a.date === today);
-  else if (state.adminApptFilter === 'confirmed') appts = appts.filter(a => a.status === 'confirmed');
-  else if (state.adminApptFilter === 'cancelled') appts = appts.filter(a => a.status === 'cancelled');
+  area.innerHTML = `
+    <!-- Resumo dos planos -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 20px 20px;">
+      ${PLANS.map(p => `
+        <div style="background:${p.colorBg};border:1px solid ${p.colorBorder};
+            border-radius:14px;padding:16px 12px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:4px;">${p.emoji}</div>
+          <div style="font-family:Oswald,sans-serif;font-size:16px;font-weight:700;color:${p.color};">${p.name}</div>
+          <div style="font-family:Oswald,sans-serif;font-size:26px;font-weight:700;color:var(--white);margin:4px 0;">
+            ${counts[p.id]}
+          </div>
+          <div style="font-size:10px;color:var(--gray);letter-spacing:.5px;">agendamentos</div>
+        </div>`).join('')}
+    </div>
 
-  const list = document.getElementById('admin-appt-list');
-  if (!list) return;
-  if (!appts.length) {
-    list.innerHTML = `<div class="empty-state" style="padding:30px 20px;">
-      <div class="empty-icon" style="font-size:48px;">📋</div>
-      <div class="empty-text">Nenhum agendamento aqui</div>
-    </div>`; return;
-  }
-  list.innerHTML = appts.map(a => {
-    const sc  = a.status === 'confirmed' ? 'confirmed' : a.status === 'cancelled' ? 'cancelled' : 'past';
-    const lbl = a.status === 'confirmed' ? 'Confirmado' : a.status === 'cancelled' ? 'Cancelado' : 'Realizado';
-    return `
-    <div class="appt-card ${sc}">
-      <div class="appt-top">
-        <div class="appt-service">${a.service}</div>
-        <span class="appt-badge badge-${sc}">${lbl}</span>
+    <!-- Lista dos clientes com plano -->
+    <div style="padding:0 20px;">
+      <div style="font-family:Oswald,sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;
+          display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-shield-halved" style="color:var(--gold);font-size:14px;"></i>
+        Clientes com Plano
       </div>
-      <div class="appt-info">
-        <div class="appt-detail"><i class="fas fa-user"></i>${a.clientName}</div>
-        <div class="appt-detail"><i class="fas fa-phone"></i>${a.clientPhone}</div>
-        <div class="appt-detail"><i class="fas fa-calendar"></i>${a.date}</div>
-        <div class="appt-detail"><i class="fas fa-clock"></i>${a.time}</div>
-        <div class="appt-detail"><i class="fas fa-tag"></i>${a.priceStr}</div>
-      </div>
-      ${a.status === 'confirmed' ? `
-      <div class="appt-actions">
-        <button class="appt-btn appt-btn-reschedule" onclick="adminMarkDone('${a.id}')">
-          <i class="fas fa-check"></i> Concluir
-        </button>
-        <button class="appt-btn appt-btn-cancel" onclick="adminCancelAppt('${a.id}')">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-      </div>` : ''}
+      ${planAppts.length === 0
+        ? `<div class="empty-state" style="padding:30px 0;">
+            <div class="empty-icon" style="font-size:44px;">🛡️</div>
+            <div class="empty-text">Nenhum cliente usou plano ainda</div>
+           </div>`
+        : planAppts.map(a => {
+            const plan = PLANS.find(p => p.name.toLowerCase() === a.planName?.toLowerCase()) || PLANS[0];
+            return `
+            <div class="today-slot" style="margin-bottom:10px;border-color:${plan.colorBorder};background:${plan.colorBg};">
+              <div style="min-width:52px;text-align:center;">
+                <div style="font-size:20px;">${plan.emoji}</div>
+                <div style="font-family:Oswald,sans-serif;font-size:10px;font-weight:700;
+                    color:${plan.color};letter-spacing:.5px;">${plan.name.toUpperCase()}</div>
+              </div>
+              <div class="today-info">
+                <div class="today-client">
+                  ${a.clientName}
+                  <span style="font-size:11px;color:var(--gray);margin-left:6px;">${a.clientPhone}</span>
+                </div>
+                <div class="today-service">${a.service}</div>
+                <div style="font-size:12px;color:var(--gray);margin-top:2px;">
+                  <i class="fas fa-calendar" style="margin-right:4px;color:var(--gold);font-size:10px;"></i>
+                  ${a.date} às ${a.time}
+                </div>
+              </div>
+              <span class="appt-badge badge-confirmed" style="white-space:nowrap;">Confirmado</span>
+            </div>`;
+          }).join('')
+      }
     </div>`;
-  }).join('');
 }
 
 // ════════════════════════════════════════════════════
@@ -1193,16 +1699,22 @@ function rippleEffect(el) {
   setTimeout(() => ripple.remove(), 700);
 }
 
-// Close modals on overlay click
+// Fechar modais ao clicar no overlay
 document.querySelectorAll('.modal-overlay').forEach(ov => {
   ov.addEventListener('click', e => {
-    if (e.target === ov) { closeModal(); closeCancelModal(); closeAdminModal(); }
+    if (e.target === ov) {
+      closeModal();
+      closeCancelModal();
+      closeAdminModal();
+      closePlanModal();
+    }
   });
 });
 
 window.addEventListener('resize', () => {
-  if (document.getElementById('page-admin').classList.contains('active'))
-    renderRevenueChart(state.supabaseAppts.map(supabaseToLocal));
+  if (state.adminTab === 'receita') {
+    renderRevenueChart(state.supabaseAppts.map(supabaseToLocal).filter(Boolean));
+  }
 });
 
 // ════════════════════════════════════════════════════
@@ -1217,8 +1729,6 @@ function init() {
     showPage('home');
   }
   renderProfile();
-
-  // Pré-carregar agendamentos do Supabase para bloquear slots já ocupados
   fetchSupabaseAppointments().then(data => { state.supabaseAppts = data; });
 }
 

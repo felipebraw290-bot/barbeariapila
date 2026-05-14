@@ -1190,5 +1190,5 @@ async function salvarAgendamento(data) {
     return;
   }
 
-  alert('Agendamento realizado com sucesso!');
+  alert('O agendamento foi realizado com sucesso!');
 }

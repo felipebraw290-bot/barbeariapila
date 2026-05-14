@@ -810,20 +810,29 @@ nav button:active{transform:scale(.88);}
   <!-- ADMIN -->
   <div id="page-admin" class="page">
     <div class="admin-header">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;position:relative;">
         <div>
-          <div class="admin-title">Painel Admin 🛡️</div>
+          <div class="admin-title">Painel Admin <span style="color:var(--gold);">🛡️</span></div>
           <div class="admin-sub">Gestão completa da barbearia</div>
-          <div class="admin-badge"><i class="fas fa-lock" style="font-size:10px;"></i> Pila · Mestre Barbeiro</div>
+          <div class="admin-badge"><i class="fas fa-crown" style="font-size:11px;"></i> Pila · Mestre Barbeiro</div>
         </div>
-        <button class="icon-btn" onclick="showPage('home')" title="Voltar"><i class="fas fa-arrow-left"></i></button>
+        <button class="icon-btn" onclick="showPage('home')" title="Voltar" style="margin-top:4px;"><i class="fas fa-arrow-left"></i></button>
       </div>
-      <div id="admin-today-date" style="font-size:12px;color:var(--gray);margin-top:10px;"></div>
+      <div id="admin-today-date" style="font-size:12px;color:var(--gray);margin-top:12px;position:relative;"></div>
+    </div>
+    <!-- ADMIN TAB BAR -->
+    <div class="admin-tab-bar" id="admin-tab-bar">
+      <button class="admin-tab-btn active" id="adm-tab-overview" onclick="selectAdminTab('overview')">
+        <i class="fas fa-chart-pie"></i>Visão Geral
+      </button>
+      <button class="admin-tab-btn" id="adm-tab-agenda" onclick="selectAdminTab('agenda')">
+        <i class="fas fa-calendar-days"></i>Agenda
+      </button>
+      <button class="admin-tab-btn" id="adm-tab-config" onclick="selectAdminTab('config')">
+        <i class="fas fa-gear"></i>Config
+      </button>
     </div>
     <div id="admin-tab-content"></div>
-    <div id="admin-stats"     style="display:none;"></div>
-    <div id="admin-needs"     style="display:none;"></div>
-    <div id="admin-appt-list" style="display:none;"></div>
   </div>
 
   <!-- BOTTOM NAV -->

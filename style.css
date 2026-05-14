@@ -670,15 +670,3 @@ nav button:active { transform:scale(.88); }
 .font-oswald { font-family:'Oswald',sans-serif; }
 .mt-4 { margin-top:4px; }
 .pb-30 { padding-bottom:30px; }
-
-/* ══ MODIFICAÇÕES ══ */
-/* Ocultar seções removidas do admin */
-#admin-stats:empty { display:none !important; }
-#admin-needs:empty { display:none !important; }
-#admin-appt-list:empty { display:none !important; }
-
-/* Seletor de data — cortes do dia */
-#today-date-picker { color-scheme:dark; }
-
-/* WhatsApp Pila */
-#whatsapp-pila-btn .menu-icon i { font-size:20px; }

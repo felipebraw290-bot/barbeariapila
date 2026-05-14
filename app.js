@@ -19,35 +19,13 @@ const supabaseClient = supabase.createClient(
 //  DATABASE — LocalStorage
 // ════════════════════════════════════════════════════
 const DB_KEY = 'barberking_pila_v2';
-const THEME_KEY = 'barberking_theme';
 
 // ════════════════════════════════════════════════════
-//  THEME MANAGEMENT
+//  THEME — dark only (dark mode removido)
 // ════════════════════════════════════════════════════
-function initTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
-  applyTheme(savedTheme);
-}
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const isLight = html.classList.contains('light-mode');
-  const newTheme = isLight ? 'dark' : 'light';
-  applyTheme(newTheme);
-  localStorage.setItem(THEME_KEY, newTheme);
-}
-
-function applyTheme(theme) {
-  const html = document.documentElement;
-  const btn = document.querySelector('[onclick="toggleTheme()"] i');
-  if (theme === 'light') {
-    html.classList.add('light-mode');
-    if (btn) btn.className = 'fas fa-sun';
-  } else {
-    html.classList.remove('light-mode');
-    if (btn) btn.className = 'fas fa-moon';
-  }
-}
+function initTheme() {}
+function toggleTheme() {}
+function applyTheme() {}
 
 function getDB() {
   try {
@@ -322,6 +300,9 @@ function selectService(id) {
   vibrate();
 }
 
+// ════════════════════════════════════════════════════
+//  DATA — corrigido: addEventListener garante toque em mobile
+// ════════════════════════════════════════════════════
 function renderDateSlots() {
   const db = getDB();
   const scroll = document.getElementById('date-scroll');
@@ -349,14 +330,21 @@ function renderDateSlots() {
     const dateStr = fmtDate(d);
     const isBlocked = db.blockedDates.includes(dateStr);
     html += `<div class="date-item ${dateStr===selectedDate?'selected':''} ${isBlocked?'blocked':''}"
-      ${!isBlocked ? `onclick="selectDate(this,'${dateStr}')"` : 'title="Data bloqueada"'}
-      id="date-${i}">
+      data-date="${dateStr}" id="date-${i}" ${isBlocked ? 'title="Data bloqueada"' : ''}>
       <div class="date-day">${i===0?'Hoje':days[d.getDay()]}</div>
       <div class="date-num">${d.getDate()}</div>
-      <div class="date-day">${months[d.getMonth()]}</div>
+      <div class="date-month">${months[d.getMonth()]}</div>
     </div>`;
   }
   scroll.innerHTML = html;
+
+  // Fix mobile: vincula click via JS (não inline) para garantir seleção por toque
+  scroll.querySelectorAll('.date-item:not(.blocked)').forEach(el => {
+    el.addEventListener('click', function() {
+      selectDate(this, this.dataset.date);
+    });
+  });
+
   renderSlots();
 }
 
@@ -474,7 +462,7 @@ async function confirmBooking() {
     time:    state.selectedSlot,
   });
 
-  if (!ok) return; // erro já exibido via showToast dentro de salvarAgendamento
+  if (!ok) return;
 
   closeModal();
   showToast('✅ Agendamento confirmado! Até logo.', 'success');
@@ -495,7 +483,7 @@ async function salvarAgendamento(data) {
       client_name:       data.name,
       phone:             data.phone,
       service:           data.service,
-      appointment_date:  data.date.split('/').reverse().join('-'), // DD/MM/YYYY → YYYY-MM-DD
+      appointment_date:  data.date.split('/').reverse().join('-'),
       appointment_time:  data.time,
     }]);
 
@@ -598,8 +586,8 @@ function doCancel() {
 }
 
 function rescheduleAppt(id) {
-  const db = getDB();
-  const a  = db.appointments.find(ap => ap.id === id);
+  const db  = getDB();
+  const a   = db.appointments.find(ap => ap.id === id);
   if (!a) return;
 
   const service = SERVICES.find(s => s.id === a.serviceId);
@@ -665,39 +653,7 @@ function scrollToProfileForm() {
   }
 }
 
-function clearData() {
-  if (confirm('Tem certeza? Todos os dados locais serão apagados.')) {
-    localStorage.removeItem(DB_KEY);
-    renderProfile();
-    renderHome();
-    showToast('🗑️ Dados limpos!', 'error');
-  }
-}
-
-function exportBackup() {
-  const db      = getDB();
-  const profile = getProfile();
-  const backup  = {
-    exportedAt: new Date().toISOString(),
-    profile,
-    appointments: db.appointments,
-    statistics: {
-      totalAppointments: db.appointments.length,
-      totalSpent:        db.appointments.filter(a => a.status !== 'cancelled').reduce((s,a) => s+a.price, 0),
-      cancelledCount:    db.appointments.filter(a => a.status === 'cancelled').length,
-    }
-  };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-  const url  = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href     = url;
-  link.download = `barberking-backup-${new Date().toISOString().split('T')[0]}.json`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-  showToast('📥 Backup salvo com sucesso!', 'success');
-}
+// clearData e exportBackup REMOVIDOS conforme solicitado
 
 // ════════════════════════════════════════════════════
 //  ADMIN LOGIN
@@ -915,7 +871,6 @@ function renderRevenueChart() {
     const bW   = barW * .7;
     const bH   = (val / max) * chartH;
     const y    = pad.top + chartH - bH;
-    const dI   = new Date(); dI.setDate(dI.getDate() - (6-i));
     const isToday = i === 6;
 
     const grad = ctx.createLinearGradient(0, y, 0, y+bH);
@@ -1104,7 +1059,6 @@ window.addEventListener('resize', () => {
 //  INIT
 // ════════════════════════════════════════════════════
 function init() {
-  initTheme();
   const db = getDB();
   if (!db.profile || !db.profile.phone || db.profile.name === 'Visitante') {
     showPage('register');

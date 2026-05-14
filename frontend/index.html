@@ -1,239 +1,211 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BarberKing — Pila Premium Studio</title>
-  <meta name="theme-color" content="#0d0d0d">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0d0d0d"/>
+  <title>BarberKing — Pila</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
-<!-- PARTICLES -->
 <div id="particles"></div>
 
-<!-- APP -->
 <div id="app">
 
-  <!-- ═══════════════════════════════════════
-       REGISTER PAGE
-  ═══════════════════════════════════════ -->
-  <div id="register" class="page">
+  <!-- ══════════════ REGISTER PAGE ══════════════ -->
+  <div class="page" id="page-register">
     <div class="register-hero">
       <div class="register-card">
         <div class="register-badge">
-          <span>💈</span> BarberKing — Pila
+          <i class="fas fa-crown"></i> BarberKing Premium
         </div>
-        <h2>Bem-vindo ao<br><span style="color:var(--gold)">Studio Premium</span></h2>
-        <p>Para personalizar sua experiência, precisamos de alguns dados antes de continuar.</p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div>
-            <label class="form-label">Seu nome completo</label>
-            <input id="register-name" class="form-input" type="text" placeholder="Ex: João Silva" autocomplete="name">
-          </div>
-          <div>
-            <label class="form-label">WhatsApp</label>
-            <input id="register-phone" class="form-input" type="tel" placeholder="Ex: 11999999999" oninput="formatPhone(this)">
-          </div>
+        <h2>Bem-vindo ao Studio<br/><span style="color:var(--gold)">do Pila</span></h2>
+        <p>Crie seu perfil para agendar seu horário de forma rápida e fácil.</p>
+        <div class="form-group">
+          <label class="form-label">Nome Completo</label>
+          <input class="form-input" id="register-name" type="text" placeholder="Seu nome completo" autocomplete="name"/>
         </div>
-        <button class="btn-primary" style="margin:24px 0 0;" onclick="saveRegisterProfile()">
-          Entrar no Studio <i class="fas fa-arrow-right" style="margin-left:6px;"></i>
+        <div class="form-group">
+          <label class="form-label">WhatsApp</label>
+          <input class="form-input" id="register-phone" type="tel" placeholder="(xx) xxxxx-xxxx" oninput="formatPhone(this)" autocomplete="tel"/>
+        </div>
+        <button class="btn-primary" style="margin:8px 0 0;" onclick="saveRegisterProfile()">
+          <i class="fas fa-arrow-right"></i> Entrar no Studio
         </button>
-        <p class="register-note">Seus dados ficam salvos apenas no seu dispositivo.</p>
+        <p class="register-note"><i class="fas fa-lock" style="margin-right:4px;font-size:10px;"></i>Seus dados ficam apenas no seu dispositivo.</p>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════
-       HOME PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-home" class="page">
-
-    <!-- Hero Header -->
+  <!-- ══════════════ HOME PAGE ══════════════ -->
+  <div class="page" id="page-home">
     <div class="hero">
       <div class="hero-glow"></div>
       <div class="hero-top">
-        <div class="logo">BARBER<span>KING</span><small>PREMIUM STUDIO</small></div>
+        <div class="logo">Barber<span>King</span><small>PREMIUM STUDIO</small></div>
         <div class="hero-actions">
-          <button class="icon-btn" onclick="toggleTheme()" aria-label="Alternar tema">
-            <i class="fas fa-moon"></i>
-          </button>
-          <button class="icon-btn" onclick="showAdminLogin()" aria-label="Admin">
+          <button class="icon-btn" onclick="showAdminLogin()" title="Admin">
             <i class="fas fa-shield-halved"></i>
           </button>
         </div>
       </div>
-
       <div class="hero-content">
         <div class="greeting">
-          <span id="user-greeting">Bem-vindo! Agende seu horário com o Pila.</span>
+          <strong id="user-greeting">Olá!</strong>
         </div>
       </div>
 
-      <!-- Hero Banner — SEM botão Agendar -->
-      <div class="hero-banner" onclick="goToBook()" style="cursor:pointer;">
+      <!-- Hero banner -->
+      <div class="hero-banner">
         <div class="banner-inner">
-          <div class="banner-tag">OFERTA ESPECIAL</div>
-          <div class="banner-title">Combo<br>Cabelo + Barba</div>
-          <div class="banner-sub">Por apenas R$ 59,90 · Economia de R$ 5</div>
+          <div class="banner-tag">✂️ Premium Studio</div>
+          <div class="banner-title">Corte que<br/>transforma</div>
+          <div class="banner-sub">Agende com o Mestre Pila</div>
+          <button class="banner-cta" onclick="goToBook()">Agendar agora</button>
         </div>
         <div class="banner-scissors">✂️</div>
       </div>
     </div>
 
-    <!-- Barber Card -->
-    <div id="home-barber-card"></div>
+    <!-- Barber card -->
+    <div class="section-gap">
+      <div class="section-header">
+        <div class="section-title">Seu Barbeiro</div>
+      </div>
+      <div id="home-barber-card"></div>
+    </div>
 
-    <!-- Services Preview -->
+    <!-- Services preview -->
     <div class="section-gap">
       <div class="section-header">
         <div class="section-title">Serviços</div>
-        <div class="section-link" onclick="goToBook()">Ver todos →</div>
+        <div class="section-link" onclick="goToBook()">Ver todos</div>
       </div>
       <div class="services-preview" id="home-services"></div>
     </div>
-    <!-- Next Appointment -->
-    <div class="section-gap" style="padding-bottom:20px;">
+
+    <!-- Next appointment -->
+    <div class="section-gap" style="padding-bottom:10px;">
       <div class="section-header">
         <div class="section-title">Próximo Horário</div>
-        <div class="section-link" onclick="showPage('appointments')">Ver todos →</div>
+        <div class="section-link" onclick="showPage('appointments')">Histórico</div>
       </div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
     </div>
+  </div>
 
-  </div><!-- /page-home -->
-
-  <!-- ═══════════════════════════════════════
-       BOOK PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-book" class="page">
-    <div class="page-header">
-      <div class="page-title">Agendar</div>
-      <div class="page-subtitle">Escolha serviço, data e horário</div>
-    </div>
-
-    <!-- Step Indicator -->
-    <div class="step-indicator">
-      <div class="step-dot active" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
-      <div class="step-dot" id="dot-3"></div>
+  <!-- ══════════════ BOOK PAGE ══════════════ -->
+  <div class="page" id="page-book">
+    <div class="step-nav">
+      <button class="back-btn" onclick="handleBack()"><i class="fas fa-arrow-left"></i></button>
+      <div class="step-indicator" style="flex:1;">
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+        <div class="step-dot" id="dot-3"></div>
+      </div>
     </div>
 
     <!-- Step 1: Service -->
     <div id="step-1">
       <div class="step-head">
         <h2>Escolha o Serviço</h2>
-        <p>Selecione o que você deseja</p>
+        <p>Selecione o que deseja fazer hoje</p>
       </div>
-      <!-- Barber (single) -->
-      <div class="barber-select-card">
-        <div class="bsc-avatar">P<div class="online-dot"></div></div>
+      <div class="barber-select-card" style="margin-bottom:20px;">
+        <div class="bsc-avatar">P</div>
         <div class="bsc-info">
           <div class="bsc-name">Pila</div>
           <div class="bsc-role">Mestre Barbeiro</div>
           <div class="bsc-stats">
-            <div class="bsc-stat">⭐ <span>5.0</span></div>
-            <div class="bsc-stat">✂️ <span style="color:var(--green);">Disponível</span></div>
+            <div class="bsc-stat">Avaliação: <span>5.0 ★</span></div>
           </div>
         </div>
         <div class="bsc-check"><i class="fas fa-check"></i></div>
       </div>
-      <div class="step-head" style="padding-top:24px;">
-        <h2>Serviços</h2>
-        <p>Toque para selecionar</p>
-      </div>
       <div class="services-grid" id="services-grid"></div>
-      <button class="btn-primary" id="btn-next-1" onclick="goStep(2)" disabled>Escolher Data →</button>
+      <button class="btn-primary" id="btn-step1" disabled onclick="goStep(2)">
+        Continuar <i class="fas fa-arrow-right"></i>
+      </button>
     </div>
 
     <!-- Step 2: Date & Time -->
     <div id="step-2" style="display:none;">
-      <div class="step-nav">
-        <button class="back-btn" onclick="goStep(1)"><i class="fas fa-arrow-left"></i></button>
-        <div class="step-head" style="padding:0;flex:1;">
-          <h2>Data & Horário</h2>
-          <p>Selecione quando prefere</p>
-        </div>
+      <div class="step-head">
+        <h2>Data &amp; Horário</h2>
+        <p>Escolha quando prefere ser atendido</p>
       </div>
-      <div style="margin-top:20px;">
-        <div class="section-header" style="padding-bottom:10px;">
-          <div class="section-title" style="font-size:15px;">Escolha o dia</div>
-        </div>
-        <div class="date-scroll" id="date-scroll"></div>
-      </div>
-      <div style="margin-top:22px;">
-        <div class="slots-label">Horários disponíveis</div>
-        <div class="slots-grid" id="time-slots"></div>
-      </div>
-      <button class="btn-primary" id="btn-next-2" onclick="goStep(3)" disabled style="margin-top:20px;">Confirmar →</button>
+      <div class="date-scroll" id="date-scroll"></div>
+      <div class="slots-label" style="margin-top:20px;">Horários Disponíveis</div>
+      <div class="slots-grid" id="slots-grid"></div>
+      <button class="btn-primary" id="btn-step2" disabled onclick="goStep(3)">
+        Continuar <i class="fas fa-arrow-right"></i>
+      </button>
     </div>
 
-    <!-- Step 3: Summary & Form -->
+    <!-- Step 3: Confirm -->
     <div id="step-3" style="display:none;">
-      <div class="step-nav">
-        <button class="back-btn" onclick="goStep(2)"><i class="fas fa-arrow-left"></i></button>
-        <div class="step-head" style="padding:0;flex:1;">
-          <h2>Resumo</h2>
-          <p>Confirme seus dados</p>
-        </div>
+      <div class="step-head">
+        <h2>Confirmar Dados</h2>
+        <p>Revise as informações antes de confirmar</p>
       </div>
-      <div class="booking-summary-box" id="booking-summary" style="margin-top:20px;"></div>
+      <div class="booking-summary-box">
+        <div class="bs-title">Resumo do Agendamento</div>
+        <div id="booking-summary"></div>
+      </div>
       <div class="form-group">
-        <label class="form-label">Seu nome</label>
-        <input id="profile-name-input" class="form-input" type="text" placeholder="Nome completo" autocomplete="name">
+        <label class="form-label">Nome</label>
+        <input class="form-input" id="input-name" type="text" placeholder="Nome completo" oninput="validateForm()" autocomplete="name"/>
       </div>
       <div class="form-group">
         <label class="form-label">WhatsApp</label>
-        <input id="profile-phone-input" class="form-input" type="tel" placeholder="Ex: 11999999999" oninput="formatPhone(this)">
+        <input class="form-input" id="input-phone" type="tel" placeholder="(xx) xxxxx-xxxx" oninput="formatPhone(this);validateForm()" autocomplete="tel"/>
       </div>
       <div class="form-group">
-        <label class="form-label">E-mail (opcional)</label>
-        <input id="profile-email-input" class="form-input" type="email" placeholder="seu@email.com" autocomplete="email">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" id="input-email" type="email" placeholder="seu@email.com" oninput="validateForm()" autocomplete="email"/>
       </div>
-      <button class="btn-primary" onclick="confirmBooking()">
-        <i class="fas fa-check-circle" style="margin-right:6px;"></i>Confirmar Agendamento
+      <button class="btn-primary" id="btn-confirm" disabled onclick="openConfirmModal()">
+        <i class="fas fa-check"></i> Confirmar Agendamento
       </button>
     </div>
-  </div><!-- /page-book -->
+  </div>
 
-  <!-- ═══════════════════════════════════════
-       APPOINTMENTS PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-appointments" class="page">
+  <!-- ══════════════ APPOINTMENTS PAGE ══════════════ -->
+  <div class="page" id="page-appointments">
     <div class="page-header">
-      <div class="page-title">Meus Horários</div>
-      <div class="page-subtitle">Histórico de agendamentos</div>
+      <div class="page-title">Meus Agendamentos</div>
+      <div class="page-subtitle">Histórico e próximos horários</div>
     </div>
     <div class="filter-bar">
       <button class="filter-btn active" id="filter-all" onclick="filterAppts('all')">Todos</button>
-      <button class="filter-btn" id="filter-upcoming" onclick="filterAppts('upcoming')">Próximos</button>
+      <button class="filter-btn" id="filter-upcoming" onclick="filterAppts('upcoming')">Confirmados</button>
       <button class="filter-btn" id="filter-past" onclick="filterAppts('past')">Realizados</button>
       <button class="filter-btn" id="filter-cancelled" onclick="filterAppts('cancelled')">Cancelados</button>
     </div>
     <div class="appt-list" id="appt-list"></div>
-  </div><!-- /page-appointments -->
+  </div>
 
-  <!-- ═══════════════════════════════════════
-       PROFILE PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-profile" class="page">
+  <!-- ══════════════ PROFILE PAGE ══════════════ -->
+  <div class="page" id="page-profile">
     <div class="profile-hero">
-      <div id="profile-avatar" class="profile-avatar">?</div>
-      <div id="profile-name" class="profile-name">Visitante</div>
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div class="profile-name" id="profile-name">Carregando...</div>
       <div class="profile-since">Membro BarberKing</div>
     </div>
 
+    <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-num" id="stat-total">0</div>
         <div class="stat-label">Cortes</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num" id="stat-spent" style="font-size:18px;">R$0</div>
+        <div class="stat-num" id="stat-spent">R$0</div>
         <div class="stat-label">Investido</div>
       </div>
       <div class="stat-card">
@@ -242,86 +214,84 @@
       </div>
     </div>
 
+    <!-- Menu -->
     <div class="menu-list">
       <div class="menu-item" onclick="scrollToProfileForm()">
         <div class="menu-icon"><i class="fas fa-user-pen"></i></div>
-        <div class="menu-text"><strong>Editar Perfil</strong><span>Altere nome, WhatsApp e e-mail</span></div>
-        <div class="menu-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-text">
+          <strong>Editar Perfil</strong>
+          <span>Altere nome, WhatsApp e e-mail</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
       <div class="menu-item" onclick="showPage('appointments')">
-        <div class="menu-icon"><i class="fas fa-calendar-check"></i></div>
-        <div class="menu-text"><strong>Meus Agendamentos</strong><span>Ver histórico completo</span></div>
-        <div class="menu-arrow"><i class="fas fa-chevron-right"></i></div>
-      </div>
-      <div class="menu-item" onclick="exportBackup()">
-        <div class="menu-icon blue"><i class="fas fa-download"></i></div>
-        <div class="menu-text"><strong>Exportar Dados</strong><span>Backup em JSON</span></div>
-        <div class="menu-arrow"><i class="fas fa-chevron-right"></i></div>
-      </div>
-      <div class="menu-item" onclick="clearData()">
-        <div class="menu-icon danger"><i class="fas fa-trash"></i></div>
-        <div class="menu-text"><strong>Limpar Dados</strong><span>Apagar histórico local</span></div>
-        <div class="menu-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-icon blue"><i class="fas fa-calendar-check"></i></div>
+        <div class="menu-text">
+          <strong>Meus Agendamentos</strong>
+          <span>Ver histórico completo</span>
+        </div>
+        <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
     </div>
 
-    <!-- Edit Card (hidden by default) -->
-    <div id="profile-edit-card" class="profile-edit-card" style="display:none;margin-top:16px;">
+    <!-- Edit Form -->
+    <div id="profile-edit-card" class="profile-edit-card" style="margin-top:20px; display:none;">
       <div class="profile-edit-head">Editar Perfil</div>
       <div class="profile-edit-grid">
         <div class="profile-edit-field">
-          <label>Nome</label>
-          <input id="profile-name-input-edit" class="form-input" type="text" placeholder="Nome completo">
+          <label>NOME</label>
+          <input class="form-input" id="profile-name-input" type="text" placeholder="Nome completo" autocomplete="name"/>
         </div>
         <div class="profile-edit-field">
-          <label>WhatsApp</label>
-          <input id="profile-phone-input-edit" class="form-input" type="tel" placeholder="Ex: 11999999999" oninput="formatPhone(this)">
+          <label>WHATSAPP</label>
+          <input class="form-input" id="profile-phone-input" type="tel" placeholder="(xx) xxxxx-xxxx" oninput="formatPhone(this)" autocomplete="tel"/>
         </div>
         <div class="profile-edit-field">
-          <label>E-mail</label>
-          <input id="profile-email-input-edit" class="form-input" type="email" placeholder="seu@email.com">
+          <label>E-MAIL</label>
+          <input class="form-input" id="profile-email-input" type="email" placeholder="seu@email.com" autocomplete="email"/>
         </div>
       </div>
-      <button class="btn-primary" style="margin:20px 0 0;" onclick="saveProfileForm()">Salvar Alterações</button>
+      <button class="btn-primary" style="margin:16px 0 0;" onclick="saveProfileForm()">
+        <i class="fas fa-save"></i> Salvar Alterações
+      </button>
     </div>
-
     <div style="height:20px;"></div>
-  </div><!-- /page-profile -->
+  </div>
 
-  <!-- ═══════════════════════════════════════
-       ADMIN PAGE
-  ═══════════════════════════════════════ -->
-  <div id="page-admin" class="page">
+  <!-- ══════════════ ADMIN PAGE ══════════════ -->
+  <div class="page" id="page-admin">
     <div class="admin-header">
       <div class="admin-title">Painel Admin</div>
       <div class="admin-sub" id="admin-today-date"></div>
-      <div class="admin-badge"><i class="fas fa-shield-halved"></i> Pila · Acesso Total</div>
+      <div class="admin-badge"><i class="fas fa-shield-halved"></i> Modo Admin — Pila</div>
+      <button class="btn-outline" style="margin-top:16px;font-size:12px;padding:8px 16px;" onclick="showPage('home')">
+        <i class="fas fa-arrow-left"></i> Sair do Admin
+      </button>
     </div>
 
-    <!-- Stats -->
-    <div class="admin-stats" id="admin-stats"></div>
-
-    <!-- Needs -->
     <div class="section-gap">
-      <div class="section-header"><div class="section-title">Status da Barbearia</div></div>
+      <div class="section-header"><div class="section-title">Resumo</div></div>
+      <div class="admin-stats" id="admin-stats"></div>
+    </div>
+
+    <div class="section-gap">
+      <div class="section-header"><div class="section-title">Diagnóstico</div></div>
       <div class="needs-grid" id="admin-needs"></div>
     </div>
 
-    <!-- Today's Schedule -->
     <div class="section-gap">
       <div class="section-header"><div class="section-title">Agenda de Hoje</div></div>
       <div class="today-list" id="today-list"></div>
     </div>
 
-    <!-- Revenue Chart -->
     <div class="section-gap">
-      <div class="section-header"><div class="section-title">Faturamento</div></div>
+      <div class="section-header"><div class="section-title">Faturamento Semanal</div></div>
       <div class="chart-container">
         <div class="chart-header">
-          <div class="chart-title">Últimos 7 dias</div>
+          <div class="chart-title">Esta Semana</div>
           <div class="chart-total">
             <div class="chart-total-val" id="chart-total-val">R$ 0</div>
-            <div class="chart-total-label">Total da semana</div>
+            <div class="chart-total-label">Total</div>
           </div>
         </div>
         <canvas id="revenue-chart"></canvas>
@@ -329,27 +299,24 @@
       </div>
     </div>
 
-    <!-- Block Dates -->
     <div class="section-gap">
       <div class="section-header"><div class="section-title">Bloquear Datas</div></div>
       <div class="blocked-dates" id="blocked-dates"></div>
       <div class="block-form">
-        <input id="block-date-input" type="date">
-        <button onclick="blockDate()">Bloquear</button>
+        <input type="date" id="block-date-input"/>
+        <button onclick="blockDate()"><i class="fas fa-ban"></i> Bloquear</button>
       </div>
     </div>
 
-    <!-- Schedule Manager -->
     <div class="section-gap">
-      <div class="section-header">
-        <div class="section-title">Horários Ativos</div>
-        <div class="section-link" onclick="saveSchedule()">Salvar</div>
-      </div>
+      <div class="section-header"><div class="section-title">Horários Ativos</div></div>
       <div class="schedule-grid" id="schedule-grid"></div>
+      <button class="btn-outline" style="margin:16px 20px 0;" onclick="saveSchedule()">
+        <i class="fas fa-save"></i> Salvar Horários
+      </button>
     </div>
 
-    <!-- All Appointments -->
-    <div class="section-gap">
+    <div class="section-gap" style="padding-bottom:30px;">
       <div class="section-header"><div class="section-title">Todos os Agendamentos</div></div>
       <div class="filter-bar">
         <button class="filter-btn active" id="adm-filter-all" onclick="adminFilterAppts('all')">Todos</button>
@@ -357,60 +324,46 @@
         <button class="filter-btn" id="adm-filter-confirmed" onclick="adminFilterAppts('confirmed')">Confirmados</button>
         <button class="filter-btn" id="adm-filter-cancelled" onclick="adminFilterAppts('cancelled')">Cancelados</button>
       </div>
-      <div class="appt-list" id="admin-appt-list" style="padding-bottom:30px;"></div>
+      <div class="appt-list" id="admin-appt-list"></div>
     </div>
+  </div>
 
-    <button class="btn-danger" style="margin:0 20px 40px;width:calc(100% - 40px);" onclick="showPage('home');state.isAdmin=false;">
-      <i class="fas fa-sign-out-alt"></i> Sair do Admin
-    </button>
-  </div><!-- /page-admin -->
+</div><!-- /#app -->
 
-</div><!-- /app -->
-
-<!-- ═══════════════════════════════════════
-     BOTTOM NAV — apenas Início + Agendar
-═══════════════════════════════════════ -->
-<nav>
-  <button id="nav-home" class="active" onclick="showPage('home')">
-    <i class="fas fa-house"></i>
-    Início
+<!-- NAV -->
+<nav id="main-nav">
+  <button id="nav-home" onclick="showPage('home')" class="active">
+    <i class="fas fa-house"></i>Início
   </button>
   <button id="nav-book" onclick="goToBook()">
-    <i class="fas fa-calendar-plus"></i>
-    Agendar
+    <i class="fas fa-calendar-plus"></i>Agendar
   </button>
   <button id="nav-appointments" onclick="showPage('appointments')">
-    <i class="fas fa-clock"></i>
-    Horários
+    <i class="fas fa-clock"></i>Horários
   </button>
   <button id="nav-profile" onclick="showPage('profile')">
-    <i class="fas fa-user"></i>
-    Perfil
+    <i class="fas fa-user"></i>Perfil
   </button>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     MODAL — Confirmação de Agendamento
-═══════════════════════════════════════ -->
-<div id="modal-overlay" class="modal-overlay">
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirm-modal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Confirmar Agendamento</div>
-    <div class="modal-sub">Revise os detalhes antes de confirmar</div>
+    <div class="modal-sub">Revise os detalhes abaixo</div>
     <div id="modal-content"></div>
     <div class="modal-btns">
       <button class="btn-outline" onclick="closeModal()">Cancelar</button>
-      <button class="btn-primary" onclick="finalizeBooking()">
+      <button class="btn-primary" onclick="confirmBooking()">
         <i class="fas fa-check"></i> Confirmar
       </button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MODAL — Cancelamento
-═══════════════════════════════════════ -->
-<div id="cancel-overlay" class="modal-overlay">
+<!-- CANCEL MODAL -->
+<div class="modal-overlay" id="cancel-modal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Cancelar Agendamento</div>
@@ -418,25 +371,22 @@
     <div id="cancel-content"></div>
     <div class="modal-btns">
       <button class="btn-outline" onclick="closeCancelModal()">Voltar</button>
-      <button class="btn-danger" onclick="confirmCancel()">
-        <i class="fas fa-times"></i> Cancelar Horário
+      <button class="btn-danger" onclick="doCancel()">
+        <i class="fas fa-times"></i> Cancelar Agend.
       </button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MODAL — Admin Login
-═══════════════════════════════════════ -->
-<div id="admin-login-modal" class="modal-overlay">
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal-overlay" id="admin-login-modal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Acesso Admin</div>
     <div class="modal-sub">Digite a senha para continuar</div>
-    <div class="form-group">
-      <label class="form-label">Senha</label>
-      <input id="admin-pass" class="form-input" type="password" placeholder="••••••••"
-             onkeydown="if(event.key==='Enter')checkAdmin()">
+    <div class="form-group" style="margin:0 0 16px;">
+      <input class="form-input" id="admin-pass" type="password" placeholder="Senha admin"
+             onkeydown="if(event.key==='Enter')checkAdmin()"/>
     </div>
     <div class="modal-btns">
       <button class="btn-outline" onclick="closeAdminModal()">Cancelar</button>
@@ -448,14 +398,13 @@
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="toast">
+<div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toast-msg"></span>
 </div>
 
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>
+</parameter>
+</invoke>

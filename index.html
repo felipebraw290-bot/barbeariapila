@@ -1158,6 +1158,15 @@ function activatePlan(plan){
     year:      now.getFullYear(),
     usesCount: sameMonth ? (existing.usesCount||0) : 0,
   };
+  // Sync to planSubscribers so admin sees this user
+  const phone=(db.profile?.phone||'').replace(/\D/g,'');
+  const uname=db.profile?.name||'Cliente';
+  if(phone.length>=10){
+    if(!db.planSubscribers) db.planSubscribers=[];
+    const idx=db.planSubscribers.findIndex(s=>s.phone.replace(/\D/g,'')===phone);
+    const entry={name:uname,phone:db.profile.phone,planId:plan.id,planName:'Plano '+plan.name,planEmoji:plan.emoji,month:now.getMonth(),year:now.getFullYear(),usesCount:db.planData.usesCount};
+    if(idx>=0) db.planSubscribers[idx]=entry; else db.planSubscribers.push(entry);
+  }
   saveDB(db);
 }
 
@@ -1963,9 +1972,23 @@ function renderAdminAgendaAppts(sbAppts){
     </div>`;
 }
 
+function daysLeftInMonth(month, year){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const lastDay=new Date(year, month+1, 0); lastDay.setHours(23,59,59,999);
+  const diff=Math.ceil((lastDay-now)/(1000*60*60*24));
+  return Math.max(0,diff);
+}
+
 function renderAdminPlansTab(cont){
   const db=getDB();
-  const subs=db.planSubscribers||[];
+  // Merge planSubscribers + planData (for users who activated via app without admin adding)
+  const subs=[...(db.planSubscribers||[])];
+  // Also include planData user if not already in list
+  if(db.planData && db.profile?.phone){
+    const pd=db.planData; const ph=(db.profile.phone||'').replace(/\D/g,'');
+    const alreadyIn=subs.some(s=>s.phone.replace(/\D/g,'')===ph);
+    if(!alreadyIn) subs.push({name:db.profile.name||'Cliente',phone:db.profile.phone,planId:pd.planId,planName:pd.planName,planEmoji:pd.planEmoji,month:pd.month,year:pd.year,usesCount:pd.usesCount||0});
+  }
   const now=new Date();
   cont.innerHTML=`
     <div style="padding:16px 20px 8px;">
@@ -1994,22 +2017,29 @@ function renderAdminPlansTab(cont){
       <div id="sub-list">${subs.length===0?`<div style="text-align:center;padding:30px 0;color:var(--gray);"><div style="font-size:42px;margin-bottom:8px;">👥</div><div>Nenhum assinante cadastrado</div></div>`:
         subs.map((s,i)=>{
           const isThisMonth=s.month===now.getMonth()&&s.year===now.getFullYear();
-          const plan=PLANS.find(p=>p.id===s.planId)||{emoji:'🛡️',name:s.planId};
+          const plan=PLANS.find(p=>p.id===s.planId)||{emoji:'🛡️',name:s.planName||s.planId||'—'};
           const usosFeitos=isThisMonth?(s.usesCount||0):0;
           const esgotado=usosFeitos>=PLAN_MAX_USES;
+          const daysLeft=isThisMonth?daysLeftInMonth(s.month,s.year):0;
           const statusColor=esgotado?'var(--red)':isThisMonth?'var(--green)':'var(--gray)';
-          const statusText=esgotado?'Esgotado':isThisMonth?'Ativo':'Inativo/Expirado';
-          let dotsHtml=''; for(let d=0;d<PLAN_MAX_USES;d++) dotsHtml+=`<div style="width:18px;height:18px;border-radius:50%;border:2px solid ${d<usosFeitos?'var(--gold)':'var(--dark4)'};background:${d<usosFeitos?'var(--gold)':'transparent'};display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:${d<usosFeitos?'var(--dark)':'var(--gray)'};">  ${d<usosFeitos?'✓':''}</div>`;
-          return`<div style="background:var(--dark3);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.08);margin-bottom:10px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-              <div>
+          const statusIcon=esgotado?'⚠️':isThisMonth?'✅':'⏰';
+          const statusText=esgotado?'Esgotado':isThisMonth?'Ativo':'Expirado';
+          let dotsHtml=''; for(let d=0;d<PLAN_MAX_USES;d++) dotsHtml+=`<div style="width:20px;height:20px;border-radius:50%;border:2px solid ${d<usosFeitos?'var(--gold)':'var(--dark4)'};background:${d<usosFeitos?'var(--gold)':'transparent'};display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:${d<usosFeitos?'var(--dark)':'var(--gray)'};">${d<usosFeitos?'✓':''}</div>`;
+          const borderCol=esgotado?'rgba(224,80,80,.3)':isThisMonth?'rgba(76,175,80,.2)':'rgba(255,255,255,.08)';
+          return`<div style="background:var(--dark3);border-radius:16px;padding:16px;border:1px solid ${borderCol};margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+              <div style="flex:1;min-width:0;">
                 <div style="font-size:15px;font-weight:700;">${s.name}</div>
                 <div style="font-size:12px;color:var(--gray);margin-top:2px;">${s.phone}</div>
-                <div style="font-size:12px;color:var(--gold);margin-top:3px;">${plan.emoji} ${plan.name}</div>
+                <div style="font-size:12px;color:var(--gold);margin-top:3px;">${plan.emoji} Plano ${plan.name}</div>
                 <div style="display:flex;gap:4px;margin-top:8px;">${dotsHtml}</div>
-                <div style="font-size:11px;margin-top:5px;"><span style="color:${statusColor};font-weight:700;">${statusText}</span> · ${usosFeitos}/${PLAN_MAX_USES} usos este mês</div>
+                <div style="font-size:11px;margin-top:6px;">
+                  <span style="color:${statusColor};font-weight:700;">${statusIcon} ${statusText}</span>
+                  ${isThisMonth&&!esgotado?` &nbsp;<span style="color:var(--gold);font-weight:600;">${daysLeft} dia${daysLeft===1?'':'s'} restante${daysLeft===1?'':'s'}</span>`:(esgotado?' &nbsp;<span style="color:var(--red);">Renovar com cliente</span>':'')}
+                </div>
+                <div style="font-size:11px;color:var(--gray);margin-top:3px;">${usosFeitos}/${PLAN_MAX_USES} usos · ${MONTHS_PT[s.month]?.substring(0,3)||''} ${s.year}</div>
               </div>
-              <button onclick="adminRenewSubscriber(${i})" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
+              <button onclick="adminRenewSubscriber(${i})" style="flex-shrink:0;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
                 <i class="fas fa-rotate"></i> Renovar
               </button>
             </div>

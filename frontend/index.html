@@ -570,6 +570,12 @@ nav button:active{transform:scale(.88);}
       <div class="hero-top">
         <div class="logo">BARBER<span>KING</span><small>PILA PREMIUM</small></div>
         <div class="hero-actions">
+          <button class="icon-btn" onclick="window.open('https://www.instagram.com/felipe_zecchi?igsh=cHA0MWsxcGNpMHJlali','_blank')" title="Instagram" style="background:rgba(225,48,108,.1);border-color:rgba(225,48,108,.3);color:#e1306c;">
+            <i class="fab fa-instagram"></i>
+          </button>
+          <button class="icon-btn" onclick="window.open('https://wa.me/5517992680298?text=Olá+Pila!','_blank')" title="WhatsApp" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);color:#25d366;">
+            <i class="fab fa-whatsapp"></i>
+          </button>
           <button class="icon-btn" onclick="showAdminLogin()" title="Admin">
             <i class="fas fa-shield-halved"></i>
           </button>
@@ -600,7 +606,7 @@ nav button:active{transform:scale(.88);}
       </div>
       <div style="margin:0 20px;cursor:pointer;" onclick="showPage('plans')">
         <div style="background:linear-gradient(135deg,#0a0a1a,#0d1535);border:1px solid rgba(76,130,200,.3);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 20px rgba(76,130,200,.15);">
-          <div style="font-size:36px;">🛡️</div>
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:var(--dark);border:2px solid rgba(201,168,76,.5);box-shadow:0 0 14px rgba(201,168,76,.3);flex-shrink:0;">P</div>
           <div style="flex:1;">
             <div style="font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;">Assine um plano e economize</div>
             <div style="font-size:12px;color:var(--gray);margin-top:3px;">Basic · Plus · Gold — a partir de R$ 119,90/mês</div>
@@ -794,14 +800,14 @@ nav button:active{transform:scale(.88);}
     </div>
 
     <div class="menu-list">
-      <div class="menu-item" onclick="exportBackup()">
-        <div class="menu-icon blue"><i class="fas fa-download"></i></div>
-        <div class="menu-text"><strong>Exportar Dados</strong><span>Salvar backup em JSON</span></div>
+      <div class="menu-item" onclick="window.open('https://wa.me/5517992680298?text=Olá+Pila,+quero+agendar+um+horário!','_blank')">
+        <div class="menu-icon" style="background:rgba(37,211,102,.15);color:#25d366;"><i class="fab fa-whatsapp"></i></div>
+        <div class="menu-text"><strong>WhatsApp do Pila</strong><span>(17) 99268-0298 · Falar agora</span></div>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
-      <div class="menu-item" onclick="clearData()">
-        <div class="menu-icon danger"><i class="fas fa-trash"></i></div>
-        <div class="menu-text"><strong>Limpar Dados</strong><span>Apagar histórico local</span></div>
+      <div class="menu-item" onclick="window.open('https://www.instagram.com/felipe_zecchi?igsh=cHA0MWsxcGNpMHJlali','_blank')">
+        <div class="menu-icon" style="background:rgba(225,48,108,.15);color:#e1306c;"><i class="fab fa-instagram"></i></div>
+        <div class="menu-text"><strong>Instagram do Pila</strong><span>@felipe_zecchi · Ver perfil</span></div>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
     </div>
@@ -822,11 +828,11 @@ nav button:active{transform:scale(.88);}
     </div>
     <!-- ADMIN TAB BAR -->
     <div class="admin-tab-bar" id="admin-tab-bar">
-      <button class="admin-tab-btn active" id="adm-tab-overview" onclick="selectAdminTab('overview')">
-        <i class="fas fa-chart-pie"></i>Visão Geral
-      </button>
-      <button class="admin-tab-btn" id="adm-tab-agenda" onclick="selectAdminTab('agenda')">
+      <button class="admin-tab-btn active" id="adm-tab-agenda" onclick="selectAdminTab('agenda')">
         <i class="fas fa-calendar-days"></i>Agenda
+      </button>
+      <button class="admin-tab-btn" id="adm-tab-plans" onclick="selectAdminTab('plans')">
+        <i class="fas fa-crown"></i>Planos
       </button>
       <button class="admin-tab-btn" id="adm-tab-config" onclick="selectAdminTab('config')">
         <i class="fas fa-gear"></i>Config
@@ -969,6 +975,7 @@ function defaultDB() {
     activeSlots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
                   '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
     planData: null,  // { planId, planName, planEmoji, month, year, usesCount }
+    planSubscribers: [], // [{ name, phone, planId, planName, planEmoji, month, year, usesCount }]
   };
 }
 function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
@@ -1112,12 +1119,16 @@ function goToBook(byPlan, planInfo){
 //  PLAN HELPERS
 // ══════════════════════════════════════════
 function getPlanData(){
-  const db=getDB(); return db.planData||null;
+  const db=getDB();
+  // Check subscriber list first (admin-managed)
+  const userPhone=(db.profile?.phone||'').replace(/\D/g,'');
+  const sub=userPhone?db.planSubscribers?.find(s=>s.phone.replace(/\D/g,'')===userPhone):null;
+  return sub || db.planData || null;
 }
 function isPlanActiveThisMonth(){
   const pd=getPlanData(); if(!pd) return false;
   const now=new Date();
-  return pd.month===now.getMonth() && pd.year===now.getFullYear() && pd.usesCount>0;
+  return pd.month===now.getMonth() && pd.year===now.getFullYear() && (pd.usesCount||0)<PLAN_MAX_USES;
 }
 function getPlanUsesLeft(){
   const pd=getPlanData();
@@ -1128,7 +1139,10 @@ function getPlanUsesLeft(){
 }
 function incrementPlanUse(){
   const db=getDB();
-  if(db.planData) db.planData.usesCount=(db.planData.usesCount||0)+1;
+  const userPhone=(db.profile?.phone||'').replace(/\D/g,'');
+  const subIdx=userPhone?db.planSubscribers?.findIndex(s=>s.phone.replace(/\D/g,'')===userPhone):-1;
+  if(subIdx>=0){ db.planSubscribers[subIdx].usesCount=(db.planSubscribers[subIdx].usesCount||0)+1; }
+  else if(db.planData){ db.planData.usesCount=(db.planData.usesCount||0)+1; }
   saveDB(db);
 }
 function activatePlan(plan){
@@ -1703,13 +1717,17 @@ function renderProfile(){
   // Plan badge & card
   const badge=document.getElementById('profile-plan-badge');
   const card =document.getElementById('profile-plan-card');
-  const pd=db.planData;
+  // Check plan from subscriber list by user phone
+  const userPhone=(db.profile?.phone||'').replace(/\D/g,'');
+  const sub=db.planSubscribers?.find(s=>s.phone.replace(/\D/g,'')===userPhone);
+  const pdRaw=sub||db.planData;
+  const pd=pdRaw;
   const now=new Date();
   const isThisMonth=pd&&pd.month===now.getMonth()&&pd.year===now.getFullYear();
   const usosFeitos=isThisMonth?(pd.usesCount||0):0;
   const usosRestantes=PLAN_MAX_USES-usosFeitos;
 
-  if(isThisMonth && usosFeitos>0){
+  if(pd && isThisMonth){
     if(badge){
       badge.style.display='inline-flex';
       badge.className='profile-plan-badge';
@@ -1780,6 +1798,7 @@ function checkAdmin(){
 async function renderAdmin(){
   const sbData=await fetchSupabaseAppointments(); state.supabaseAppts=sbData;
   const sbAppts=sbData.map(supabaseToLocal);
+  state.adminTab = state.adminTab === 'overview' ? 'agenda' : state.adminTab;
   selectAdminTab(state.adminTab, sbAppts);
   const todayEl=document.getElementById('admin-today-date');
   if(todayEl){ const d=new Date(); const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']; todayEl.textContent=`${days[d.getDay()]}, ${fmtDate(d)}`; }
@@ -1787,13 +1806,13 @@ async function renderAdmin(){
 
 function selectAdminTab(tab, sbAppts){
   state.adminTab=tab;
-  ['overview','agenda','config'].forEach(t=>{
+  ['agenda','plans','config'].forEach(t=>{
     document.getElementById('adm-tab-'+t)?.classList.toggle('active',t===tab);
   });
   const appts = sbAppts || state.supabaseAppts.map(supabaseToLocal);
   const cont=document.getElementById('admin-tab-content'); if(!cont) return;
-  if(tab==='overview') renderAdminOverview(appts, cont);
-  else if(tab==='agenda') renderAdminAgendaTab(appts, cont);
+  if(tab==='agenda') renderAdminAgendaTab(appts, cont);
+  else if(tab==='plans') renderAdminPlansTab(cont);
   else if(tab==='config') renderAdminConfig(cont);
 }
 
@@ -1912,7 +1931,7 @@ function renderAdminAgendaAppts(sbAppts){
     cont.innerHTML=`<div style="text-align:center;padding:30px 0;color:var(--gray);font-size:13px;">👆 Selecione um dia no calendário para ver os agendamentos</div>`;
     return;
   }
-  const appts=sbAppts.filter(a=>a.date===state.adminAgendaDate).sort((a,b)=>a.time.localeCompare(b.time));
+  const appts=sbAppts.filter(a=>a.date===state.adminAgendaDate&&a.status!=='cancelled').sort((a,b)=>a.time.localeCompare(b.time));
   if(!appts.length){
     cont.innerHTML=`
       <div style="margin-bottom:12px;font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--gray);">📋 ${state.adminAgendaDate}</div>
@@ -1944,6 +1963,91 @@ function renderAdminAgendaAppts(sbAppts){
     </div>`;
 }
 
+function renderAdminPlansTab(cont){
+  const db=getDB();
+  const subs=db.planSubscribers||[];
+  const now=new Date();
+  cont.innerHTML=`
+    <div style="padding:16px 20px 8px;">
+      <div style="margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+        <div style="width:4px;height:22px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:2px;"></div>
+        <span style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;">Assinantes de Planos</span>
+      </div>
+      <!-- Adicionar assinante -->
+      <div style="background:var(--dark3);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.08);margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px;"><i class="fas fa-plus" style="margin-right:6px;"></i>Adicionar / Renovar Assinante</div>
+        <div style="display:grid;gap:10px;">
+          <input id="sub-name" class="form-input" type="text" placeholder="Nome do cliente" />
+          <input id="sub-phone" class="form-input" type="tel" placeholder="WhatsApp (apenas números)" inputmode="numeric" />
+          <select id="sub-plan" class="form-input" style="background:var(--dark3);color:var(--white);">
+            <option value="">Escolha o plano</option>
+            <option value="basic">🥉 Basic — R$ 119,90/mês</option>
+            <option value="plus">🥈 Plus — R$ 169,90/mês</option>
+            <option value="gold">🥇 Gold — R$ 219,90/mês</option>
+          </select>
+        </div>
+        <button onclick="adminAddSubscriber()" style="margin-top:12px;width:100%;background:var(--gold);color:var(--dark);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;">
+          <i class="fas fa-crown" style="margin-right:6px;"></i>Ativar / Renovar Plano
+        </button>
+      </div>
+      <!-- Lista de assinantes -->
+      <div id="sub-list">${subs.length===0?`<div style="text-align:center;padding:30px 0;color:var(--gray);"><div style="font-size:42px;margin-bottom:8px;">👥</div><div>Nenhum assinante cadastrado</div></div>`:
+        subs.map((s,i)=>{
+          const isThisMonth=s.month===now.getMonth()&&s.year===now.getFullYear();
+          const plan=PLANS.find(p=>p.id===s.planId)||{emoji:'🛡️',name:s.planId};
+          const usosFeitos=isThisMonth?(s.usesCount||0):0;
+          const esgotado=usosFeitos>=PLAN_MAX_USES;
+          const statusColor=esgotado?'var(--red)':isThisMonth?'var(--green)':'var(--gray)';
+          const statusText=esgotado?'Esgotado':isThisMonth?'Ativo':'Inativo/Expirado';
+          let dotsHtml=''; for(let d=0;d<PLAN_MAX_USES;d++) dotsHtml+=`<div style="width:18px;height:18px;border-radius:50%;border:2px solid ${d<usosFeitos?'var(--gold)':'var(--dark4)'};background:${d<usosFeitos?'var(--gold)':'transparent'};display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:${d<usosFeitos?'var(--dark)':'var(--gray)'};">  ${d<usosFeitos?'✓':''}</div>`;
+          return`<div style="background:var(--dark3);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.08);margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-size:15px;font-weight:700;">${s.name}</div>
+                <div style="font-size:12px;color:var(--gray);margin-top:2px;">${s.phone}</div>
+                <div style="font-size:12px;color:var(--gold);margin-top:3px;">${plan.emoji} ${plan.name}</div>
+                <div style="display:flex;gap:4px;margin-top:8px;">${dotsHtml}</div>
+                <div style="font-size:11px;margin-top:5px;"><span style="color:${statusColor};font-weight:700;">${statusText}</span> · ${usosFeitos}/${PLAN_MAX_USES} usos este mês</div>
+              </div>
+              <button onclick="adminRenewSubscriber(${i})" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
+                <i class="fas fa-rotate"></i> Renovar
+              </button>
+            </div>
+          </div>`;
+        }).join('')
+      }</div>
+    </div>`;
+}
+
+function adminAddSubscriber(){
+  const name=document.getElementById('sub-name')?.value.trim();
+  const phone=document.getElementById('sub-phone')?.value.trim();
+  const planId=document.getElementById('sub-plan')?.value;
+  if(!name||name.length<2) return showToast('Informe o nome do cliente.','error');
+  if(!phone||phone.replace(/\D/g,'').length<10) return showToast('WhatsApp inválido.','error');
+  if(!planId) return showToast('Escolha um plano.','error');
+  const db=getDB(); const now=new Date();
+  const plan=PLANS.find(p=>p.id===planId);
+  const existing=db.planSubscribers.findIndex(s=>s.phone===phone);
+  const entry={name,phone,planId,planName:'Plano '+plan.name,planEmoji:plan.emoji,month:now.getMonth(),year:now.getFullYear(),usesCount:0};
+  if(existing>=0) db.planSubscribers[existing]={...entry,usesCount:0};
+  else db.planSubscribers.push(entry);
+  saveDB(db);
+  // Also update planData if user is on same device
+  showToast(`✅ Plano ativado para ${name}!`,'success');
+  selectAdminTab('plans');
+}
+
+function adminRenewSubscriber(idx){
+  if(!confirm('Renovar o plano deste assinante? (Zera os usos do mês atual)')) return;
+  const db=getDB(); const now=new Date();
+  const sub=db.planSubscribers[idx]; if(!sub) return;
+  sub.month=now.getMonth(); sub.year=now.getFullYear(); sub.usesCount=0;
+  saveDB(db);
+  showToast(`✅ Plano renovado para ${sub.name}!`,'success');
+  selectAdminTab('plans');
+}
+
 function renderAdminConfig(cont){
   cont.innerHTML=`
     <div style="padding:16px 20px 8px;">
@@ -1973,7 +2077,7 @@ function renderAdminConfig(cont){
 
 function renderTodayList(sbAppts){
   const today=fmtDate(new Date()); const list=document.getElementById('today-list'); if(!list) return;
-  const ta=sbAppts.filter(a=>a.date===today).sort((a,b)=>a.time.localeCompare(b.time));
+  const ta=sbAppts.filter(a=>a.date===today&&a.status!=='cancelled').sort((a,b)=>a.time.localeCompare(b.time));
   if(!ta.length){ list.innerHTML=`<div class="empty-state" style="padding:30px 20px;"><div class="empty-icon" style="font-size:48px;">😴</div><div class="empty-text">Nenhum agendamento hoje</div></div>`; return; }
   list.innerHTML=ta.map(a=>{
     const isDone=a.status==='past'; const isCancelled=a.status==='cancelled';

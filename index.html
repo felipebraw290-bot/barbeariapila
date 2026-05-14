@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,36 +10,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-/* ══════════════════════════════════════════
-   BARBERKING — style.css (+ Planos)
-══════════════════════════════════════════ */
 :root{
   --gold:#c9a84c;--gold-light:#f0c060;--gold-dark:#a07830;
   --dark:#0d0d0d;--dark2:#181818;--dark3:#242424;--dark4:#2e2e2e;
   --white:#f5f5f5;--gray:#888;--red:#e05050;--green:#4caf50;--blue:#4c82c8;
   --radius:16px;--shadow:0 8px 32px rgba(0,0,0,.45);
 }
-html.light-mode{
-  --dark:#fff;--dark2:#f5f5f5;--dark3:#e8e8e8;--dark4:#ddd;
-  --white:#0d0d0d;--gray:#666;--shadow:0 8px 32px rgba(0,0,0,.1);
-}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--dark);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;}
 a{color:inherit;text-decoration:none;}
 button{font-family:'Inter',sans-serif;}
 
-/* PARTICLES */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .particle{position:absolute;border-radius:50%;opacity:0;animation:floatUp linear infinite;}
 @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0);}10%{opacity:.5;}90%{opacity:.15;}100%{opacity:0;transform:translateY(-100vh) scale(1.5);}}
 
-/* APP */
 #app{position:relative;z-index:1;min-height:100vh;}
 .page{display:none;min-height:100vh;padding-bottom:84px;animation:fadeSlide .35s ease;}
 .page.active{display:block;}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 
-/* ── BOTTOM NAV ── */
 nav{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   background:rgba(13,13,13,.97);backdrop-filter:blur(24px);
@@ -55,7 +46,6 @@ nav button.active{color:var(--gold);}
 nav button.active i{transform:scale(1.2);filter:drop-shadow(0 0 6px var(--gold));}
 nav button:active{transform:scale(.88);}
 
-/* ── HERO ── */
 .hero{
   position:relative;overflow:hidden;
   background:linear-gradient(160deg,#1a1200 0%,var(--dark) 65%);
@@ -63,7 +53,7 @@ nav button:active{transform:scale(.88);}
 }
 .hero::before{
   content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C%2Fg%3E%3C/svg%3E");
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 .hero-glow{position:absolute;top:-80px;right:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);pointer-events:none;}
 .hero-top{display:flex;justify-content:space-between;align-items:center;padding:52px 20px 0;position:relative;}
@@ -78,13 +68,10 @@ nav button:active{transform:scale(.88);}
   font-size:16px;cursor:pointer;position:relative;transition:all .3s;
 }
 .icon-btn:active{transform:scale(.9);}
-.notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;background:var(--red);border-radius:50%;border:1.5px solid var(--dark);animation:pulseDot 2s infinite;}
-@keyframes pulseDot{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
 .hero-content{padding:24px 20px 6px;position:relative;}
 .greeting{color:var(--gray);font-size:13px;letter-spacing:.3px;}
 .greeting strong{color:var(--white);font-size:21px;display:block;margin-top:4px;font-weight:600;}
 
-/* ── HERO BANNER (Cortes que transforma) ── */
 .hero-banner{
   margin:16px 20px 0;border-radius:20px;overflow:hidden;position:relative;
   background:linear-gradient(135deg,#1a0f00,#2d1f00);
@@ -92,11 +79,7 @@ nav button:active{transform:scale(.88);}
   min-height:130px;
 }
 .banner-inner{padding:22px 20px;position:relative;z-index:2;max-width:62%;}
-.banner-tag{
-  background:var(--gold);color:var(--dark);font-size:9px;font-weight:800;
-  letter-spacing:2px;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;
-  text-transform:uppercase;
-}
+.banner-tag{background:var(--gold);color:var(--dark);font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;text-transform:uppercase;}
 .banner-title{font-family:'Oswald',sans-serif;font-size:23px;font-weight:700;line-height:1.2;}
 .banner-sub{font-size:12px;color:rgba(201,168,76,.7);margin-top:5px;}
 .banner-cta{
@@ -105,19 +88,13 @@ nav button:active{transform:scale(.88);}
   cursor:pointer;transition:all .3s;letter-spacing:.5px;box-shadow:0 4px 16px rgba(201,168,76,.4);
 }
 .banner-cta:active{transform:scale(.95);}
-
-/* IMAGEM do barbeiro no banner (substitui a tesoura) */
 .banner-barber-img{
-  position:absolute;right:0;top:0;bottom:0;
-  height:100%;width:42%;
-  object-fit:cover;object-position:center top;
-  border-radius:0 20px 20px 0;
-  z-index:1;
+  position:absolute;right:0;top:0;bottom:0;height:100%;width:42%;
+  object-fit:cover;object-position:center top;border-radius:0 20px 20px 0;z-index:1;
   -webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.6) 30%,black 100%);
   mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.6) 30%,black 100%);
 }
 
-/* ── BARBER HERO CARD ── */
 .barber-hero-card{
   margin:20px 20px 0;border-radius:20px;overflow:hidden;
   background:linear-gradient(135deg,var(--dark3),var(--dark2));
@@ -131,8 +108,7 @@ nav button:active{transform:scale(.88);}
   background:linear-gradient(135deg,var(--gold-dark),var(--gold));
   display:flex;align-items:center;justify-content:center;
   font-size:28px;color:var(--dark);font-weight:700;font-family:'Oswald',sans-serif;
-  border:3px solid rgba(201,168,76,.5);position:relative;
-  box-shadow:0 0 20px rgba(201,168,76,.3);
+  border:3px solid rgba(201,168,76,.5);position:relative;box-shadow:0 0 20px rgba(201,168,76,.3);
 }
 .online-dot{position:absolute;bottom:3px;right:3px;width:13px;height:13px;background:var(--green);border-radius:50%;border:2px solid var(--dark3);}
 .barber-hero-info{flex:1;}
@@ -143,13 +119,11 @@ nav button:active{transform:scale(.88);}
 .barber-book-btn{background:var(--gold);color:var(--dark);border:none;padding:9px 16px;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .3s;}
 .barber-book-btn:active{transform:scale(.95);}
 
-/* ── SECTIONS ── */
 .section-gap{margin-top:28px;}
 .section-header{display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-bottom:14px;}
 .section-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;letter-spacing:.8px;}
 .section-link{color:var(--gold);font-size:13px;cursor:pointer;padding:4px 0;}
 
-/* ── SERVICES GRID (Home) ── */
 .services-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px;}
 .service-mini{
   background:var(--dark3);border-radius:14px;padding:16px 12px;
@@ -164,7 +138,6 @@ nav button:active{transform:scale(.88);}
 .service-mini .s-dur{font-size:11px;color:var(--gray);margin-top:2px;}
 .service-mini .s-price{font-size:15px;font-weight:700;color:var(--gold);margin-top:8px;}
 
-/* ── MINI APPT CARD ── */
 .mini-appt-card{
   background:var(--dark3);border-radius:16px;padding:18px;
   border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;
@@ -174,40 +147,20 @@ nav button:active{transform:scale(.88);}
   background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:3px 0 0 3px;
 }
 
-/* ══════════════════════════════════════════
-   ★ PLANOS — Página cliente
-══════════════════════════════════════════ */
+/* ══ PLANOS ══ */
 .plans-page-header{
   background:linear-gradient(160deg,#1a0f00,var(--dark));
   padding:52px 20px 24px;position:relative;overflow:hidden;
 }
-.plans-page-header::before{
-  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);
-}
-.plans-page-back{
-  display:inline-flex;align-items:center;gap:8px;color:var(--gold);
-  font-size:13px;font-weight:600;cursor:pointer;margin-bottom:16px;
-}
+.plans-page-header::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);}
+.plans-page-back{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:16px;}
 .plans-page-title{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;}
 .plans-page-sub{color:var(--gray);font-size:13px;margin-top:6px;line-height:1.6;}
-
 .plans-cards{display:flex;flex-direction:column;gap:16px;padding:20px;}
-
-.plan-card{
-  border-radius:20px;padding:24px 20px;border:2px solid;cursor:pointer;
-  transition:all .35s;position:relative;overflow:hidden;
-}
+.plan-card{border-radius:20px;padding:24px 20px;border:2px solid;cursor:pointer;transition:all .35s;position:relative;overflow:hidden;}
 .plan-card:active{transform:scale(.98);}
-.plan-card.plan-highlight{
-  box-shadow:0 0 32px rgba(76,130,200,.25);transform:scale(1.02);
-}
-.plan-popular-badge{
-  position:absolute;top:14px;right:14px;
-  background:var(--blue);color:#fff;font-size:10px;font-weight:800;
-  padding:4px 12px;border-radius:20px;letter-spacing:.5px;
-}
+.plan-card.plan-highlight{box-shadow:0 0 32px rgba(76,130,200,.25);transform:scale(1.02);}
+.plan-popular-badge{position:absolute;top:14px;right:14px;background:var(--blue);color:#fff;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:.5px;}
 .plan-emoji{font-size:38px;margin-bottom:8px;}
 .plan-name{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;margin-bottom:6px;}
 .plan-price-wrap{display:flex;align-items:baseline;gap:4px;margin-bottom:16px;}
@@ -215,65 +168,28 @@ nav button:active{transform:scale(.88);}
 .plan-period{font-size:13px;color:var(--gray);}
 .plan-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
 .plan-features li{font-size:13px;color:var(--gray);display:flex;align-items:center;}
-.plan-select-btn{
-  width:100%;padding:13px;border:none;border-radius:12px;
-  font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
-  transition:all .3s;letter-spacing:.4px;
-}
+.plan-select-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;letter-spacing:.4px;}
 .plan-select-btn:active{transform:scale(.97);}
 
-/* ── Aviso plano ativo no book ── */
-.active-plan-banner{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.25);
-  padding:12px 20px;font-size:13px;
-}
-.active-plan-banner span{flex:1;}
-.active-plan-banner button{
-  background:none;border:none;color:var(--gray);cursor:pointer;font-size:14px;padding:2px 6px;
-}
-.active-plan-banner button:hover{color:var(--red);}
-
-/* ── Badge de plano inline ── */
-.plan-badge-inline{
-  display:inline-flex;align-items:center;gap:3px;
-  background:rgba(201,168,76,.15);color:var(--gold);
-  font-size:9px;font-weight:800;padding:2px 7px;
-  border-radius:20px;border:1px solid rgba(201,168,76,.3);
-  letter-spacing:.8px;vertical-align:middle;margin-left:4px;
-}
-
-/* ══════════════════════════════════════════
-   ADMIN — TABS
-══════════════════════════════════════════ */
+/* ══ ADMIN TABS ══ */
 .admin-tab-bar{
   display:flex;overflow-x:auto;scrollbar-width:none;
-  border-bottom:1px solid rgba(255,255,255,.07);
-  background:var(--dark2);
-  padding:0 8px;
-  position:sticky;top:0;z-index:50;
+  border-bottom:1px solid rgba(255,255,255,.07);background:var(--dark2);
+  padding:0 8px;position:sticky;top:0;z-index:50;
 }
 .admin-tab-bar::-webkit-scrollbar{display:none;}
 .admin-tab-btn{
-  flex:0 0 auto;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  padding:12px 16px;
-  background:none;border:none;color:var(--gray);
-  font-size:10px;font-weight:600;letter-spacing:.4px;
-  cursor:pointer;transition:all .25s;
-  border-bottom:2px solid transparent;
-  white-space:nowrap;
+  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:12px 16px;background:none;border:none;color:var(--gray);
+  font-size:10px;font-weight:600;letter-spacing:.4px;cursor:pointer;transition:all .25s;
+  border-bottom:2px solid transparent;white-space:nowrap;
 }
 .admin-tab-btn i{font-size:18px;transition:all .25s;}
 .admin-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
 .admin-tab-btn.active i{filter:drop-shadow(0 0 5px var(--gold));}
-
-/* Conteúdo dinâmico de aba */
 #admin-tab-content{padding-top:16px;}
 
-/* ══════════════════════════════════════════
-   BOOK PAGE
-══════════════════════════════════════════ */
+/* ══ BOOK PAGE ══ */
 .step-nav{display:flex;align-items:center;padding:16px 20px 0;gap:12px;}
 .step-indicator{display:flex;justify-content:center;gap:8px;padding:14px 0 0;}
 .step-dot{width:8px;height:8px;border-radius:50%;background:var(--dark4);transition:.35s;}
@@ -288,13 +204,41 @@ nav button:active{transform:scale(.88);}
 .step-head h2{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;}
 .step-head p{color:var(--gray);font-size:13px;margin-top:3px;}
 
+/* plan booking banner inside book */
+.plan-booking-banner{
+  margin:0 20px 14px;padding:12px 16px;
+  background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.06));
+  border:1px solid rgba(201,168,76,.35);border-radius:14px;
+  display:flex;align-items:center;gap:10px;font-size:13px;
+}
+.plan-booking-banner i{color:var(--gold);font-size:18px;}
+.plan-usage-bar{
+  margin:0 20px 14px;background:var(--dark3);border-radius:12px;padding:12px 16px;
+  border:1px solid rgba(255,255,255,.07);
+}
+.plan-usage-label{font-size:11px;color:var(--gray);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.plan-usage-dots{display:flex;gap:8px;}
+.plan-usage-dot{
+  width:28px;height:28px;border-radius:50%;border:2px solid;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+}
+.plan-usage-dot.used{background:var(--gold);border-color:var(--gold);color:var(--dark);}
+.plan-usage-dot.empty{background:transparent;border-color:var(--dark4);color:var(--gray);}
+
 /* SERVICES GRID */
 .services-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px;}
+.services-grid.plan-mode{grid-template-columns:1fr;max-width:420px;margin:0 auto;}
 .service-card{
   background:var(--dark3);border-radius:var(--radius);padding:18px 14px;
   border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .3s;
   position:relative;overflow:hidden;
 }
+.service-card.plan-mode-card{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+}
+.service-card.plan-mode-card .service-icon{font-size:32px;margin:0;flex-shrink:0;}
+.service-card.plan-mode-card .service-info{flex:1;}
+.service-card.plan-mode-card .service-name{font-size:15px;}
 .service-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:.3s;}
 .service-card.selected{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.08);}
 .service-card.selected::after{opacity:1;}
@@ -303,14 +247,52 @@ nav button:active{transform:scale(.88);}
 .service-name{font-size:14px;font-weight:600;}
 .service-duration{font-size:11px;color:var(--gray);margin-top:2px;}
 .service-price{font-size:16px;font-weight:700;color:var(--gold);margin-top:8px;}
+.service-price.plan-free{color:var(--green);}
 
-/* DATE PICKER */
+/* ══ MONTHLY CALENDAR ══ */
+.month-cal-wrap{padding:0 20px;}
+.month-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.month-nav-btn{
+  background:var(--dark3);border:1px solid rgba(255,255,255,.1);
+  color:var(--gold);border-radius:10px;padding:8px 14px;
+  cursor:pointer;font-size:13px;font-family:Inter,sans-serif;transition:all .25s;
+}
+.month-nav-btn:disabled{color:var(--gray);cursor:not-allowed;opacity:.5;}
+.month-nav-btn:not(:disabled):active{background:var(--dark4);}
+.month-label{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--white);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--gray);padding:4px 0;letter-spacing:.5px;}
+.cal-day{
+  aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid rgba(255,255,255,.05);background:var(--dark3);
+  font-size:13px;font-weight:500;transition:all .25s;
+  position:relative;
+}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default;}
+.cal-day.past{opacity:.3;cursor:not-allowed;}
+.cal-day.blocked{opacity:.25;cursor:not-allowed;text-decoration:line-through;}
+.cal-day.today{border-color:rgba(201,168,76,.5);}
+.cal-day.today::after{
+  content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--gold);
+}
+.cal-day.selected{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:700;}
+.cal-day.has-appt::before{
+  content:'';position:absolute;top:4px;right:4px;
+  width:5px;height:5px;border-radius:50%;background:var(--red);
+}
+.cal-day:not(.past):not(.blocked):not(.empty):not(.selected):hover{
+  border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.08);
+}
+
+/* DATE SCROLL (fallback) */
 .date-scroll{display:flex;gap:10px;padding:0 20px;overflow-x:auto;scrollbar-width:none;}
 .date-scroll::-webkit-scrollbar{display:none;}
-.date-item{
-  min-width:58px;background:var(--dark3);border-radius:14px;padding:11px 6px;
-  text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.07);transition:all .3s;
-}
+.date-item{min-width:58px;background:var(--dark3);border-radius:14px;padding:11px 6px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.07);transition:all .3s;}
 .date-item.selected{background:var(--gold);border-color:var(--gold);color:var(--dark);}
 .date-item.blocked{opacity:.3;cursor:not-allowed;}
 .date-day{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1px;}
@@ -319,11 +301,7 @@ nav button:active{transform:scale(.88);}
 /* SLOTS */
 .slots-label{padding:0 20px 12px;font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
 .slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 20px;}
-.slot{
-  background:var(--dark3);border:1px solid rgba(255,255,255,.07);border-radius:11px;
-  padding:12px 6px;text-align:center;cursor:pointer;transition:all .3s;
-  font-size:13px;font-weight:500;
-}
+.slot{background:var(--dark3);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .3s;font-size:13px;font-weight:500;}
 .slot.available:active{border-color:var(--gold);background:rgba(201,168,76,.1);}
 .slot.selected{background:var(--gold);color:var(--dark);border-color:var(--gold);font-weight:700;}
 .slot.busy{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
@@ -355,54 +333,32 @@ nav button:active{transform:scale(.88);}
 }
 .btn-primary:active{transform:scale(.97);}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;}
-.btn-outline{
-  background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold);
-  padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;
-}
+.btn-outline{background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold);padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;}
 .btn-outline:active{background:rgba(201,168,76,.1);}
-.btn-danger{
-  background:linear-gradient(135deg,var(--red),#a03030);color:#fff;
-  border:none;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;
-}
+.btn-danger{background:linear-gradient(135deg,var(--red),#a03030);color:#fff;border:none;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;}
 .btn-danger:active{transform:scale(.97);}
 
 /* ONBOARDING */
-.register-hero{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;
-  background:linear-gradient(180deg,rgba(13,13,13,.94) 0%,var(--dark) 100%);
-}
-.register-card{
-  width:100%;max-width:440px;background:var(--dark3);border-radius:28px;
-  padding:32px 26px 30px;border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 28px 70px rgba(0,0,0,.35);
-}
+.register-hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;background:linear-gradient(180deg,rgba(13,13,13,.94) 0%,var(--dark) 100%);}
+.register-card{width:100%;max-width:440px;background:var(--dark3);border-radius:28px;padding:32px 26px 30px;border:1px solid rgba(255,255,255,.08);box-shadow:0 28px 70px rgba(0,0,0,.35);}
 .register-badge{display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
 .register-card h2{font-family:'Oswald',sans-serif;font-size:28px;margin-bottom:10px;}
 .register-card p{color:var(--gray);font-size:14px;line-height:1.7;margin-bottom:22px;}
 
 /* MODALS */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.87);backdrop-filter:blur(10px);
-  z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.3s;
-}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.87);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.3s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{
-  background:var(--dark2);border-radius:26px 26px 0 0;width:100%;padding:28px 20px 44px;
-  transform:translateY(100%);transition:.4s cubic-bezier(.25,.8,.25,1);
-  border-top:1px solid rgba(201,168,76,.2);max-height:90vh;overflow-y:auto;
-}
+.modal{background:var(--dark2);border-radius:26px 26px 0 0;width:100%;padding:28px 20px 44px;transform:translateY(100%);transition:.4s cubic-bezier(.25,.8,.25,1);border-top:1px solid rgba(201,168,76,.2);max-height:90vh;overflow-y:auto;}
 .modal-overlay.open .modal{transform:translateY(0);}
 .modal-handle{width:42px;height:4px;background:var(--dark4);border-radius:2px;margin:0 auto 22px;}
 .modal-title{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
 .modal-sub{color:var(--gray);font-size:13px;margin-bottom:22px;}
-.confirm-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:13px 0;border-bottom:1px solid rgba(255,255,255,.06);
-}
+.confirm-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.06);}
 .confirm-row:last-of-type{border-bottom:none;}
 .confirm-label{font-size:12px;color:var(--gray);}
 .confirm-value{font-size:14px;font-weight:600;color:var(--white);}
 .confirm-value.gold{color:var(--gold);}
+.confirm-value.green{color:var(--green);}
 .modal-btns{display:flex;gap:12px;margin-top:20px;}
 .modal-btns .btn-primary{margin:0;flex:1;}
 
@@ -412,21 +368,11 @@ nav button:active{transform:scale(.88);}
 .page-subtitle{color:var(--gray);font-size:13px;margin-top:3px;}
 .filter-bar{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none;}
 .filter-bar::-webkit-scrollbar{display:none;}
-.filter-btn{
-  padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);
-  background:transparent;color:var(--gray);font-size:12px;font-weight:600;
-  cursor:pointer;white-space:nowrap;transition:all .3s;font-family:'Inter',sans-serif;
-}
+.filter-btn{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--gray);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .3s;font-family:'Inter',sans-serif;}
 .filter-btn.active{background:var(--gold);color:var(--dark);border-color:var(--gold);}
 .appt-list{padding:0 20px;display:flex;flex-direction:column;gap:14px;}
-.appt-card{
-  background:var(--dark3);border-radius:var(--radius);padding:18px;
-  border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;transition:all .3s;
-}
-.appt-card::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:3px 0 0 3px;
-}
+.appt-card{background:var(--dark3);border-radius:var(--radius);padding:18px;border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;transition:all .3s;}
+.appt-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:3px 0 0 3px;}
 .appt-card.past::before{background:var(--gray);}
 .appt-card.cancelled::before{background:var(--red);}
 .appt-top{display:flex;justify-content:space-between;align-items:flex-start;}
@@ -461,6 +407,13 @@ nav button:active{transform:scale(.88);}
 }
 .profile-name{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;}
 .profile-since{color:var(--gray);font-size:13px;margin-top:4px;}
+.profile-plan-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.1));
+  border:1px solid rgba(201,168,76,.45);color:var(--gold);
+  font-size:12px;font-weight:700;padding:7px 16px;border-radius:30px;
+  margin-top:12px;letter-spacing:.5px;
+}
 .profile-edit-card{margin:0 20px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;}
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:20px;}
 .stat-card{background:var(--dark3);border-radius:14px;padding:16px 10px;text-align:center;border:1px solid rgba(255,255,255,.07);}
@@ -477,17 +430,28 @@ nav button:active{transform:scale(.88);}
 .menu-text span{font-size:12px;color:var(--gray);}
 .menu-arrow{color:var(--gray);font-size:13px;}
 
-/* ADMIN PANEL */
-.admin-header{
-  background:linear-gradient(160deg,rgba(20,12,6,.9),rgba(15,10,4,.98));
-  padding:52px 20px 24px;position:relative;overflow:hidden;
+/* plan card in profile */
+.plan-status-card{
+  margin:0 20px 16px;padding:18px 20px;
+  background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.05));
+  border:1px solid rgba(201,168,76,.3);border-radius:18px;
 }
+.plan-status-card .ps-title{font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:10px;}
+.plan-status-card .ps-uses{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.plan-status-card .ps-dot{
+  width:22px;height:22px;border-radius:50%;border:2px solid;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;
+}
+.plan-status-card .ps-dot.used{background:var(--gold);border-color:var(--gold);color:var(--dark);}
+.plan-status-card .ps-dot.empty{background:transparent;border-color:var(--dark4);}
+.plan-status-card .ps-info{font-size:12px;color:var(--gray);}
+
+/* ADMIN */
+.admin-header{background:linear-gradient(160deg,rgba(20,12,6,.9),rgba(15,10,4,.98));padding:52px 20px 24px;position:relative;overflow:hidden;}
 .admin-header::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);}
 .admin-title{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;letter-spacing:.4px;}
 .admin-sub{color:var(--gray);font-size:13px;margin-top:6px;}
 .admin-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.25);color:var(--gold);font-size:11px;font-weight:700;padding:6px 14px;border-radius:22px;margin-top:14px;}
-
-/* TODAY LIST */
 .today-list{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
 .today-slot{background:var(--dark3);border-radius:14px;padding:14px 16px;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:14px;transition:all .3s;}
 .today-slot.done{opacity:.55;}
@@ -503,8 +467,6 @@ nav button:active{transform:scale(.88);}
 .today-btn-done:active,.today-btn-done.active{background:var(--green);color:#fff;}
 .today-btn-cancel{background:rgba(224,80,80,.12);color:var(--red);}
 .today-btn-cancel:active{background:var(--red);color:#fff;}
-
-/* CHART */
 .chart-container{background:var(--dark3);border-radius:18px;border:1px solid rgba(255,255,255,.07);padding:20px;overflow:hidden;}
 .chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
 .chart-title{font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;}
@@ -514,8 +476,6 @@ nav button:active{transform:scale(.88);}
 #revenue-chart{width:100%;height:160px;display:block;}
 .chart-days{display:flex;justify-content:space-between;padding:6px 0 0;}
 .chart-day-label{font-size:10px;color:var(--gray);text-align:center;flex:1;}
-
-/* BLOCK DATES */
 .blocked-dates{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
 .blocked-tag{background:rgba(224,80,80,.1);border:1px solid rgba(224,80,80,.25);color:var(--red);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
 .blocked-tag button{background:none;border:none;color:var(--red);cursor:pointer;font-size:13px;line-height:1;padding:0;}
@@ -524,8 +484,6 @@ nav button:active{transform:scale(.88);}
 .block-form input:focus{border-color:rgba(224,80,80,.4);}
 .block-form button{background:var(--red);color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;white-space:nowrap;}
 .block-form button:active{transform:scale(.95);}
-
-/* SCHEDULE GRID */
 .schedule-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .sched-slot{background:var(--dark3);border-radius:10px;padding:10px 6px;text-align:center;border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:all .3s;font-size:12px;}
 .sched-slot.active-slot{border-color:rgba(76,175,80,.4);background:rgba(76,175,80,.08);color:var(--green);}
@@ -545,82 +503,57 @@ nav button:active{transform:scale(.88);}
 .toast.error i{color:var(--red);}
 .toast.info i{color:var(--gold);}
 
-/* RIPPLE */
 .ripple{position:relative;overflow:hidden;}
 .ripple-effect{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none;}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
 
-/* MISC */
 .text-gold{color:var(--gold);}
 .text-green{color:var(--green);}
 .divider{height:1px;background:rgba(255,255,255,.06);margin:16px 20px;}
-.section-gap{margin-top:28px;}
-.section-header{display:flex;justify-content:space-between;align-items:center;padding:0 20px;margin-bottom:14px;}
-.section-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;letter-spacing:.8px;}
-.section-link{color:var(--gold);font-size:13px;cursor:pointer;padding:4px 0;}
   </style>
 </head>
 <body>
 <div id="particles"></div>
 <div id="app">
 
-  <!-- ════════════════════════════════════════
-       PAGE: REGISTER
-  ════════════════════════════════════════ -->
+  <!-- REGISTER -->
   <div id="page-register" class="page">
     <div class="register-hero">
       <div class="register-card">
-        <div class="register-badge">
-          <span style="font-size:22px;">💈</span> Pila Premium Studio
-        </div>
+        <div class="register-badge"><span style="font-size:22px;">💈</span> Pila Premium Studio</div>
         <h2>Bem-vindo ao<br><span style="color:var(--gold);">BarberKing</span></h2>
         <p>Agende seus cortes de forma rápida e fácil.<br>Primeiro, nos conte seu nome.</p>
-
         <div class="form-group" style="margin:0 0 14px;">
           <label class="form-label">Seu Nome Completo</label>
-          <input id="register-name" class="form-input" type="text" placeholder="Ex: João da Silva"
-                 autocomplete="name" />
+          <input id="register-name" class="form-input" type="text" placeholder="Ex: João da Silva" autocomplete="name" />
         </div>
         <div class="form-group" style="margin:0 0 20px;">
           <label class="form-label">Seu WhatsApp</label>
-          <input id="register-phone" class="form-input" type="tel" placeholder="(17) 99999-9999"
-                 inputmode="numeric" oninput="formatPhone(this)" />
+          <input id="register-phone" class="form-input" type="tel" placeholder="(17) 99999-9999" inputmode="numeric" oninput="formatPhone(this)" />
         </div>
         <button class="btn-primary" style="margin:0;width:100%;" onclick="saveRegisterProfile()">
           Entrar no App <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
         </button>
-        <p style="color:var(--gray);font-size:12px;text-align:center;margin-top:18px;">
-          Seus dados são salvos somente no seu dispositivo.
-        </p>
+        <p style="color:var(--gray);font-size:12px;text-align:center;margin-top:18px;">Seus dados são salvos somente no seu dispositivo.</p>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: HOME
-  ════════════════════════════════════════ -->
+  <!-- HOME -->
   <div id="page-home" class="page">
     <div class="hero">
       <div class="hero-glow"></div>
       <div class="hero-top">
         <div class="logo">BARBER<span>KING</span><small>PILA PREMIUM</small></div>
         <div class="hero-actions">
-          <button class="icon-btn" onclick="toggleTheme()" title="Tema">
-            <i class="fas fa-moon"></i>
-          </button>
-          <button class="icon-btn" onclick="showAdminLogin()" title="Admin" style="position:relative;">
+          <button class="icon-btn" onclick="showAdminLogin()" title="Admin">
             <i class="fas fa-shield-halved"></i>
           </button>
         </div>
       </div>
-
       <div class="hero-content">
-        <div class="greeting">
-          <span id="user-greeting">Bem-vindo!</span>
-        </div>
+        <div class="greeting"><span id="user-greeting">Bem-vindo!</span></div>
       </div>
-
-      <!-- BANNER — Cortes que transforma (com imagem do barbeiro) -->
       <div class="hero-banner">
         <div class="banner-inner">
           <div class="banner-tag">✨ Pila Prime Studio</div>
@@ -628,53 +561,34 @@ nav button:active{transform:scale(.88);}
           <div class="banner-sub">Reserva sua hora agora</div>
           <button class="banner-cta" onclick="goToBook()">Agendar agora</button>
         </div>
-        <!-- Imagem do barbeiro cortando (substitui a tesoura) -->
-        <img src="barber-cut.png" class="banner-barber-img" alt="Barbeiro cortando cabelo" />
+        <img src="barber-cut.png" class="banner-barber-img" alt="Barbeiro" />
       </div>
     </div>
 
-    <!-- Barber card -->
     <div class="section-gap">
       <div id="home-barber-card"></div>
     </div>
 
-    <!-- Planos Mensais — banner de acesso -->
     <div class="section-gap">
       <div class="section-header">
         <span class="section-title">💳 Planos Mensais</span>
         <span class="section-link" onclick="showPage('plans')">Ver planos →</span>
       </div>
-      <div style="margin:0 20px;border-radius:16px;overflow:hidden;cursor:pointer;"
-           onclick="showPage('plans')">
-        <div style="
-          background:linear-gradient(135deg,#0a0a1a,#0d1535);
-          border:1px solid rgba(76,130,200,.3);
-          border-radius:16px;padding:18px 20px;
-          display:flex;align-items:center;gap:16px;
-          box-shadow:0 4px 20px rgba(76,130,200,.15);
-        ">
+      <div style="margin:0 20px;cursor:pointer;" onclick="showPage('plans')">
+        <div style="background:linear-gradient(135deg,#0a0a1a,#0d1535);border:1px solid rgba(76,130,200,.3);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 20px rgba(76,130,200,.15);">
           <div style="font-size:36px;">🛡️</div>
           <div style="flex:1;">
-            <div style="font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;">
-              Assine um plano e economize
-            </div>
-            <div style="font-size:12px;color:var(--gray);margin-top:3px;">
-              Basic · Plus · Gold — a partir de R$ 119,90/mês
-            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:17px;font-weight:700;">Assine um plano e economize</div>
+            <div style="font-size:12px;color:var(--gray);margin-top:3px;">Basic · Plus · Gold — a partir de R$ 119,90/mês</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-            <div style="display:flex;gap:2px;">
-              <span style="font-size:18px;">✂️</span>
-              <span style="font-size:18px;">💈</span>
-              <span style="font-size:18px;">🔥</span>
-            </div>
+            <div style="display:flex;gap:2px;"><span style="font-size:18px;">✂️</span><span style="font-size:18px;">💈</span><span style="font-size:18px;">🔥</span></div>
             <i class="fas fa-chevron-right" style="color:var(--blue);font-size:12px;"></i>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Serviços -->
     <div class="section-gap">
       <div class="section-header">
         <span class="section-title">Serviços</span>
@@ -683,41 +597,28 @@ nav button:active{transform:scale(.88);}
       <div class="services-preview" id="home-services"></div>
     </div>
 
-    <!-- Próximo agendamento -->
     <div class="section-gap" style="padding-bottom:12px;">
-      <div class="section-header">
-        <span class="section-title">Próximo Agendamento</span>
-      </div>
+      <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: PLANOS (cliente)
-  ════════════════════════════════════════ -->
+  <!-- PLANOS -->
   <div id="page-plans" class="page">
     <div class="plans-page-header">
-      <div class="plans-page-back" onclick="showPage('home')">
-        <i class="fas fa-arrow-left"></i> Voltar para Home
-      </div>
+      <div class="plans-page-back" onclick="showPage('home')"><i class="fas fa-arrow-left"></i> Voltar para Home</div>
       <div class="plans-page-title">Planos Mensais 🛡️</div>
       <div class="plans-page-sub">
-        Escolha seu plano e agende com preço <strong style="color:var(--green);">R$ 0,00</strong> — 
+        Escolha seu plano e agende com preço <strong style="color:var(--green);">R$ 0,00</strong> —
         o valor já está incluído na sua mensalidade.
       </div>
     </div>
-
-    <!-- Cards dos 3 planos -->
-    <div class="plans-cards" id="plans-cards">
-      <!-- Renderizado por JS -->
-    </div>
-
-    <!-- Nota de rodapé -->
+    <div class="plans-cards" id="plans-cards"></div>
     <div style="padding:0 20px 32px;text-align:center;">
       <p style="font-size:12px;color:var(--gray);line-height:1.6;">
         Ao selecionar um plano, você será identificado no agendamento.<br>
         O horário reservado fica bloqueado para todos os clientes.<br>
-        Fale com Pila para assinar: 
+        Fale com Pila para assinar:
         <span style="color:var(--green);cursor:pointer;" onclick="callPilaWhatsApp()">
           <i class="fab fa-whatsapp"></i> WhatsApp
         </span>
@@ -725,11 +626,8 @@ nav button:active{transform:scale(.88);}
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: BOOK
-  ════════════════════════════════════════ -->
+  <!-- BOOK -->
   <div id="page-book" class="page">
-    <!-- Indicadores de progresso -->
     <div class="step-nav">
       <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
       <div class="step-indicator" style="flex:1;justify-content:center;">
@@ -739,11 +637,12 @@ nav button:active{transform:scale(.88);}
       </div>
     </div>
 
-    <!-- STEP 1: Serviço -->
+    <!-- STEP 1 -->
     <div id="step-1">
+      <div id="plan-book-banner" style="display:none;"></div>
       <div class="step-head">
-        <h2>Escolha o Serviço</h2>
-        <p>Selecione o que deseja fazer hoje</p>
+        <h2 id="step1-title">Escolha o Serviço</h2>
+        <p id="step1-sub">Selecione o que deseja fazer hoje</p>
       </div>
       <div class="services-grid" id="services-grid"></div>
       <button id="btn-step1" class="btn-primary" disabled onclick="goStep(2)">
@@ -751,14 +650,14 @@ nav button:active{transform:scale(.88);}
       </button>
     </div>
 
-    <!-- STEP 2: Data e Horário -->
+    <!-- STEP 2 -->
     <div id="step-2" style="display:none;">
       <div class="step-head">
         <h2>Data &amp; Horário</h2>
         <p>Escolha o melhor dia para você</p>
       </div>
       <div id="date-picker-wrap">
-        <div class="date-scroll" id="date-scroll"></div>
+        <!-- monthly calendar rendered here -->
       </div>
       <div class="section-gap">
         <div class="slots-label">Horários disponíveis</div>
@@ -769,45 +668,38 @@ nav button:active{transform:scale(.88);}
       </button>
     </div>
 
-    <!-- STEP 3: Confirmação -->
+    <!-- STEP 3 -->
     <div id="step-3" style="display:none;">
       <div class="step-head">
         <h2>Confirmar Agendamento</h2>
         <p>Confira os detalhes e finalize</p>
       </div>
-
-      <!-- Resumo -->
       <div class="booking-summary-box">
-        <div class="bs-title">Resumo do Pedido</div>
         <div id="booking-summary"></div>
       </div>
-
-      <!-- Dados do cliente -->
+      <div id="plan-confirm-info" style="display:none;margin:0 20px 14px;padding:12px 16px;background:rgba(76,175,80,.08);border:1px solid rgba(76,175,80,.2);border-radius:12px;font-size:13px;color:var(--gray);line-height:1.6;">
+        <i class="fas fa-crown" style="color:var(--gold);margin-right:6px;"></i>
+        Agendamento pelo plano — <span style="color:var(--green);font-weight:700;">R$ 0,00</span> neste horário.
+      </div>
       <div class="form-group">
         <label class="form-label">Seu Nome</label>
-        <input id="input-name" class="form-input" type="text" placeholder="Nome completo"
-               oninput="validateForm()" autocomplete="name" />
+        <input id="input-name" class="form-input" type="text" placeholder="Nome completo" oninput="validateForm()" autocomplete="name" />
       </div>
       <div class="form-group">
         <label class="form-label">WhatsApp</label>
-        <input id="input-phone" class="form-input" type="tel" placeholder="(17) 99999-9999"
-               inputmode="numeric" oninput="formatPhone(this);validateForm()" />
+        <input id="input-phone" class="form-input" type="tel" placeholder="(17) 99999-9999" inputmode="numeric" oninput="formatPhone(this);validateForm()" />
       </div>
       <div class="form-group">
         <label class="form-label">E-mail</label>
-        <input id="input-email" class="form-input" type="email" placeholder="seu@email.com"
-               oninput="validateForm()" autocomplete="email" />
+        <input id="input-email" class="form-input" type="email" placeholder="seu@email.com" oninput="validateForm()" autocomplete="email" />
       </div>
-
       <button id="btn-confirm" class="btn-primary" disabled onclick="openConfirmModal()">
         <i class="fas fa-check" style="margin-right:8px;"></i>Confirmar Agendamento
       </button>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: APPOINTMENTS
-  ════════════════════════════════════════ -->
+  <!-- APPOINTMENTS -->
   <div id="page-appointments" class="page">
     <div class="page-header">
       <div class="page-title">Meus Agendamentos</div>
@@ -822,14 +714,13 @@ nav button:active{transform:scale(.88);}
     <div class="appt-list" id="appt-list"></div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: PROFILE
-  ════════════════════════════════════════ -->
+  <!-- PROFILE -->
   <div id="page-profile" class="page">
     <div class="profile-hero">
       <div class="profile-avatar" id="profile-avatar">?</div>
       <div class="profile-name" id="profile-name">—</div>
       <div class="profile-since">Cliente Barberking</div>
+      <div id="profile-plan-badge" style="display:none;"></div>
     </div>
 
     <div class="stats-row">
@@ -846,6 +737,9 @@ nav button:active{transform:scale(.88);}
         <div class="stat-label">Planos</div>
       </div>
     </div>
+
+    <!-- Plan status card (shown when plan is active) -->
+    <div id="profile-plan-card" style="display:none;"></div>
 
     <div class="section-gap">
       <div class="section-header">
@@ -889,61 +783,34 @@ nav button:active{transform:scale(.88);}
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       PAGE: ADMIN
-  ════════════════════════════════════════ -->
+  <!-- ADMIN -->
   <div id="page-admin" class="page">
     <div class="admin-header">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;">
         <div>
           <div class="admin-title">Painel Admin 🛡️</div>
           <div class="admin-sub">Gestão completa da barbearia</div>
-          <div class="admin-badge">
-            <i class="fas fa-lock" style="font-size:10px;"></i> Pila · Mestre Barbeiro
-          </div>
+          <div class="admin-badge"><i class="fas fa-lock" style="font-size:10px;"></i> Pila · Mestre Barbeiro</div>
         </div>
-        <button class="icon-btn" onclick="showPage('home')" title="Voltar">
-          <i class="fas fa-arrow-left"></i>
-        </button>
+        <button class="icon-btn" onclick="showPage('home')" title="Voltar"><i class="fas fa-arrow-left"></i></button>
       </div>
       <div id="admin-today-date" style="font-size:12px;color:var(--gray);margin-top:10px;"></div>
     </div>
-
-    <!-- Tabs de navegação do admin (renderizadas por JS) -->
-    <!-- id="admin-tab-bar" inserido por renderAdminTabs() -->
-
-    <!-- Conteúdo dinâmico das abas -->
     <div id="admin-tab-content"></div>
-
-    <!-- Campos legados (ocultos, mantidos para compatibilidade) -->
-    <div id="admin-stats"    style="display:none;"></div>
-    <div id="admin-needs"    style="display:none;"></div>
+    <div id="admin-stats"     style="display:none;"></div>
+    <div id="admin-needs"     style="display:none;"></div>
     <div id="admin-appt-list" style="display:none;"></div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       BOTTOM NAV
-  ════════════════════════════════════════ -->
+  <!-- BOTTOM NAV -->
   <nav>
-    <button id="nav-home"         onclick="showPage('home')">
-      <i class="fas fa-home"></i>Home
-    </button>
-    <button id="nav-book"         onclick="goToBook()">
-      <i class="fas fa-scissors"></i>Agendar
-    </button>
-    <button id="nav-appointments" onclick="showPage('appointments')">
-      <i class="fas fa-calendar-check"></i>Agendamentos
-    </button>
-    <button id="nav-profile"      onclick="showPage('profile')">
-      <i class="fas fa-user"></i>Perfil
-    </button>
+    <button id="nav-home"         onclick="showPage('home')"><i class="fas fa-home"></i>Home</button>
+    <button id="nav-book"         onclick="goToBook()"><i class="fas fa-scissors"></i>Agendar</button>
+    <button id="nav-appointments" onclick="showPage('appointments')"><i class="fas fa-calendar-check"></i>Agendamentos</button>
+    <button id="nav-profile"      onclick="showPage('profile')"><i class="fas fa-user"></i>Perfil</button>
   </nav>
 
-  <!-- ════════════════════════════════════════
-       MODAIS
-  ════════════════════════════════════════ -->
-
-  <!-- Modal: Confirmar agendamento -->
+  <!-- MODAIS -->
   <div class="modal-overlay" id="confirm-modal">
     <div class="modal">
       <div class="modal-handle"></div>
@@ -952,14 +819,11 @@ nav button:active{transform:scale(.88);}
       <div id="modal-content"></div>
       <div class="modal-btns">
         <button class="btn-outline" onclick="closeModal()">Cancelar</button>
-        <button class="btn-primary" onclick="confirmBooking()">
-          <i class="fas fa-check" style="margin-right:6px;"></i>Confirmar
-        </button>
+        <button class="btn-primary" onclick="confirmBooking()"><i class="fas fa-check" style="margin-right:6px;"></i>Confirmar</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Cancelar agendamento -->
   <div class="modal-overlay" id="cancel-modal">
     <div class="modal">
       <div class="modal-handle"></div>
@@ -968,14 +832,11 @@ nav button:active{transform:scale(.88);}
       <div id="cancel-content"></div>
       <div class="modal-btns">
         <button class="btn-outline" onclick="closeCancelModal()">Voltar</button>
-        <button class="btn-danger" onclick="doCancel()">
-          <i class="fas fa-times" style="margin-right:6px;"></i>Cancelar
-        </button>
+        <button class="btn-danger" onclick="doCancel()"><i class="fas fa-times" style="margin-right:6px;"></i>Cancelar</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: Login admin -->
   <div class="modal-overlay" id="admin-login-modal">
     <div class="modal">
       <div class="modal-handle"></div>
@@ -983,61 +844,39 @@ nav button:active{transform:scale(.88);}
       <div class="modal-sub">Informe a senha para entrar no painel.</div>
       <div class="form-group" style="margin:0 0 20px;">
         <label class="form-label">Senha</label>
-        <input id="admin-pass" class="form-input" type="password" placeholder="••••••"
-               onkeyup="if(event.key==='Enter')checkAdmin()" />
+        <input id="admin-pass" class="form-input" type="password" placeholder="••••••" onkeyup="if(event.key==='Enter')checkAdmin()" />
       </div>
       <div class="modal-btns">
         <button class="btn-outline" onclick="closeAdminModal()">Cancelar</button>
-        <button class="btn-primary" onclick="checkAdmin()">
-          <i class="fas fa-unlock" style="margin-right:6px;"></i>Entrar
-        </button>
+        <button class="btn-primary" onclick="checkAdmin()"><i class="fas fa-unlock" style="margin-right:6px;"></i>Entrar</button>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       ★ MODAL: PLANO — Identificação do cliente
-  ════════════════════════════════════════ -->
+  <!-- Plan modal -->
   <div class="modal-overlay" id="plan-modal">
     <div class="modal">
       <div class="modal-handle"></div>
-
-      <!-- Cabeçalho do plano -->
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
-        <div id="plan-modal-emoji"
-             style="font-size:40px;width:60px;height:60px;display:flex;align-items:center;justify-content:center;
-                    background:rgba(201,168,76,.1);border-radius:16px;border:1px solid rgba(201,168,76,.2);"></div>
+        <div id="plan-modal-emoji" style="font-size:40px;width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.1);border-radius:16px;border:1px solid rgba(201,168,76,.2);"></div>
         <div>
-          <div class="modal-title" id="plan-modal-title" style="margin-bottom:2px;">Plano Basic</div>
-          <div id="plan-modal-price"
-               style="font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;"></div>
-          <div style="font-size:12px;color:var(--gray);margin-top:2px;">
-            Agendamento incluído no plano · <span style="color:var(--green);">R$ 0,00</span>
-          </div>
+          <div class="modal-title" id="plan-modal-title" style="margin-bottom:2px;">Plano</div>
+          <div id="plan-modal-price" style="font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;"></div>
+          <div style="font-size:12px;color:var(--gray);margin-top:2px;">Agendamento incluído · <span style="color:var(--green);">R$ 0,00</span></div>
         </div>
       </div>
-
-      <!-- Campos de identificação -->
       <div class="form-group" style="margin:0 0 14px;">
         <label class="form-label">Seu Nome</label>
-        <input id="plan-client-name" class="form-input" type="text"
-               placeholder="Nome completo" autocomplete="name" />
+        <input id="plan-client-name" class="form-input" type="text" placeholder="Nome completo" autocomplete="name" />
       </div>
       <div class="form-group" style="margin:0 0 20px;">
         <label class="form-label">Seu WhatsApp</label>
-        <input id="plan-client-phone" class="form-input" type="tel"
-               placeholder="(17) 99999-9999" inputmode="numeric"
-               oninput="formatPhone(this)" />
+        <input id="plan-client-phone" class="form-input" type="tel" placeholder="(17) 99999-9999" inputmode="numeric" oninput="formatPhone(this)" />
       </div>
-
-      <!-- Info -->
-      <div style="background:rgba(76,175,80,.08);border:1px solid rgba(76,175,80,.2);border-radius:12px;
-                  padding:12px 14px;margin-bottom:20px;font-size:12px;color:var(--gray);line-height:1.6;">
+      <div style="background:rgba(76,175,80,.08);border:1px solid rgba(76,175,80,.2);border-radius:12px;padding:12px 14px;margin-bottom:20px;font-size:12px;color:var(--gray);line-height:1.6;">
         <i class="fas fa-info-circle" style="color:var(--green);margin-right:6px;"></i>
         Seu horário será reservado normalmente e aparecerá bloqueado para outros clientes.
-        O admin verá o plano utilizado no painel.
       </div>
-
       <div class="modal-btns">
         <button class="btn-outline" onclick="closePlanModal()">Cancelar</button>
         <button class="btn-primary" onclick="confirmPlanAndBook()">
@@ -1047,19 +886,1057 @@ nav button:active{transform:scale(.88);}
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════
-       TOAST
-  ════════════════════════════════════════ -->
-  <div class="toast" id="toast">
-    <i class="fas fa-check-circle"></i>
-    <span id="toast-msg"></span>
+  <!-- Plan exhausted modal -->
+  <div class="modal-overlay" id="plan-exhausted-modal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div style="text-align:center;padding:10px 0 20px;">
+        <div style="font-size:56px;margin-bottom:12px;">⚠️</div>
+        <div class="modal-title">Plano Esgotado</div>
+        <div style="color:var(--gray);font-size:14px;margin-top:8px;line-height:1.7;">
+          Você já utilizou as <strong style="color:var(--white);">4 sessões</strong> do seu plano este mês.<br>
+          Fale com o Pila para renovar o plano e agendar normalmente.
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+        <button class="btn-primary" style="margin:0;width:100%;" onclick="callPilaWhatsApp();closePlanExhaustedModal()">
+          <i class="fab fa-whatsapp" style="margin-right:8px;"></i>Falar com Pila no WhatsApp
+        </button>
+        <button class="btn-outline" onclick="closePlanExhaustedModal()">Fechar</button>
+      </div>
+    </div>
   </div>
 
-</div><!-- #app -->
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
+</div>
 
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<!-- App JS -->
-<script src="app.js"></script>
+<script>
+const SUPABASE_URL = 'https://esmgvjdfmghvmbbmiwwr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_33LFn0rafHYSWp_6aKe73g_-QZLQxX9';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+'use strict';
+
+// ══════════════════════════════════════════
+//  DATABASE
+// ══════════════════════════════════════════
+const DB_KEY = 'barberking_pila_v2';
+
+function getDB() {
+  try { const r = localStorage.getItem(DB_KEY); return r ? JSON.parse(r) : defaultDB(); }
+  catch(e) { return defaultDB(); }
+}
+function defaultDB() {
+  return {
+    appointments: [],
+    profile: null,
+    blockedDates: [],
+    blockedIntervals: [],
+    activeSlots: ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+                  '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'],
+    planData: null,  // { planId, planName, planEmoji, month, year, usesCount }
+  };
+}
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+function addAppointment(appt) {
+  const db = getDB();
+  appt.id        = Date.now().toString() + Math.random().toString(36).slice(2,6);
+  appt.createdAt = new Date().toISOString();
+  appt.status    = 'confirmed';
+  appt.doneByAdmin = false;
+  db.appointments.unshift(appt);
+  saveDB(db);
+  return appt;
+}
+function cancelAppointment(id) {
+  const db = getDB(); const a = db.appointments.find(x=>x.id===id);
+  if(a){a.status='cancelled';saveDB(db);}
+}
+function markDone(id) {
+  const db = getDB(); const a = db.appointments.find(x=>x.id===id);
+  if(a){a.status='past';a.doneByAdmin=true;saveDB(db);}
+}
+function getProfile() { return getDB().profile || {name:'Visitante',phone:'',email:''}; }
+function saveProfile(p) { const db=getDB();db.profile=p;saveDB(db); }
+
+function saveRegisterProfile() {
+  const name  = document.getElementById('register-name')?.value.trim();
+  const phone = document.getElementById('register-phone')?.value.trim();
+  if(!name||name.length<3)                     return showToast('Digite seu nome completo.','error');
+  if(!phone||phone.replace(/\D/g,'').length<10) return showToast('Informe um WhatsApp válido.','error');
+  saveProfile({name,phone,email:''});
+  showPage('home'); renderHome(); renderProfile();
+  showToast('Seja bem-vindo, '+name+'!','success');
+}
+
+// ══════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════
+const BARBER = {id:1,name:'Pila',fullName:'Pila',role:'Mestre Barbeiro',rating:'5.0',emoji:'P'};
+const ALL_SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+                   '13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30'];
+const SERVICES = [
+  {id:1,name:'Corte de Cabelo',icon:'✂️',duration:'30 min',price:35,   priceStr:'R$ 35,00'},
+  {id:2,name:'Barba Completa', icon:'🪒',duration:'20 min',price:30,   priceStr:'R$ 30,00'},
+  {id:3,name:'Cabelo + Barba', icon:'💈',duration:'50 min',price:59.90,priceStr:'R$ 59,90'},
+  {id:4,name:'Degradê',        icon:'🔥',duration:'45 min',price:45,   priceStr:'R$ 45,00'},
+  {id:5,name:'Navalhado',      icon:'⚡',duration:'25 min',price:25,   priceStr:'R$ 25,00'},
+  {id:6,name:'Hidratação',     icon:'💧',duration:'30 min',price:40,   priceStr:'R$ 40,00'},
+];
+// Serviços disponíveis para quem agenda pelo plano (só esses 3)
+const PLAN_SERVICE_IDS = [1, 2, 3];
+const PLAN_MAX_USES    = 4;
+
+const PLANS = [
+  {
+    id:'basic',emoji:'🥉',name:'Basic',price:'R$ 119,90',period:'/mês',
+    color:'#c9a84c',bg:'rgba(201,168,76,.06)',
+    features:['✂️ 4 Cortes de Cabelo','🪒 4 Barbas Completas','💈 4 Cabelo + Barba','✅ Até 4 agendamentos/mês'],
+  },
+  {
+    id:'plus',emoji:'🥈',name:'Plus',price:'R$ 169,90',period:'/mês',
+    color:'#4c82c8',bg:'rgba(76,130,200,.07)',popular:true,
+    features:['✂️ 4 Cortes de Cabelo','🪒 4 Barbas Completas','💈 4 Cabelo + Barba','✅ Até 4 agendamentos/mês','⚡ Atendimento prioritário'],
+  },
+  {
+    id:'gold',emoji:'🥇',name:'Gold',price:'R$ 219,90',period:'/mês',
+    color:'#f0c060',bg:'rgba(240,192,96,.07)',
+    features:['✂️ 4 Cortes de Cabelo','🪒 4 Barbas Completas','💈 4 Cabelo + Barba','✅ Até 4 agendamentos/mês','⚡ Atendimento prioritário','🎁 Produto de brinde mensal'],
+  },
+];
+
+const ADMIN_PASSWORD = 'pila123';
+const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DAYS_PT   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+const state = {
+  selectedService: null,
+  selectedDate:    null,
+  selectedSlot:    null,
+  currentStep:     1,
+  cancelId:        null,
+  apptFilter:      'all',
+  adminApptFilter: 'all',
+  isAdmin:         false,
+  monthOffset:     0,   // 0 = mês atual
+  bookingByPlan:   false,
+  activePlanInfo:  null, // plan object selecionado
+  supabaseAppts:   [],
+};
+
+// ══════════════════════════════════════════
+//  PARTICLES
+// ══════════════════════════════════════════
+(function(){
+  const c=document.getElementById('particles');
+  const cols=['#c9a84c','#f0c060','#a07830','rgba(255,255,255,.5)'];
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div'); p.className='particle';
+    const sz=Math.random()*3.5+1;
+    p.style.cssText=[`width:${sz}px`,`height:${sz}px`,`background:${cols[Math.floor(Math.random()*4)]}`,
+      `left:${Math.random()*100}%`,`animation-duration:${Math.random()*14+8}s`,
+      `animation-delay:${Math.random()*12}s`].join(';');
+    c.appendChild(p);
+  }
+})();
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+const NAV_MAP={home:'nav-home',book:'nav-book',appointments:'nav-appointments',profile:'nav-profile'};
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const page=document.getElementById('page-'+name)||document.getElementById(name);
+  if(page) page.classList.add('active');
+  const nb=NAV_MAP[name]; if(nb) document.getElementById(nb)?.classList.add('active');
+  const nav=document.querySelector('nav');
+  if(nav) nav.style.display=name==='register'?'none':'flex';
+  if(name==='home')         renderHome();
+  if(name==='appointments') renderAppointments();
+  if(name==='profile')      renderProfile();
+  if(name==='admin')        renderAdmin();
+  if(name==='plans')        renderPlans();
+  window.scrollTo(0,0);
+}
+function goToBook(byPlan, planInfo){
+  state.bookingByPlan = !!byPlan;
+  state.activePlanInfo = planInfo || null;
+  showPage('book');
+  resetBooking();
+}
+
+// ══════════════════════════════════════════
+//  PLAN HELPERS
+// ══════════════════════════════════════════
+function getPlanData(){
+  const db=getDB(); return db.planData||null;
+}
+function isPlanActiveThisMonth(){
+  const pd=getPlanData(); if(!pd) return false;
+  const now=new Date();
+  return pd.month===now.getMonth() && pd.year===now.getFullYear() && pd.usesCount>0;
+}
+function getPlanUsesLeft(){
+  const pd=getPlanData();
+  if(!pd) return 0;
+  const now=new Date();
+  if(pd.month!==now.getMonth()||pd.year!==now.getFullYear()) return 0;
+  return PLAN_MAX_USES - (pd.usesCount||0);
+}
+function incrementPlanUse(){
+  const db=getDB();
+  if(db.planData) db.planData.usesCount=(db.planData.usesCount||0)+1;
+  saveDB(db);
+}
+function activatePlan(plan){
+  const db=getDB(); const now=new Date();
+  // Check if plan already exists for this month, keep count
+  const existing=db.planData;
+  const sameMonth=existing&&existing.month===now.getMonth()&&existing.year===now.getFullYear();
+  db.planData={
+    planId:    plan.id,
+    planName:  'Plano '+plan.name,
+    planEmoji: plan.emoji,
+    month:     now.getMonth(),
+    year:      now.getFullYear(),
+    usesCount: sameMonth ? (existing.usesCount||0) : 0,
+  };
+  saveDB(db);
+}
+
+// ══════════════════════════════════════════
+//  HOME
+// ══════════════════════════════════════════
+function renderHome(){
+  const profile=getProfile();
+  const greetEl=document.getElementById('user-greeting');
+  if(greetEl) greetEl.textContent=profile.name==='Visitante'?'Bem-vindo! Agende seu horário.':'Olá, '+profile.name;
+  const bc=document.getElementById('home-barber-card');
+  if(bc) bc.innerHTML=`
+    <div class="barber-hero-card" onclick="goToBook()">
+      <div class="barber-big-avatar">P<div class="online-dot"></div></div>
+      <div class="barber-hero-info">
+        <div class="barber-hero-name">${BARBER.fullName}</div>
+        <div class="barber-hero-role">${BARBER.role}</div>
+        <div class="barber-hero-stars"><span>★★★★★</span> ${BARBER.rating} · <span style="color:var(--green);">Disponível agora</span></div>
+      </div>
+      <button class="barber-book-btn">Agendar</button>
+    </div>`;
+  const sg=document.getElementById('home-services');
+  if(sg) sg.innerHTML=SERVICES.slice(0,4).map(s=>`
+    <div class="service-mini ripple" onclick="goToBook()">
+      <div class="s-icon">${s.icon}</div>
+      <div class="s-name">${s.name}</div>
+      <div class="s-dur"><i class="fas fa-clock" style="font-size:9px;margin-right:3px;"></i>${s.duration}</div>
+      <div class="s-price">${s.priceStr}</div>
+    </div>`).join('');
+  const db=getDB();
+  const upcoming=db.appointments.filter(a=>a.status==='confirmed');
+  const cont=document.getElementById('home-next-appt');
+  if(!cont) return;
+  if(!upcoming.length){
+    cont.innerHTML=`<div style="background:var(--dark3);border-radius:16px;padding:22px;border:1px solid rgba(255,255,255,.06);text-align:center;">
+      <div style="font-size:38px;margin-bottom:8px;">📅</div>
+      <div style="font-size:14px;color:var(--gray);">Nenhum agendamento próximo</div>
+      <button class="btn-outline" onclick="goToBook()" style="margin-top:14px;width:100%;">Agendar com Pila</button>
+    </div>`;
+  } else {
+    const a=upcoming[0];
+    cont.innerHTML=`<div class="mini-appt-card">
+      <div class="appt-top">
+        <div class="appt-service">${a.service}</div>
+        <span class="appt-badge badge-confirmed">Confirmado</span>
+      </div>
+      <div class="appt-info" style="margin-top:10px;">
+        <div class="appt-detail"><i class="fas fa-scissors"></i>${BARBER.name}</div>
+        <div class="appt-detail"><i class="fas fa-calendar"></i>${a.date}</div>
+        <div class="appt-detail"><i class="fas fa-clock"></i>${a.time}</div>
+        <div class="appt-detail"><i class="fas fa-tag"></i>${a.priceStr}</div>
+      </div>
+    </div>`;
+  }
+}
+
+// ══════════════════════════════════════════
+//  PLANS PAGE
+// ══════════════════════════════════════════
+function renderPlans(){
+  const cont=document.getElementById('plans-cards');
+  if(!cont) return;
+  cont.innerHTML=PLANS.map(p=>`
+    <div class="plan-card ${p.id==='plus'?'plan-highlight':''}"
+         style="border-color:${p.color};background:${p.bg};"
+         onclick="openPlanModal('${p.id}')">
+      ${p.popular?'<div class="plan-popular-badge">MAIS POPULAR</div>':''}
+      <div class="plan-emoji">${p.emoji}</div>
+      <div class="plan-name" style="color:${p.color};">${p.name}</div>
+      <div class="plan-price-wrap">
+        <div class="plan-price">${p.price}</div>
+        <div class="plan-period">${p.period}</div>
+      </div>
+      <ul class="plan-features">${p.features.map(f=>`<li style="color:var(--white);">${f}</li>`).join('')}</ul>
+      <button class="plan-select-btn" style="background:${p.color};color:#0d0d0d;">
+        Selecionar ${p.name} <i class="fas fa-crown" style="margin-left:6px;"></i>
+      </button>
+    </div>`).join('');
+}
+
+function openPlanModal(planId){
+  const plan=PLANS.find(p=>p.id===planId);
+  if(!plan) return;
+  // Verificar se plano está esgotado este mês
+  const db=getDB();
+  const pd=db.planData;
+  const now=new Date();
+  if(pd && pd.planId===planId && pd.month===now.getMonth() && pd.year===now.getFullYear() && pd.usesCount>=PLAN_MAX_USES){
+    openPlanExhaustedModal(); return;
+  }
+  document.getElementById('plan-modal-emoji').textContent  = plan.emoji;
+  document.getElementById('plan-modal-title').textContent  = 'Plano '+plan.name;
+  document.getElementById('plan-modal-price').textContent  = plan.price+plan.period;
+  const profile=getProfile();
+  document.getElementById('plan-client-name').value  = profile.name!=='Visitante'?profile.name:'';
+  document.getElementById('plan-client-phone').value = profile.phone||'';
+  state.activePlanInfo=plan;
+  document.getElementById('plan-modal').classList.add('open');
+}
+function closePlanModal(){ document.getElementById('plan-modal').classList.remove('open'); }
+function openPlanExhaustedModal(){ document.getElementById('plan-exhausted-modal').classList.add('open'); }
+function closePlanExhaustedModal(){ document.getElementById('plan-exhausted-modal').classList.remove('open'); }
+
+function confirmPlanAndBook(){
+  const name  = document.getElementById('plan-client-name').value.trim();
+  const phone = document.getElementById('plan-client-phone').value.trim();
+  if(!name||name.length<2)                       return showToast('Informe seu nome.','error');
+  if(!phone||phone.replace(/\D/g,'').length<10)  return showToast('Informe um WhatsApp válido.','error');
+  const plan=state.activePlanInfo;
+  if(!plan) return;
+  // Verificar limite mensal
+  const db=getDB(); const pd=db.planData; const now=new Date();
+  const uses=(pd&&pd.planId===plan.id&&pd.month===now.getMonth()&&pd.year===now.getFullYear()) ? (pd.usesCount||0) : 0;
+  if(uses>=PLAN_MAX_USES){ closePlanModal(); openPlanExhaustedModal(); return; }
+  // Ativar plano e ir para agendamento
+  activatePlan(plan);
+  saveProfile({...getProfile(), name, phone});
+  closePlanModal();
+  // Preencher nome/telefone no form de agendamento
+  setTimeout(()=>{
+    const ni=document.getElementById('input-name'); if(ni) ni.value=name;
+    const pi=document.getElementById('input-phone'); if(pi) pi.value=phone;
+  },300);
+  goToBook(true, plan);
+}
+
+function callPilaWhatsApp(){
+  window.open('https://wa.me/5517999999999?text=Olá+Pila,+quero+assinar+um+plano!','_blank');
+}
+
+// ══════════════════════════════════════════
+//  BOOK FLOW
+// ══════════════════════════════════════════
+function resetBooking(){
+  state.selectedService=null; state.selectedDate=null;
+  state.selectedSlot=null; state.monthOffset=0;
+  goStep(1);
+}
+function goBack(){
+  if(state.currentStep>1) goStep(state.currentStep-1);
+  else { state.bookingByPlan=false; state.activePlanInfo=null; showPage('home'); }
+}
+function goStep(n){
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('step-'+i); if(el) el.style.display=i===n?'block':'none';
+    const dot=document.getElementById('dot-'+i); if(dot) dot.classList.toggle('active',i<=n);
+  }
+  state.currentStep=n;
+  if(n===1) renderServicesGrid();
+  if(n===2) renderDateSlots();
+  if(n===3) renderSummary();
+  window.scrollTo(0,0);
+}
+
+// ── SERVICES ──
+function renderServicesGrid(){
+  const grid=document.getElementById('services-grid');
+  if(!grid) return;
+
+  const isByPlan = state.bookingByPlan;
+  const svcList  = isByPlan ? SERVICES.filter(s=>PLAN_SERVICE_IDS.includes(s.id)) : SERVICES;
+  const usesLeft = isByPlan ? getPlanUsesLeft() : null;
+
+  // Update header
+  const t1=document.getElementById('step1-title');
+  const s1=document.getElementById('step1-sub');
+  const banner=document.getElementById('plan-book-banner');
+
+  if(isByPlan && state.activePlanInfo){
+    const plan=state.activePlanInfo;
+    if(t1) t1.textContent='Serviços do '+plan.name;
+    if(s1) s1.textContent='Escolha um dos serviços incluídos no seu plano';
+    if(banner){
+      banner.style.display='block';
+      const db=getDB(); const pd=db.planData;
+      const usados=pd?pd.usesCount:0;
+      let dotsHtml='';
+      for(let i=0;i<PLAN_MAX_USES;i++){
+        dotsHtml+=`<div class="plan-usage-dot ${i<usados?'used':'empty'}">${i<usados?'✓':''}</div>`;
+      }
+      banner.innerHTML=`
+        <div class="plan-booking-banner">
+          <i class="fas fa-crown"></i>
+          <div>
+            <div style="font-weight:700;color:var(--gold);">Agendando com ${plan.name}</div>
+            <div style="font-size:11px;color:var(--gray);">Serviços incluídos no plano · R$ 0,00</div>
+          </div>
+        </div>
+        <div class="plan-usage-bar">
+          <div class="plan-usage-label">Usos este mês (${PLAN_MAX_USES-usados} restante${PLAN_MAX_USES-usados===1?'':'s'})</div>
+          <div class="plan-usage-dots">${dotsHtml}</div>
+        </div>`;
+    }
+  } else {
+    if(t1) t1.textContent='Escolha o Serviço';
+    if(s1) s1.textContent='Selecione o que deseja fazer hoje';
+    if(banner) banner.style.display='none';
+  }
+
+  if(isByPlan){
+    grid.className='services-grid plan-mode';
+    grid.innerHTML=svcList.map(s=>`
+      <div class="service-card plan-mode-card ripple" onclick="selectService(${s.id})" id="scard-${s.id}">
+        <div class="service-icon">${s.icon}</div>
+        <div class="service-info">
+          <div class="service-name">${s.name}</div>
+          <div class="service-duration"><i class="fas fa-clock" style="font-size:9px;margin-right:3px;"></i>${s.duration}</div>
+          <div class="service-price plan-free">Incluído no plano</div>
+        </div>
+      </div>`).join('');
+  } else {
+    grid.className='services-grid';
+    grid.innerHTML=svcList.map(s=>`
+      <div class="service-card ripple" onclick="selectService(${s.id})" id="scard-${s.id}">
+        <div class="service-icon">${s.icon}</div>
+        <div class="service-name">${s.name}</div>
+        <div class="service-duration"><i class="fas fa-clock" style="font-size:9px;margin-right:3px;"></i>${s.duration}</div>
+        <div class="service-price">${s.priceStr}</div>
+      </div>`).join('');
+  }
+
+  if(state.selectedService){
+    document.getElementById('scard-'+state.selectedService.id)?.classList.add('selected');
+    document.getElementById('btn-step1').disabled=false;
+  }
+}
+
+function selectService(id){
+  SERVICES.forEach(s=>document.getElementById('scard-'+s.id)?.classList.remove('selected'));
+  state.selectedService=SERVICES.find(s=>s.id===id);
+  const card=document.getElementById('scard-'+id);
+  if(card){card.classList.add('selected');rippleEffect(card);}
+  document.getElementById('btn-step1').disabled=false;
+  vibrate();
+}
+
+// ══ MONTHLY CALENDAR ══
+function renderDateSlots(){
+  const db   = getDB();
+  const now  = new Date(); now.setHours(0,0,0,0);
+  const base = new Date(now.getFullYear(), now.getMonth() + state.monthOffset, 1);
+  const year = base.getFullYear();
+  const month= base.getMonth();
+  const daysInMonth = new Date(year,month+1,0).getDate();
+  const firstDow    = new Date(year,month,1).getDay(); // 0=Sun
+
+  const wrap = document.getElementById('date-picker-wrap');
+  if(!wrap) return;
+
+  // Manter ou escolher data
+  if(state.selectedDate){
+    const parts=state.selectedDate.split('/');
+    const selD=new Date(+parts[2],+parts[1]-1,+parts[0]);
+    if(selD.getFullYear()!==year||selD.getMonth()!==month){
+      state.selectedDate=null; state.selectedSlot=null;
+    }
+  }
+
+  // Occupation map
+  const busyDates={};
+  db.appointments.filter(a=>a.status==='confirmed').forEach(a=>{
+    busyDates[a.date]=(busyDates[a.date]||0)+1;
+  });
+
+  let calRows='';
+  let cell=0;
+  // First row padding
+  for(let d=0;d<firstDow;d++){ calRows+=`<div class="cal-day empty"></div>`; cell++; }
+
+  for(let d=1;d<=daysInMonth;d++){
+    const dt     = new Date(year,month,d);
+    const dateStr= fmtDate(dt);
+    const isPast = dt<now;
+    const isToday= dt.toDateString()===now.toDateString();
+    const isBlocked=db.blockedDates.includes(dateStr);
+    const isBusy = busyDates[dateStr]>0;
+    const isSel  = dateStr===state.selectedDate;
+    let cls='cal-day';
+    if(isPast)     cls+=' past';
+    else if(isBlocked) cls+=' blocked';
+    if(isToday)    cls+=' today';
+    if(isSel)      cls+=' selected';
+    if(isBusy&&!isSel) cls+=' has-appt';
+    const click=(!isPast&&!isBlocked)?`onclick="calSelectDate('${dateStr}')"` : '';
+    calRows+=`<div class="${cls}" ${click} title="${isPast?'Passado':isBlocked?'Bloqueado':dateStr}">${d}</div>`;
+    cell++;
+  }
+  // trailing empties
+  while(cell%7!==0){calRows+=`<div class="cal-day empty"></div>`;cell++;}
+
+  const canPrev = state.monthOffset > 0;
+  wrap.innerHTML=`
+    <div class="month-cal-wrap">
+      <div class="month-nav">
+        <button class="month-nav-btn" ${!canPrev?'disabled':''} onclick="changeMonth(-1)">← Anterior</button>
+        <span class="month-label">${MONTHS_PT[month]} ${year}</span>
+        <button class="month-nav-btn" onclick="changeMonth(1)">Próximo →</button>
+      </div>
+      <div class="cal-grid">
+        ${DAYS_PT.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+        ${calRows}
+      </div>
+    </div>`;
+
+  renderSlots();
+  if(!state.selectedDate) document.getElementById('btn-step2').disabled=true;
+}
+
+function changeMonth(dir){
+  const next=state.monthOffset+dir;
+  if(next<0) return;
+  state.monthOffset=next; state.selectedDate=null; state.selectedSlot=null;
+  document.getElementById('btn-step2').disabled=true;
+  renderDateSlots();
+}
+
+function calSelectDate(dateStr){
+  state.selectedDate=dateStr; state.selectedSlot=null;
+  document.getElementById('btn-step2').disabled=true;
+  renderDateSlots();
+  renderSlots();
+}
+
+function renderSlots(){
+  const db         = getDB();
+  const activeSlots= db.activeSlots||ALL_SLOTS;
+  const busySlots  = db.appointments
+    .filter(a=>a.status==='confirmed'&&a.date===state.selectedDate).map(a=>a.time);
+  const sbBusy     = state.supabaseAppts
+    .filter(a=>{ const d=new Date(a.appointment_date); return fmtDate(d)===state.selectedDate&&a.status!=='cancelled'; })
+    .map(a=>a.appointment_time?a.appointment_time.slice(0,5):'');
+  const allBusy    = [...new Set([...busySlots,...sbBusy])];
+  const isInInterval=(s,ivs)=>ivs.some(iv=>s>=iv.start&&s<iv.end);
+
+  const grid=document.getElementById('slots-grid'); if(!grid) return;
+  if(!state.selectedDate){
+    grid.innerHTML=`<div style="grid-column:span 3;text-align:center;padding:30px 0;color:var(--gray);font-size:13px;">Selecione um dia no calendário</div>`;
+    return;
+  }
+  grid.innerHTML=activeSlots.map(s=>{
+    const isBusy   =allBusy.includes(s);
+    const isBlocked=isInInterval(s,db.blockedIntervals||[]);
+    const status   =isBlocked?'blocked':isBusy?'busy':'available';
+    const label    =isBlocked?'Bloqueado':isBusy?'Ocupado':'Livre';
+    return `<div class="slot ${status}"
+      ${!isBusy&&!isBlocked?`onclick="selectSlot(this,'${s}')"`:''}>
+      ${s}<div class="slot-label">${label}</div></div>`;
+  }).join('');
+}
+
+function selectSlot(el,time){
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedSlot=time;
+  document.getElementById('btn-step2').disabled=false;
+  vibrate();
+}
+
+// ── SUMMARY ──
+function renderSummary(){
+  const s=state.selectedService;
+  const isByPlan=state.bookingByPlan;
+  document.getElementById('booking-summary').innerHTML=`
+    <div class="confirm-row"><span class="confirm-label">Barbeiro</span><span class="confirm-value">${BARBER.name} 💈</span></div>
+    <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${s?.icon} ${s?.name}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Data</span><span class="confirm-value">${state.selectedDate}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Horário</span><span class="confirm-value">${state.selectedSlot}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Duração</span><span class="confirm-value">${s?.duration}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Valor</span>
+      <span class="confirm-value ${isByPlan?'green':'gold'}">${isByPlan?'R$ 0,00 (Plano)':s?.priceStr}</span></div>`;
+  const pcInfo=document.getElementById('plan-confirm-info');
+  if(pcInfo) pcInfo.style.display=isByPlan?'block':'none';
+  const profile=getProfile();
+  if(profile.name!=='Visitante'){
+    const ni=document.getElementById('input-name'); if(ni&&!ni.value) ni.value=profile.name;
+    const pi=document.getElementById('input-phone'); if(pi&&!pi.value) pi.value=profile.phone||'';
+    const ei=document.getElementById('input-email'); if(ei&&!ei.value) ei.value=profile.email||'';
+  }
+  validateForm();
+}
+
+function validateForm(){
+  const name =document.getElementById('input-name')?.value.trim();
+  const phone=document.getElementById('input-phone')?.value.trim();
+  const email=document.getElementById('input-email')?.value.trim();
+  const btn  =document.getElementById('btn-confirm');
+  const ok=name&&name.length>2&&phone&&phone.length>9&&email&&email.includes('@');
+  if(btn) btn.disabled=!ok;
+}
+
+// ══════════════════════════════════════════
+//  CONFIRM MODAL
+// ══════════════════════════════════════════
+function openConfirmModal(){
+  const s    =state.selectedService;
+  const name =document.getElementById('input-name').value.trim();
+  const phone=document.getElementById('input-phone').value.trim();
+  const email=document.getElementById('input-email').value.trim();
+  if(!email||!email.includes('@')) return showToast('❌ Informe um e-mail válido.','error');
+  const isByPlan=state.bookingByPlan;
+  document.getElementById('modal-content').innerHTML=`
+    <div class="confirm-row"><span class="confirm-label">Cliente</span><span class="confirm-value">${name}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Contato</span><span class="confirm-value">${phone}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${s.icon} ${s.name}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Data &amp; Hora</span><span class="confirm-value">${state.selectedDate} às ${state.selectedSlot}</span></div>
+    ${isByPlan?`<div class="confirm-row"><span class="confirm-label">Plano</span><span class="confirm-value gold">${state.activePlanInfo?.emoji} ${state.activePlanInfo?.name}</span></div>`:''}
+    <div class="confirm-row"><span class="confirm-label">Total</span>
+      <span class="confirm-value ${isByPlan?'green':'gold'}" style="font-size:20px;">${isByPlan?'R$ 0,00':s.priceStr}</span></div>`;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('confirm-modal').classList.remove('open'); }
+
+async function confirmBooking(){
+  const name =document.getElementById('input-name').value.trim();
+  const phone=document.getElementById('input-phone').value.trim();
+  const email=document.getElementById('input-email').value.trim();
+  const s    =state.selectedService;
+  const isByPlan=state.bookingByPlan;
+
+  // Double-check plan limit
+  if(isByPlan){
+    const db=getDB(); const pd=db.planData; const now=new Date();
+    const uses=(pd&&pd.month===now.getMonth()&&pd.year===now.getFullYear())?(pd.usesCount||0):0;
+    if(uses>=PLAN_MAX_USES){ closeModal(); openPlanExhaustedModal(); return; }
+  }
+
+  const profile=getProfile();
+  if(profile.name==='Visitante') saveProfile({name,phone,email});
+
+  addAppointment({
+    barberId:BARBER.id, barber:BARBER.name,
+    serviceId:s.id, service:s.name,
+    date:state.selectedDate, time:state.selectedSlot,
+    price:isByPlan?0:s.price, priceStr:isByPlan?'R$ 0,00 (Plano)':s.priceStr,
+    duration:s.duration, clientName:name, clientPhone:phone, clientEmail:email,
+    byPlan:isByPlan, planName:isByPlan?(state.activePlanInfo?.name||''):'',
+  });
+
+  if(isByPlan) incrementPlanUse();
+
+  const ok=await salvarAgendamento({name,phone,service:s.name,date:state.selectedDate,time:state.selectedSlot});
+  if(!ok) return;
+
+  closeModal();
+  const usesLeft=isByPlan?getPlanUsesLeft():null;
+  const msg=isByPlan
+    ? `✅ Agendado pelo plano! ${usesLeft} uso${usesLeft===1?'':'s'} restante${usesLeft===1?'':'s'} este mês.`
+    : '✅ Agendamento confirmado! Até logo.';
+  showToast(msg,'success');
+  vibrate(200);
+  state.bookingByPlan=false; state.activePlanInfo=null;
+  setTimeout(()=>{ showPage('appointments'); resetBooking(); },1600);
+}
+
+// ══════════════════════════════════════════
+//  SUPABASE
+// ══════════════════════════════════════════
+async function salvarAgendamento(data){
+  const {error}=await supabaseClient.from('appointments').insert([{
+    client_name:data.name, phone:data.phone, service:data.service,
+    appointment_date:data.date.split('/').reverse().join('-'),
+    appointment_time:data.time,
+  }]);
+  if(error){ console.error('Supabase:',error); showToast('❌ Erro ao salvar: '+(error.message||'tente novamente'),'error'); return false; }
+  return true;
+}
+async function fetchSupabaseAppointments(){
+  try{
+    const{data,error}=await supabaseClient.from('appointments').select('*').order('appointment_date',{ascending:false});
+    if(error){console.error(error);return [];} return data||[];
+  }catch(e){console.error(e);return [];}
+}
+function supabaseToLocal(row){
+  const parts=(row.appointment_date||'').split('-');
+  const dateStr=parts.length===3?`${parts[2]}/${parts[1]}/${parts[0]}`:'';
+  const timeStr=row.appointment_time?row.appointment_time.slice(0,5):'';
+  const svc=SERVICES.find(s=>s.name===row.service)||{id:0,name:row.service||'—',icon:'💈',duration:'—',price:row.price||0,priceStr:row.price?`R$ ${Number(row.price).toFixed(2)}`:'—'};
+  return{id:'sb_'+row.id,_supabaseId:row.id,barberId:BARBER.id,barber:BARBER.name,serviceId:svc.id,service:svc.name,date:dateStr,time:timeStr,price:svc.price,priceStr:svc.priceStr,duration:svc.duration,clientName:row.client_name||'—',clientPhone:row.phone||'—',clientEmail:row.email||'',status:row.status||'confirmed',createdAt:row.created_at||'',doneByAdmin:false};
+}
+
+// ══════════════════════════════════════════
+//  APPOINTMENTS PAGE
+// ══════════════════════════════════════════
+function filterAppts(f){
+  state.apptFilter=f;
+  document.querySelectorAll('#page-appointments .filter-btn').forEach(b=>b.classList.toggle('active',b.id==='filter-'+f));
+  renderAppointments();
+}
+function renderAppointments(){
+  const db=getDB(); let appts=[...db.appointments];
+  if(state.apptFilter==='upcoming')  appts=appts.filter(a=>a.status==='confirmed');
+  else if(state.apptFilter==='past') appts=appts.filter(a=>a.status==='past');
+  else if(state.apptFilter==='cancelled') appts=appts.filter(a=>a.status==='cancelled');
+  const list=document.getElementById('appt-list'); if(!list) return;
+  if(!appts.length){
+    list.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <div class="empty-text">Nenhum agendamento aqui</div>
+      <div class="empty-sub">Que tal agendar com o Pila?</div>
+      <button class="btn-outline" onclick="goToBook()" style="margin-top:20px;">Agendar Agora</button>
+    </div>`; return;
+  }
+  list.innerHTML=appts.map(a=>{
+    const sc=a.status==='confirmed'?'confirmed':a.status==='cancelled'?'cancelled':'past';
+    const lbl=a.status==='confirmed'?'Confirmado':a.status==='cancelled'?'Cancelado':'Realizado';
+    return`<div class="appt-card ${sc}" id="appt-${a.id}">
+      <div class="appt-top">
+        <div class="appt-service">${a.service}${a.byPlan?` <span style="font-size:10px;background:rgba(201,168,76,.15);color:var(--gold);padding:2px 7px;border-radius:10px;border:1px solid rgba(201,168,76,.3);">Plano</span>`:''}</div>
+        <span class="appt-badge badge-${sc}">${lbl}</span>
+      </div>
+      <div class="appt-info">
+        <div class="appt-detail"><i class="fas fa-scissors"></i>${a.barber}</div>
+        <div class="appt-detail"><i class="fas fa-calendar"></i>${a.date}</div>
+        <div class="appt-detail"><i class="fas fa-clock"></i>${a.time}</div>
+        <div class="appt-detail"><i class="fas fa-tag"></i>${a.priceStr}</div>
+      </div>
+      ${a.status==='confirmed'?`<div class="appt-actions">
+        <button class="appt-btn appt-btn-reschedule" onclick="rescheduleAppt('${a.id}')"><i class="fas fa-calendar-alt"></i> Reagendar</button>
+        <button class="appt-btn appt-btn-cancel" onclick="openCancelModal('${a.id}')"><i class="fas fa-times"></i> Cancelar</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+function openCancelModal(id){
+  state.cancelId=id;
+  const db=getDB(); const a=db.appointments.find(ap=>ap.id===id); if(!a) return;
+  const apptTime=new Date(`${a.date.split('/').reverse().join('-')}T${a.time}:00`);
+  const hrs=(apptTime-new Date())/(1000*60*60);
+  const warn=hrs<2&&hrs>0?`<div style="background:rgba(224,80,80,.15);border:1px solid var(--red);border-radius:12px;padding:12px;margin-bottom:16px;color:var(--red);font-size:13px;text-align:center;"><strong>⚠️ Aviso!</strong><br>Faltam menos de 2 horas.</div>`:'';
+  document.getElementById('cancel-content').innerHTML=warn+`
+    <div class="confirm-row"><span class="confirm-label">Serviço</span><span class="confirm-value">${a.service}</span></div>
+    <div class="confirm-row"><span class="confirm-label">Data &amp; Hora</span><span class="confirm-value">${a.date} às ${a.time}</span></div>`;
+  document.getElementById('cancel-modal').classList.add('open');
+}
+function closeCancelModal(){ document.getElementById('cancel-modal').classList.remove('open'); }
+function doCancel(){
+  cancelAppointment(state.cancelId); closeCancelModal();
+  renderAppointments(); renderHome();
+  showToast('❌ Agendamento cancelado.','error');
+}
+function rescheduleAppt(id){
+  const db=getDB(); const a=db.appointments.find(ap=>ap.id===id); if(!a) return;
+  const svc=SERVICES.find(s=>s.id===a.serviceId); if(svc) state.selectedService=svc;
+  document.getElementById('input-name').value=a.clientName;
+  document.getElementById('input-phone').value=a.clientPhone;
+  document.getElementById('input-email').value=a.clientEmail||'';
+  cancelAppointment(id);
+  showPage('book'); goStep(2);
+  showToast('🔄 Escolha nova data e horário.','info');
+}
+
+// ══════════════════════════════════════════
+//  PROFILE PAGE
+// ══════════════════════════════════════════
+function renderProfile(){
+  const profile=getProfile(); const db=getDB(); const appts=db.appointments;
+  const total=appts.filter(a=>a.status!=='cancelled').length;
+  const spent=appts.filter(a=>a.status!=='cancelled').reduce((s,a)=>s+a.price,0);
+  const initials=profile.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+
+  document.getElementById('profile-avatar').textContent=initials||'?';
+  document.getElementById('profile-name').textContent=profile.name;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-spent').textContent='R$'+spent.toFixed(0);
+
+  // Plan badge & card
+  const badge=document.getElementById('profile-plan-badge');
+  const card =document.getElementById('profile-plan-card');
+  const pd=db.planData;
+  const now=new Date();
+  const isThisMonth=pd&&pd.month===now.getMonth()&&pd.year===now.getFullYear();
+  const usosFeitos=isThisMonth?(pd.usesCount||0):0;
+  const usosRestantes=PLAN_MAX_USES-usosFeitos;
+
+  if(isThisMonth && usosFeitos>0){
+    if(badge){
+      badge.style.display='inline-flex';
+      badge.className='profile-plan-badge';
+      badge.innerHTML=`<i class="fas fa-crown"></i> ${pd.planEmoji||'🛡️'} ${pd.planName||'Plano'} — Ativado`;
+    }
+    if(card){
+      card.style.display='block';
+      let dotsHtml='';
+      for(let i=0;i<PLAN_MAX_USES;i++){
+        dotsHtml+=`<div class="ps-dot ${i<usosFeitos?'used':'empty'}">${i<usosFeitos?'✓':''}</div>`;
+      }
+      card.innerHTML=`<div class="plan-status-card">
+        <div class="ps-title">${pd.planEmoji||'🛡️'} ${pd.planName||'Plano'} Ativo</div>
+        <div class="ps-uses">${dotsHtml}</div>
+        <div class="ps-info">${usosFeitos} de ${PLAN_MAX_USES} usos realizados este mês
+          ${usosRestantes>0?`· <span style="color:var(--green);">${usosRestantes} restante${usosRestantes===1?'':'s'}</span>`:'· <span style="color:var(--red);">Esgotado — renovar com o barbeiro</span>'}
+        </div>
+      </div>`;
+    }
+  } else {
+    if(badge) badge.style.display='none';
+    if(card)  card.style.display='none';
+  }
+
+  const ni=document.getElementById('profile-name-input');  if(ni)  ni.value=profile.name!=='Visitante'?profile.name:'';
+  const pi=document.getElementById('profile-phone-input'); if(pi)  pi.value=profile.phone||'';
+  const ei=document.getElementById('profile-email-input'); if(ei)  ei.value=profile.email||'';
+}
+function saveProfileForm(){
+  const name=document.getElementById('profile-name-input')?.value.trim();
+  const phone=document.getElementById('profile-phone-input')?.value.trim();
+  const email=document.getElementById('profile-email-input')?.value.trim();
+  if(!name||name.length<3)                      return showToast('Informe seu nome completo.','error');
+  if(/[0-9]/.test(name))                        return showToast('O nome não pode conter números.','error');
+  if(!phone||phone.replace(/\D/g,'').length<10) return showToast('WhatsApp inválido.','error');
+  saveProfile({name,phone,email}); renderProfile(); renderHome(); scrollToProfileForm();
+  showToast('✅ Dados salvos!','success');
+}
+function scrollToProfileForm(){
+  const card=document.getElementById('profile-edit-card');
+  if(card){ card.style.display=card.style.display==='none'?'block':'none'; if(card.style.display==='block') setTimeout(()=>document.getElementById('profile-name-input')?.focus(),100); }
+}
+function clearData(){
+  if(!confirm('Tem certeza? Todos os dados locais serão apagados.')) return;
+  localStorage.removeItem(DB_KEY); renderProfile(); renderHome();
+  showToast('🗑️ Dados limpos!','error');
+}
+function exportBackup(){
+  const db=getDB(); const profile=getProfile();
+  const backup={exportedAt:new Date().toISOString(),profile,appointments:db.appointments,planData:db.planData};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a'); link.href=url; link.download=`barberking-backup-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+  showToast('📥 Backup salvo!','success');
+}
+
+// ══════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════
+function showAdminLogin(){ document.getElementById('admin-pass').value=''; document.getElementById('admin-login-modal').classList.add('open'); setTimeout(()=>document.getElementById('admin-pass').focus(),400); }
+function closeAdminModal(){ document.getElementById('admin-login-modal').classList.remove('open'); }
+function checkAdmin(){
+  const pass=document.getElementById('admin-pass').value;
+  if(pass===ADMIN_PASSWORD){ state.isAdmin=true; closeAdminModal(); showPage('admin'); showToast('🔓 Bem-vindo, Pila!','success'); }
+  else{ showToast('❌ Senha incorreta!','error'); document.getElementById('admin-pass').value=''; document.getElementById('admin-pass').focus(); vibrate(300); }
+}
+async function renderAdmin(){
+  const sbData=await fetchSupabaseAppointments(); state.supabaseAppts=sbData;
+  const sbAppts=sbData.map(supabaseToLocal);
+  renderAdminTabContent(sbAppts);
+  const todayEl=document.getElementById('admin-today-date');
+  if(todayEl){ const d=new Date(); const days=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']; todayEl.textContent=`${days[d.getDay()]}, ${fmtDate(d)}`; }
+}
+function renderAdminTabContent(sbAppts){
+  const today=fmtDate(new Date());
+  const confirmed=sbAppts.filter(a=>a.status!=='cancelled');
+  const todayAppts=confirmed.filter(a=>a.date===today);
+  const weekRev=calcWeekRevenue(sbAppts).reduce((s,v)=>s+v,0);
+  const totalRev=confirmed.reduce((s,a)=>s+a.price,0);
+  const db=getDB();
+  const cont=document.getElementById('admin-tab-content'); if(!cont) return;
+  cont.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px;">
+      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(255,255,255,.07);text-align:center;">
+        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--gold);">${todayAppts.length}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Hoje</div>
+      </div>
+      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(76,175,80,.2);text-align:center;">
+        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--green);">R$${weekRev.toFixed(0)}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Esta semana</div>
+      </div>
+      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(76,130,200,.2);text-align:center;">
+        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--blue);">R$${totalRev.toFixed(0)}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Total geral</div>
+      </div>
+      <div style="background:var(--dark3);border-radius:14px;padding:14px;border:1px solid rgba(224,80,80,.2);text-align:center;">
+        <div style="font-size:24px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--red);">${sbAppts.filter(a=>a.status==='cancelled').length}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:3px;">Cancelados</div>
+      </div>
+    </div>
+    <div style="padding:0 20px;margin-bottom:6px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Agenda de Hoje</div>
+    <div class="today-list" id="today-list"></div>
+    <div style="height:20px;"></div>
+    <div style="padding:0 20px;margin-bottom:6px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Todos os Agendamentos</div>
+    <div style="padding:0 20px;display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;">
+      <button id="adm-filter-all"       class="filter-btn active" onclick="adminFilterAppts('all')">Todos</button>
+      <button id="adm-filter-today"     class="filter-btn"        onclick="adminFilterAppts('today')">Hoje</button>
+      <button id="adm-filter-confirmed" class="filter-btn"        onclick="adminFilterAppts('confirmed')">Confirmados</button>
+      <button id="adm-filter-cancelled" class="filter-btn"        onclick="adminFilterAppts('cancelled')">Cancelados</button>
+    </div>
+    <div class="appt-list" id="admin-appt-list-inner"></div>
+    <div style="height:20px;"></div>
+    <div style="padding:0 20px;margin-bottom:10px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Bloquear Datas</div>
+    <div style="padding:0 20px;">
+      <div class="block-form">
+        <input id="block-date-input" type="date" style="color-scheme:dark;" />
+        <button onclick="blockDate()"><i class="fas fa-ban"></i> Bloquear</button>
+      </div>
+      <div class="blocked-dates" id="blocked-dates"></div>
+    </div>
+    <div style="height:20px;"></div>
+    <div style="padding:0 20px;margin-bottom:10px;font-family:'Oswald',sans-serif;font-size:17px;font-weight:600;">Horários Ativos</div>
+    <div style="padding:0 20px 30px;">
+      <div class="schedule-grid" id="schedule-grid"></div>
+    </div>`;
+
+  renderTodayList(sbAppts);
+  renderAdminApptsList(sbAppts);
+  renderBlockedDates();
+  renderScheduleGrid();
+}
+
+function renderTodayList(sbAppts){
+  const today=fmtDate(new Date()); const list=document.getElementById('today-list'); if(!list) return;
+  const ta=sbAppts.filter(a=>a.date===today).sort((a,b)=>a.time.localeCompare(b.time));
+  if(!ta.length){ list.innerHTML=`<div class="empty-state" style="padding:30px 20px;"><div class="empty-icon" style="font-size:48px;">😴</div><div class="empty-text">Nenhum agendamento hoje</div></div>`; return; }
+  list.innerHTML=ta.map(a=>{
+    const isDone=a.status==='past'; const isCancelled=a.status==='cancelled';
+    return`<div class="today-slot ${isDone?'done':''} ${isCancelled?'cancelled-slot':''}" id="ts-${a.id}">
+      <div class="today-time">${a.time}</div>
+      <div class="today-info">
+        <div class="today-client">${a.clientName} <span style="font-size:11px;color:var(--gray);">${a.clientPhone}</span></div>
+        <div class="today-service">${a.service}</div>
+        <div class="today-price">${a.priceStr}</div>
+      </div>
+      ${!isCancelled?`<div class="today-actions">
+        <button class="today-btn today-btn-done ${isDone?'active':''}" onclick="adminMarkDone('${a.id}')"><i class="fas fa-check"></i></button>
+        ${!isDone?`<button class="today-btn today-btn-cancel" onclick="adminCancelAppt('${a.id}')"><i class="fas fa-times"></i></button>`:''}
+      </div>`:`<span class="appt-badge badge-cancelled">Cancelado</span>`}
+    </div>`;
+  }).join('');
+}
+
+function adminMarkDone(id){ if(!id.startsWith('sb_')) markDone(id); renderAdmin(); showToast('✅ Atendimento concluído!','success'); }
+function adminCancelAppt(id){ if(!confirm('Cancelar este agendamento?')) return; if(!id.startsWith('sb_')) cancelAppointment(id); renderAdmin(); showToast('❌ Agendamento cancelado.','error'); }
+
+function adminFilterAppts(f){
+  state.adminApptFilter=f;
+  ['all','today','confirmed','cancelled'].forEach(x=>document.getElementById('adm-filter-'+x)?.classList.toggle('active',x===f));
+  renderAdminApptsList(state.supabaseAppts.map(supabaseToLocal));
+}
+function renderAdminApptsList(sbAppts){
+  const appts0=sbAppts||state.supabaseAppts.map(supabaseToLocal);
+  const today=fmtDate(new Date()); let appts=[...appts0];
+  if(state.adminApptFilter==='today')          appts=appts.filter(a=>a.date===today);
+  else if(state.adminApptFilter==='confirmed') appts=appts.filter(a=>a.status==='confirmed');
+  else if(state.adminApptFilter==='cancelled') appts=appts.filter(a=>a.status==='cancelled');
+  const list=document.getElementById('admin-appt-list-inner'); if(!list) return;
+  if(!appts.length){ list.innerHTML=`<div class="empty-state" style="padding:30px 20px;"><div class="empty-icon" style="font-size:48px;">📋</div><div class="empty-text">Nenhum agendamento</div></div>`; return; }
+  list.innerHTML=appts.map(a=>{
+    const sc=a.status==='confirmed'?'confirmed':a.status==='cancelled'?'cancelled':'past';
+    const lbl=a.status==='confirmed'?'Confirmado':a.status==='cancelled'?'Cancelado':'Realizado';
+    return`<div class="appt-card ${sc}">
+      <div class="appt-top"><div class="appt-service">${a.service}</div><span class="appt-badge badge-${sc}">${lbl}</span></div>
+      <div class="appt-info">
+        <div class="appt-detail"><i class="fas fa-user"></i>${a.clientName}</div>
+        <div class="appt-detail"><i class="fas fa-phone"></i>${a.clientPhone}</div>
+        <div class="appt-detail"><i class="fas fa-calendar"></i>${a.date}</div>
+        <div class="appt-detail"><i class="fas fa-clock"></i>${a.time}</div>
+        <div class="appt-detail"><i class="fas fa-tag"></i>${a.priceStr}</div>
+      </div>
+      ${a.status==='confirmed'?`<div class="appt-actions">
+        <button class="appt-btn appt-btn-reschedule" onclick="adminMarkDone('${a.id}')"><i class="fas fa-check"></i> Concluir</button>
+        <button class="appt-btn appt-btn-cancel" onclick="adminCancelAppt('${a.id}')"><i class="fas fa-times"></i> Cancelar</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function calcWeekRevenue(sbAppts){
+  const rev=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=fmtDate(d); rev.push(sbAppts.filter(a=>a.date===ds&&a.status!=='cancelled').reduce((s,a)=>s+a.price,0)); }
+  return rev;
+}
+
+function renderBlockedDates(){
+  const db=getDB(); const cont=document.getElementById('blocked-dates'); if(!cont) return;
+  if(!db.blockedDates.length){ cont.innerHTML=`<div style="font-size:13px;color:var(--gray);">Nenhuma data bloqueada.</div>`; return; }
+  cont.innerHTML=db.blockedDates.map(d=>`<div class="blocked-tag"><i class="fas fa-ban"></i>${d}<button onclick="unblockDate('${d}')"><i class="fas fa-times"></i></button></div>`).join('');
+}
+function blockDate(){
+  const input=document.getElementById('block-date-input'); if(!input.value) return showToast('⚠️ Escolha uma data!','error');
+  const d=new Date(input.value+'T12:00:00'); const ds=fmtDate(d); const db=getDB();
+  if(db.blockedDates.includes(ds)) return showToast('⚠️ Data já bloqueada!','error');
+  db.blockedDates.push(ds); saveDB(db); renderBlockedDates(); input.value=''; showToast(`🚫 ${ds} bloqueado!`,'success');
+}
+function unblockDate(d){ const db=getDB(); db.blockedDates=db.blockedDates.filter(x=>x!==d); saveDB(db); renderBlockedDates(); showToast(`✅ ${d} desbloqueado!`,'success'); }
+
+function renderScheduleGrid(){
+  const db=getDB(); const active=new Set(db.activeSlots||ALL_SLOTS);
+  const grid=document.getElementById('schedule-grid'); if(!grid) return;
+  grid.innerHTML=ALL_SLOTS.map(s=>`<div class="sched-slot ${active.has(s)?'active-slot':'inactive-slot'}" onclick="toggleSlot('${s}')">${s}</div>`).join('');
+}
+function toggleSlot(slot){ const db=getDB(); const active=new Set(db.activeSlots||ALL_SLOTS); if(active.has(slot)) active.delete(slot); else active.add(slot); db.activeSlots=[...active].sort(); saveDB(db); renderScheduleGrid(); vibrate(30); }
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function fmtDate(d){ return`${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`; }
+
+let toastTimer;
+function showToast(msg,type='success'){
+  const toast=document.getElementById('toast'); const icon=toast.querySelector('i');
+  const cls={success:'fa-check-circle',error:'fa-times-circle',info:'fa-circle-info'};
+  icon.className='fas '+(cls[type]||'fa-check-circle');
+  document.getElementById('toast-msg').textContent=msg;
+  toast.className=`toast ${type} show`;
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove('show'),3200);
+}
+function formatPhone(input){ let v=input.value.replace(/\D/g,''); if(v.length>11) v=v.slice(0,11); input.value=v; }
+function vibrate(ms=50){ try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){} }
+function rippleEffect(el){ const r=document.createElement('span'); r.className='ripple-effect'; const sz=Math.max(el.offsetWidth,el.offsetHeight); r.style.cssText=`width:${sz}px;height:${sz}px;left:${el.offsetWidth/2-sz/2}px;top:${el.offsetHeight/2-sz/2}px;`; el.appendChild(r); setTimeout(()=>r.remove(),700); }
+
+document.querySelectorAll('.modal-overlay').forEach(ov=>{
+  ov.addEventListener('click',e=>{ if(e.target===ov){closeModal();closeCancelModal();closeAdminModal();closePlanModal();closePlanExhaustedModal();} });
+});
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+function init(){
+  // Always dark — no theme toggle
+  document.documentElement.classList.remove('light-mode');
+  const db=getDB();
+  if(!db.profile||!db.profile.phone||db.profile.name==='Visitante'){
+    showPage('register');
+  } else {
+    showPage('home');
+  }
+  renderProfile();
+  fetchSupabaseAppointments().then(data=>{ state.supabaseAppts=data; });
+}
+init();
+</script>
 </body>
 </html>

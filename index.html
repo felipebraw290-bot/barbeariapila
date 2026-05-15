@@ -627,6 +627,9 @@ nav button:active{transform:scale(.88);}
       <div class="services-preview" id="home-services"></div>
     </div>
 
+    <!-- Banner de agendamento pelo plano (aparece só pra quem tem plano ativo) -->
+    <div id="home-plan-banner" style="display:none;padding:0 20px;margin-bottom:0;"></div>
+
     <div class="section-gap" style="padding-bottom:12px;">
       <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
@@ -763,7 +766,7 @@ nav button:active{transform:scale(.88);}
         <div class="stat-label">Investido</div>
       </div>
       <div class="stat-card" onclick="showPage('plans')" style="cursor:pointer;border-color:rgba(201,168,76,.2);">
-        <div class="stat-num" style="font-size:22px;">🛡️</div>
+        <div class="stat-num" style="display:flex;align-items:center;justify-content:center;"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:19px;font-weight:700;color:var(--dark);">P</div></div>
         <div class="stat-label">Planos</div>
       </div>
     </div>
@@ -1114,6 +1117,13 @@ function goToBook(byPlan, planInfo){
   showPage('book');
   resetBooking();
 }
+// Atalho: agendar usando plano ativo diretamente do Home
+function usarPlanoAgora(){
+  const pd=getPlanData();
+  if(!pd) return showToast('Nenhum plano ativo encontrado.','error');
+  const plan=PLANS.find(p=>p.id===pd.planId)||{id:pd.planId,name:pd.planName,emoji:pd.planEmoji};
+  goToBook(true, plan);
+}
 
 // ══════════════════════════════════════════
 //  PLAN HELPERS
@@ -1177,6 +1187,37 @@ function renderHome(){
   const profile=getProfile();
   const greetEl=document.getElementById('user-greeting');
   if(greetEl) greetEl.textContent=profile.name==='Visitante'?'Bem-vindo! Agende seu horário.':'Olá, '+profile.name;
+  // Banner do plano ativo no home
+  const planBannerEl=document.getElementById('home-plan-banner');
+  if(planBannerEl){
+    const pd=getPlanData(); const now=new Date();
+    const planActive=pd&&pd.month===now.getMonth()&&pd.year===now.getFullYear()&&(pd.usesCount||0)<PLAN_MAX_USES;
+    if(planActive){
+      const usesLeft=PLAN_MAX_USES-(pd.usesCount||0);
+      let dotsHtml=''; for(let i=0;i<PLAN_MAX_USES;i++) dotsHtml+=`<div style="width:14px;height:14px;border-radius:50%;border:2px solid ${i<(pd.usesCount||0)?'var(--gold)':'rgba(255,255,255,.2)'};background:${i<(pd.usesCount||0)?'var(--gold)':'transparent'};"></div>`;
+      planBannerEl.style.display='block';
+      planBannerEl.innerHTML=`
+        <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:1px solid rgba(201,168,76,.4);border-radius:18px;padding:16px 18px;margin-bottom:6px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12),transparent 70%);pointer-events:none;"></div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:var(--dark);flex-shrink:0;">P</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                <i class="fas fa-crown" style="color:var(--gold);font-size:12px;"></i>
+                <span style="font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold);">${pd.planName||'Plano'}</span>
+                <span style="background:rgba(76,175,80,.15);color:var(--green);border:1px solid rgba(76,175,80,.3);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">ATIVO</span>
+              </div>
+              <div style="display:flex;gap:4px;align-items:center;">${dotsHtml}<span style="font-size:11px;color:var(--gray);margin-left:4px;">${usesLeft} uso${usesLeft===1?'':'s'} restante${usesLeft===1?'':'s'}</span></div>
+            </div>
+            <button onclick="usarPlanoAgora()" style="background:var(--gold);color:var(--dark);border:none;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;flex-shrink:0;">
+              <i class="fas fa-scissors" style="margin-right:4px;"></i>Usar Plano
+            </button>
+          </div>
+        </div>`;
+    } else {
+      planBannerEl.style.display='none';
+    }
+  }
   const bc=document.getElementById('home-barber-card');
   if(bc) bc.innerHTML=`
     <div class="barber-hero-card" onclick="goToBook()">
@@ -1587,7 +1628,7 @@ async function confirmBooking(){
   const profile=getProfile();
   if(profile.name==='Visitante') saveProfile({name,phone,email});
 
-  addAppointment({
+  const newAppt=addAppointment({
     barberId:BARBER.id, barber:BARBER.name,
     serviceId:s.id, service:s.name,
     date:state.selectedDate, time:state.selectedSlot,
@@ -1598,8 +1639,11 @@ async function confirmBooking(){
 
   if(isByPlan) incrementPlanUse();
 
-  const ok=await salvarAgendamento({name,phone,service:s.name,date:state.selectedDate,time:state.selectedSlot});
-  if(!ok) return;
+  const sbId=await salvarAgendamento({name,phone,service:s.name,date:state.selectedDate,time:state.selectedSlot});
+  if(sbId===null) return;
+  // Salvar o ID do Supabase no agendamento local para poder cancelar depois
+  const db2=getDB(); const a2=db2.appointments.find(x=>x.id===newAppt.id);
+  if(a2){ a2._supabaseId=sbId; saveDB(db2); }
 
   closeModal();
   const usesLeft=isByPlan?getPlanUsesLeft():null;
@@ -1616,13 +1660,17 @@ async function confirmBooking(){
 //  SUPABASE
 // ══════════════════════════════════════════
 async function salvarAgendamento(data){
-  const {error}=await supabaseClient.from('appointments').insert([{
+  const {data:res,error}=await supabaseClient.from('appointments').insert([{
     client_name:data.name, phone:data.phone, service:data.service,
     appointment_date:data.date.split('/').reverse().join('-'),
     appointment_time:data.time,
-  }]);
-  if(error){ console.error('Supabase:',error); showToast('❌ Erro ao salvar: '+(error.message||'tente novamente'),'error'); return false; }
-  return true;
+  }]).select('id').single();
+  if(error){ console.error('Supabase:',error); showToast('❌ Erro ao salvar: '+(error.message||'tente novamente'),'error'); return null; }
+  return res?.id || null;
+}
+async function cancelarNoSupabase(supabaseId){
+  if(!supabaseId) return;
+  try{ await supabaseClient.from('appointments').update({status:'cancelled'}).eq('id',supabaseId); }catch(e){ console.error('Erro cancelar Supabase:',e); }
 }
 async function fetchSupabaseAppointments(){
   try{
@@ -1693,9 +1741,11 @@ function openCancelModal(id){
   document.getElementById('cancel-modal').classList.add('open');
 }
 function closeCancelModal(){ document.getElementById('cancel-modal').classList.remove('open'); }
-function doCancel(){
+async function doCancel(){
   const db=getDB();
   const appt=db.appointments.find(a=>a.id===state.cancelId);
+  // Cancelar também no Supabase para sumir do painel admin
+  if(appt?._supabaseId) await cancelarNoSupabase(appt._supabaseId);
   // Devolver uso do plano se o agendamento foi feito pelo plano
   if(appt && appt.byPlan){
     const userPhone=(db.profile?.phone||'').replace(/\D/g,'');

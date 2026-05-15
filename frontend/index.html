@@ -630,13 +630,6 @@ nav button:active{transform:scale(.88);}
     <!-- Banner de agendamento pelo plano (aparece só pra quem tem plano ativo) -->
     <div id="home-plan-banner" style="display:none;padding:0 20px;margin-bottom:0;"></div>
 
-    <!-- Botão Sair da Conta -->
-    <div style="padding:18px 20px 0;">
-      <button onclick="sairDaConta()" style="width:100%;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.25);color:#e05050;border-radius:14px;padding:13px 20px;font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .3s;">
-        <i class="fas fa-right-from-bracket"></i> Sair da conta
-      </button>
-    </div>
-
     <div class="section-gap" style="padding-bottom:12px;">
       <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
@@ -1204,21 +1197,20 @@ function renderHome(){
       let dotsHtml=''; for(let i=0;i<PLAN_MAX_USES;i++) dotsHtml+=`<div style="width:14px;height:14px;border-radius:50%;border:2px solid ${i<(pd.usesCount||0)?'var(--gold)':'rgba(255,255,255,.2)'};background:${i<(pd.usesCount||0)?'var(--gold)':'transparent'};"></div>`;
       planBannerEl.style.display='block';
       planBannerEl.innerHTML=`
-        <div style="background:linear-gradient(135deg,#1e1400 0%,#2e2000 60%,#1a1000 100%);border:1px solid rgba(201,168,76,.45);border-radius:20px;padding:18px 18px 16px;margin-bottom:8px;position:relative;overflow:hidden;box-shadow:0 6px 28px rgba(201,168,76,.12),0 2px 8px rgba(0,0,0,.4);">
-          <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.15),transparent 70%);pointer-events:none;"></div>
-          <div style="position:absolute;bottom:-20px;left:20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none;"></div>
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#a07830,#f0c060);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:#0d0d0d;flex-shrink:0;box-shadow:0 0 18px rgba(201,168,76,.45);border:2px solid rgba(201,168,76,.6);">P</div>
-            <div style="flex:1;min-width:0;">
-              <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap;">
-                <i class="fas fa-crown" style="color:var(--gold);font-size:11px;"></i>
-                <span style="font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:var(--gold);letter-spacing:.5px;">${pd.planName||'Plano'}</span>
-                <span style="background:linear-gradient(135deg,rgba(76,175,80,.2),rgba(76,175,80,.1));color:#4caf50;border:1px solid rgba(76,175,80,.4);font-size:10px;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.5px;">ATIVO</span>
+        <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:1px solid rgba(201,168,76,.4);border-radius:18px;padding:16px 18px;margin-bottom:6px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.12),transparent 70%);pointer-events:none;"></div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:var(--dark);flex-shrink:0;">P</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                <i class="fas fa-crown" style="color:var(--gold);font-size:12px;"></i>
+                <span style="font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--gold);">${pd.planName||'Plano'}</span>
+                <span style="background:rgba(76,175,80,.15);color:var(--green);border:1px solid rgba(76,175,80,.3);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">ATIVO</span>
               </div>
-              <div style="display:flex;gap:5px;align-items:center;">${dotsHtml}<span style="font-size:11px;color:rgba(255,255,255,.45);margin-left:5px;">${usesLeft} uso${usesLeft===1?'':'s'} restante${usesLeft===1?'':'s'}</span></div>
+              <div style="display:flex;gap:4px;align-items:center;">${dotsHtml}<span style="font-size:11px;color:var(--gray);margin-left:4px;">${usesLeft} uso${usesLeft===1?'':'s'} restante${usesLeft===1?'':'s'}</span></div>
             </div>
-            <button onclick="usarPlanoAgora()" style="background:linear-gradient(135deg,#c9a84c,#a07830);color:#0d0d0d;border:none;border-radius:13px;padding:11px 15px;font-size:12px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 14px rgba(201,168,76,.4);letter-spacing:.3px;">
-              <i class="fas fa-scissors" style="margin-right:5px;"></i>Usar Plano
+            <button onclick="usarPlanoAgora()" style="background:var(--gold);color:var(--dark);border:none;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;flex-shrink:0;">
+              <i class="fas fa-scissors" style="margin-right:4px;"></i>Usar Plano
             </button>
           </div>
         </div>`;
@@ -1865,12 +1857,6 @@ function saveProfileForm(){
 function scrollToProfileForm(){
   const card=document.getElementById('profile-edit-card');
   if(card){ card.style.display=card.style.display==='none'?'block':'none'; if(card.style.display==='block') setTimeout(()=>document.getElementById('profile-name-input')?.focus(),100); }
-}
-function sairDaConta(){
-  if(!confirm('Deseja sair da conta? Seus dados salvos permanecerão no dispositivo.')) return;
-  const db=getDB(); db.profile={name:'Visitante',phone:'',email:''}; saveDB(db);
-  showPage('register');
-  showToast('👋 Até logo!','info');
 }
 function clearData(){
   if(!confirm('Tem certeza? Todos os dados locais serão apagados.')) return;

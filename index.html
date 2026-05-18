@@ -25,7 +25,7 @@ button{font-family:'Inter',sans-serif;}
 @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0);}10%{opacity:.5;}90%{opacity:.15;}100%{opacity:0;transform:translateY(-100vh) scale(1.5);}}
 
 #app{position:relative;z-index:1;min-height:100vh;}
-.page{display:none;min-height:100vh;padding-bottom:84px;animation:fadeSlide .35s ease;}
+.page{display:none;min-height:100vh;padding-bottom:110px;animation:fadeSlide .35s ease;}
 .page.active{display:block;}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 
@@ -633,6 +633,7 @@ nav button:active{transform:scale(.88);}
       <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
     </div>
+    <div style="height:20px;"></div>
   </div>
 
   <!-- PLANOS -->
@@ -656,6 +657,7 @@ nav button:active{transform:scale(.88);}
         </span>
       </p>
     </div>
+    <div style="height:20px;"></div>
   </div>
 
   <!-- BOOK -->
@@ -729,6 +731,7 @@ nav button:active{transform:scale(.88);}
         <i class="fas fa-check" style="margin-right:8px;"></i>Confirmar Agendamento
       </button>
     </div>
+    <div style="height:20px;"></div>
   </div>
 
   <!-- APPOINTMENTS -->
@@ -744,6 +747,7 @@ nav button:active{transform:scale(.88);}
       <button id="filter-cancelled" class="filter-btn"        onclick="filterAppts('cancelled')">Cancelados</button>
     </div>
     <div class="appt-list" id="appt-list"></div>
+    <div style="height:20px;"></div>
   </div>
 
   <!-- PROFILE -->
@@ -771,7 +775,7 @@ nav button:active{transform:scale(.88);}
     </div>
 
     <!-- Plan status card (shown when plan is active) -->
-    <div id="profile-plan-card" style="display:none;margin-top:20px;"></div>
+    <div id="profile-plan-card" style="display:none;margin-top:20px;margin-bottom:8px;"></div>
 
     <div class="section-gap">
       <div class="section-header">
@@ -815,7 +819,7 @@ nav button:active{transform:scale(.88);}
     </div>
 
     <!-- Botão Sair da Conta -->
-    <div style="padding:24px 20px 8px;">
+    <div style="padding:24px 20px 32px;">
       <button onclick="sairDaConta()" style="width:100%;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.25);color:#e05050;border-radius:14px;padding:13px 20px;font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .3s;">
         <i class="fas fa-right-from-bracket"></i> Sair da conta
       </button>
@@ -848,6 +852,7 @@ nav button:active{transform:scale(.88);}
       </button>
     </div>
     <div id="admin-tab-content"></div>
+    <div style="height:20px;"></div>
   </div>
 
   <!-- BOTTOM NAV -->

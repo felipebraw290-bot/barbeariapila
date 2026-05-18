@@ -627,7 +627,7 @@ nav button:active{transform:scale(.88);}
     </div>
 
     <!-- Banner de agendamento pelo plano (aparece só pra quem tem plano ativo) -->
-    <div id="home-plan-banner" style="display:none;padding:0 20px;margin-bottom:0;"></div>
+    <div id="home-plan-banner" style="display:none;padding:0 20px;margin-top:24px;margin-bottom:0;"></div>
 
     <div class="section-gap" style="padding-bottom:12px;">
       <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
@@ -1207,6 +1207,7 @@ function renderHome(){
       const usesLeft=PLAN_MAX_USES-(pd.usesCount||0);
       let dotsHtml=''; for(let i=0;i<PLAN_MAX_USES;i++) dotsHtml+=`<div style="width:14px;height:14px;border-radius:50%;border:2px solid ${i<(pd.usesCount||0)?'var(--gold)':'rgba(255,255,255,.2)'};background:${i<(pd.usesCount||0)?'var(--gold)':'transparent'};"></div>`;
       planBannerEl.style.display='block';
+      planBannerEl.style.marginBottom='20px';
       planBannerEl.innerHTML=`
         <div style="background:linear-gradient(135deg,#1e1400 0%,#2e2000 60%,#1a1000 100%);border:1px solid rgba(201,168,76,.45);border-radius:20px;padding:18px 18px 16px;margin-bottom:8px;position:relative;overflow:hidden;box-shadow:0 6px 28px rgba(201,168,76,.12),0 2px 8px rgba(0,0,0,.4);">
           <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.15),transparent 70%);pointer-events:none;"></div>
@@ -1228,6 +1229,7 @@ function renderHome(){
         </div>`;
     } else {
       planBannerEl.style.display='none';
+      planBannerEl.style.marginBottom='0';
     }
   }
   const bc=document.getElementById('home-barber-card');

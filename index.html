@@ -563,10 +563,10 @@ nav button:active{opacity:.7;}
       <div class="hero-top">
         <div class="logo">BARBER<span>KING</span><small>PILA PREMIUM</small></div>
         <div class="hero-actions">
-          <button class="icon-btn" onclick="window.open('https://www.instagram.com/felipe_zecchi?igsh=cHA0MWsxcGNpMHJlali','_blank')" title="Instagram" style="background:rgba(225,48,108,.1);border-color:rgba(225,48,108,.3);color:#e1306c;">
+          <button class="icon-btn" onclick="window.open('https://www.instagram.com/pila_prime.studio?igsh=MWxocnd0eTFpcTE1cA==','_blank')" title="Instagram" style="background:rgba(225,48,108,.1);border-color:rgba(225,48,108,.3);color:#e1306c;">
             <i class="fab fa-instagram"></i>
           </button>
-          <button class="icon-btn" onclick="window.open('https://wa.me/5517992680298?text=Olá+Pila!','_blank')" title="WhatsApp" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);color:#25d366;">
+          <button class="icon-btn" onclick="window.open('https://wa.me/5517991097253?text=Olá+Pila!','_blank')" title="WhatsApp" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);color:#25d366;">
             <i class="fab fa-whatsapp"></i>
           </button>
           <button class="icon-btn" onclick="showAdminLogin()" title="Admin">
@@ -800,14 +800,14 @@ nav button:active{opacity:.7;}
     </div>
 
     <div class="menu-list">
-      <div class="menu-item" onclick="window.open('https://wa.me/5517992680298?text=Olá+Pila,+quero+agendar+um+horário!','_blank')">
+      <div class="menu-item" onclick="window.open('https://wa.me/5517991097253?text=Olá+Pila,+quero+agendar+um+horário!','_blank')">
         <div class="menu-icon" style="background:rgba(37,211,102,.15);color:#25d366;"><i class="fab fa-whatsapp"></i></div>
-        <div class="menu-text"><strong>WhatsApp do Pila</strong><span>(17) 99268-0298 · Falar agora</span></div>
+        <div class="menu-text"><strong>WhatsApp do Pila</strong><span>(17) 99109-7253 · Falar agora</span></div>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
-      <div class="menu-item" onclick="window.open('https://www.instagram.com/felipe_zecchi?igsh=cHA0MWsxcGNpMHJlali','_blank')">
+      <div class="menu-item" onclick="window.open('https://www.instagram.com/pila_prime.studio?igsh=MWxocnd0eTFpcTE1cA==','_blank')">
         <div class="menu-icon" style="background:rgba(225,48,108,.15);color:#e1306c;"><i class="fab fa-instagram"></i></div>
-        <div class="menu-text"><strong>Instagram do Pila</strong><span>@felipe_zecchi · Ver perfil</span></div>
+        <div class="menu-text"><strong>Instagram do Pila</strong><span>@pila_prime.studio · Ver perfil</span></div>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
     </div>
@@ -1341,7 +1341,7 @@ function confirmPlanAndBook(){
 }
 
 function callPilaWhatsApp(){
-  window.open('https://wa.me/5517999999999?text=Olá+Pila,+quero+assinar+um+plano!','_blank');
+  window.open('https://wa.me/5517991097253?text=Olá+Pila,+quero+assinar+um+plano!','_blank');
 }
 
 // ══════════════════════════════════════════
@@ -1773,7 +1773,7 @@ async function doCancel(){
     const hora  = appt.time || '';
     const srv   = appt.service || '';
     const msg   = `⚠️ *CANCELAMENTO*%0A%0AUm cliente cancelou o horário:%0A%0A👤 *${encodeURIComponent(nome)}*%0A📱 ${encodeURIComponent(fone)}%0A📅 *${encodeURIComponent(data)}* às *${encodeURIComponent(hora)}*%0A✂️ ${encodeURIComponent(srv)}`;
-    window.open(`https://wa.me/5517992680298?text=${msg}`,'_blank');
+    window.open(`https://wa.me/5517991097253?text=${msg}`,'_blank');
   }
   // Mudar filtro para 'upcoming' para que o cancelado suma da lista
   state.apptFilter='upcoming';
@@ -2130,14 +2130,9 @@ function renderAdminPlansTab(cont){
                 </div>
                 <div style="font-size:11px;color:var(--gray);margin-top:3px;">${usosFeitos}/${PLAN_MAX_USES} usos · ${MONTHS_PT[s.month]?.substring(0,3)||''} ${s.year}</div>
               </div>
-              <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
-                <button onclick="adminRenewSubscriber('${s.phone.replace(/'/g,"\\'")}')" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
-                  <i class="fas fa-rotate"></i> Renovar
-                </button>
-                <button onclick="adminRemoveSubscriber('${s.phone.replace(/'/g,"\\'")}')" style="background:rgba(192,64,64,.12);color:var(--red);border:1px solid rgba(192,64,64,.3);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
-                  <i class="fas fa-trash-alt"></i> Excluir
-                </button>
-              </div>
+              <button onclick="adminRenewSubscriber('${s.phone.replace(/'/g,"\\'")}')" style="flex-shrink:0;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap;">
+                <i class="fas fa-rotate"></i> Renovar
+              </button>
             </div>
           </div>`;
         }).join('')
@@ -2181,20 +2176,6 @@ function adminRenewSubscriber(phone){
   if(!sub && !sameUser){ showToast('❌ Assinante não encontrado.','error'); return; }
   saveDB(db);
   showToast(`✅ Plano renovado para ${sub?sub.name:'cliente'}!`,'success');
-  selectAdminTab('plans');
-}
-
-function adminRemoveSubscriber(phone){
-  const db=getDB();
-  const ph=(phone||'').replace(/\D/g,'');
-  const sub=db.planSubscribers?.find(s=>s.phone.replace(/\D/g,'')===ph);
-  const nome=sub?.name||'este cliente';
-  if(!confirm(`Excluir o plano de ${nome}?`)) return;
-  db.planSubscribers=(db.planSubscribers||[]).filter(s=>s.phone.replace(/\D/g,'')!==ph);
-  const sameUser=db.profile?.phone?.replace(/\D/g,'')===ph;
-  if(sameUser) db.planData=null;
-  saveDB(db);
-  showToast(`Plano de ${nome} removido.`,'error');
   selectAdminTab('plans');
 }
 

@@ -629,13 +629,6 @@ nav button:active{transform:scale(.88);}
     <!-- Banner de agendamento pelo plano (aparece só pra quem tem plano ativo) -->
     <div id="home-plan-banner" style="display:none;padding:0 20px;margin-bottom:0;"></div>
 
-    <!-- Botão Sair da Conta -->
-    <div style="padding:18px 20px 0;">
-      <button onclick="sairDaConta()" style="width:100%;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.25);color:#e05050;border-radius:14px;padding:13px 20px;font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .3s;">
-        <i class="fas fa-right-from-bracket"></i> Sair da conta
-      </button>
-    </div>
-
     <div class="section-gap" style="padding-bottom:12px;">
       <div class="section-header"><span class="section-title">Próximo Agendamento</span></div>
       <div style="padding:0 20px;" id="home-next-appt"></div>
@@ -778,7 +771,7 @@ nav button:active{transform:scale(.88);}
     </div>
 
     <!-- Plan status card (shown when plan is active) -->
-    <div id="profile-plan-card" style="display:none;"></div>
+    <div id="profile-plan-card" style="display:none;margin-top:20px;"></div>
 
     <div class="section-gap">
       <div class="section-header">
@@ -819,6 +812,13 @@ nav button:active{transform:scale(.88);}
         <div class="menu-text"><strong>Instagram do Pila</strong><span>@felipe_zecchi · Ver perfil</span></div>
         <i class="fas fa-chevron-right menu-arrow"></i>
       </div>
+    </div>
+
+    <!-- Botão Sair da Conta -->
+    <div style="padding:24px 20px 8px;">
+      <button onclick="sairDaConta()" style="width:100%;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.25);color:#e05050;border-radius:14px;padding:13px 20px;font-size:14px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .3s;">
+        <i class="fas fa-right-from-bracket"></i> Sair da conta
+      </button>
     </div>
   </div>
 

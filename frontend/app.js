@@ -1595,7 +1595,7 @@ function renderPlansAdmin(sbAppts) {
   const area = document.getElementById('admin-tab-content');
   if (!area) return;
 
-  // Filtrar apenas agendamentos com plano (não cancelados)
+  // Filtrar apenas agendamentos com plano
   const planAppts = sbAppts
     .filter(a => !!a.planName && a.status !== 'cancelled')
     .sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
@@ -1606,14 +1606,6 @@ function renderPlansAdmin(sbAppts) {
     const k = a.planName?.toLowerCase();
     if (counts[k] !== undefined) counts[k]++;
   });
-
-  // Agrupar clientes únicos com plano (último agendamento de cada cliente)
-  const clientMap = {};
-  planAppts.forEach(a => {
-    const key = (a.clientPhone || a.clientName).replace(/\D/g,'');
-    if (!clientMap[key]) clientMap[key] = a;
-  });
-  const activeClients = Object.values(clientMap);
 
   area.innerHTML = `
     <!-- Resumo dos planos -->
@@ -1630,117 +1622,43 @@ function renderPlansAdmin(sbAppts) {
         </div>`).join('')}
     </div>
 
-    <!-- Clientes Ativos com Plano -->
-    <div style="padding:0 20px 28px;">
-      <div style="font-family:Oswald,sans-serif;font-size:16px;font-weight:700;margin-bottom:14px;
+    <!-- Lista dos clientes com plano -->
+    <div style="padding:0 20px;">
+      <div style="font-family:Oswald,sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;
           display:flex;align-items:center;gap:8px;">
-        <i class="fas fa-users" style="color:var(--gold);font-size:14px;"></i>
-        Clientes com Plano Ativo
-        <span style="margin-left:auto;background:var(--dark3);border:1px solid rgba(255,255,255,.1);
-            border-radius:20px;padding:3px 11px;font-size:12px;color:var(--gray);font-family:Inter,sans-serif;font-weight:600;">
-          ${activeClients.length}
-        </span>
+        <i class="fas fa-shield-halved" style="color:var(--gold);font-size:14px;"></i>
+        Clientes com Plano
       </div>
-      ${activeClients.length === 0
+      ${planAppts.length === 0
         ? `<div class="empty-state" style="padding:30px 0;">
             <div class="empty-icon" style="font-size:44px;">🛡️</div>
-            <div class="empty-text">Nenhum cliente com plano ainda</div>
+            <div class="empty-text">Nenhum cliente usou plano ainda</div>
            </div>`
-        : activeClients.map(a => {
+        : planAppts.map(a => {
             const plan = PLANS.find(p => p.name.toLowerCase() === a.planName?.toLowerCase()) || PLANS[0];
-            const phoneKey = (a.clientPhone||'').replace(/\D/g,'');
             return `
-            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:10px;
-                border-radius:16px;border:1px solid ${plan.colorBorder};background:${plan.colorBg};">
-
-              <!-- Ícone do plano -->
-              <div style="min-width:48px;text-align:center;flex-shrink:0;">
-                <div style="font-size:22px;line-height:1;">${plan.emoji}</div>
-                <div style="font-family:Oswald,sans-serif;font-size:9px;font-weight:700;
-                    color:${plan.color};letter-spacing:.6px;margin-top:3px;">${plan.name.toUpperCase()}</div>
+            <div class="today-slot" style="margin-bottom:10px;border-color:${plan.colorBorder};background:${plan.colorBg};">
+              <div style="min-width:52px;text-align:center;">
+                <div style="font-size:20px;">${plan.emoji}</div>
+                <div style="font-family:Oswald,sans-serif;font-size:10px;font-weight:700;
+                    color:${plan.color};letter-spacing:.5px;">${plan.name.toUpperCase()}</div>
               </div>
-
-              <!-- Info do cliente -->
-              <div style="flex:1;min-width:0;">
-                <div style="font-weight:700;font-size:15px;color:var(--white);
-                    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              <div class="today-info">
+                <div class="today-client">
                   ${a.clientName}
+                  <span style="font-size:11px;color:var(--gray);margin-left:6px;">${a.clientPhone}</span>
                 </div>
+                <div class="today-service">${a.service}</div>
                 <div style="font-size:12px;color:var(--gray);margin-top:2px;">
-                  ${a.clientPhone}
-                </div>
-                <div style="font-size:11px;color:var(--gray);margin-top:3px;display:flex;align-items:center;gap:4px;">
-                  <i class="fas fa-calendar" style="color:${plan.color};font-size:9px;"></i>
-                  Último: ${a.date}
+                  <i class="fas fa-calendar" style="margin-right:4px;color:var(--gold);font-size:10px;"></i>
+                  ${a.date} às ${a.time}
                 </div>
               </div>
-
-              <!-- Botão excluir -->
-              <button onclick="confirmarExclusaoPlano('${phoneKey}','${a.clientName.replace(/'/g,"\\'")}')"
-                style="flex-shrink:0;background:rgba(224,80,80,.12);border:1px solid rgba(224,80,80,.35);
-                  color:var(--red);border-radius:12px;padding:9px 13px;cursor:pointer;
-                  font-size:12px;font-weight:700;font-family:Inter,sans-serif;
-                  display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;"
-                onmouseover="this.style.background='rgba(224,80,80,.25)'"
-                onmouseout="this.style.background='rgba(224,80,80,.12)'">
-                <i class="fas fa-trash-alt" style="font-size:11px;"></i>
-                Excluir
-              </button>
+              <span class="appt-badge badge-confirmed" style="white-space:nowrap;">Confirmado</span>
             </div>`;
           }).join('')
       }
     </div>`;
-}
-
-// ── Confirmar e executar exclusão do plano de um cliente ──
-async function confirmarExclusaoPlano(phoneKey, clientName) {
-  const ok = confirm(`Remover o plano de "${clientName}"?\n\nTodos os agendamentos futuros deste cliente via plano serão cancelados.`);
-  if (!ok) return;
-
-  showToast('⏳ Removendo plano...', 'info');
-
-  // Buscar agendamentos do cliente no Supabase e cancelar os futuros com plano
-  const today = new Date().toISOString().split('T')[0];
-
-  const { data: rows, error } = await supabaseClient
-    .from('appointments')
-    .select('id, phone, appointment_date, service, status')
-    .gte('appointment_date', today)
-    .neq('status', 'cancelled');
-
-  if (error) {
-    showToast('❌ Erro ao buscar agendamentos.', 'error');
-    return;
-  }
-
-  // Filtrar pelo telefone do cliente e que seja agendamento de plano
-  const toCancel = (rows || []).filter(r => {
-    const rPhone = (r.phone || '').replace(/\D/g,'');
-    const hasPlano = (r.service || '').toLowerCase().includes('plano');
-    return rPhone === phoneKey && hasPlano;
-  });
-
-  if (toCancel.length === 0) {
-    showToast('✅ Plano removido! Nenhum agendamento futuro encontrado.', 'success');
-    renderAdmin();
-    return;
-  }
-
-  // Cancelar todos
-  const ids = toCancel.map(r => r.id);
-  const { error: cancelErr } = await supabaseClient
-    .from('appointments')
-    .update({ status: 'cancelled' })
-    .in('id', ids);
-
-  if (cancelErr) {
-    showToast('❌ Erro ao cancelar agendamentos.', 'error');
-    return;
-  }
-
-  showToast(`✅ Plano de ${clientName} removido! ${ids.length} agendamento(s) cancelado(s).`, 'success');
-  vibrate(100);
-  renderAdmin();
 }
 
 // ════════════════════════════════════════════════════
